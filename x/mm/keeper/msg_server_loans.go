@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
 	"fmt"
 	"strconv"
 	"strings"
@@ -31,7 +30,7 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, types.ErrNegativeAmount
 	}
 
-	if amount.Equal(math.LegacyZeroDec()) {
+	if amount.IsZero() {
 		return nil, types.ErrZeroAmount
 	}
 
@@ -89,7 +88,7 @@ func (k msgServer) RepayLoan(goCtx context.Context, msg *types.MsgRepayLoan) (*t
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
-	if loanValue.Equal(math.LegacyZeroDec()) {
+	if loanValue.IsZero() {
 		return nil, types.ErrNoLoanFound
 	}
 
@@ -107,8 +106,7 @@ func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgParti
 		return nil, types.ErrInvalidDepositDenom
 	}
 
-	key := collections.Join(msg.Denom, msg.Creator)
-	_, found := k.loans.Get(ctx, key)
+	_, found := k.loans.Get(ctx, msg.Denom, msg.Creator)
 	if !found {
 		return nil, types.ErrNoLoanFound
 	}
@@ -123,7 +121,7 @@ func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgParti
 		return nil, types.ErrNegativeAmount
 	}
 
-	if repayAmount.Equal(math.LegacyZeroDec()) {
+	if repayAmount.IsZero() {
 		return nil, types.ErrZeroAmount
 	}
 

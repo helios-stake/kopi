@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
+	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/swap/types"
 	"github.com/pkg/errors"
@@ -14,10 +15,10 @@ import (
 // "real" counterparts. If yes, funds for the kCoin are minted, the kCoin is sold for the base
 // currency and received funds are burned such as to increase the supply of the kCoin and slightly decrease
 // its price. The amount that is minted is limited depending on the currency to not mint too much per block.
-func (k Keeper) Mint(ctx context.Context, eventManager sdk.EventManagerI) error {
+func (k Keeper) Mint(ctx context.Context) error {
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, kCoin)
-		if err := k.CheckMint(ctx, eventManager, kCoin, maxMintAmount); err != nil {
+		if err := k.CheckMint(ctx, kCoin, maxMintAmount); err != nil {
 			return errors.Wrap(err, "could not mint denom")
 		}
 	}
@@ -27,7 +28,7 @@ func (k Keeper) Mint(ctx context.Context, eventManager sdk.EventManagerI) error 
 
 // CheckMint checks the parity of a given kCoin. If it is above 1, new coins are minted and sold in favor of
 // the base currency.
-func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, kCoin string, maxMintAmount math.Int) error {
+func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.Int) error {
 	parity, referenceDenom, err := k.DexKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
 		return errors.Wrap(err, "could not calculate parity")
@@ -38,22 +39,10 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 	}
 
 	referenceRatio, _ := k.DexKeeper.GetRatio(ctx, referenceDenom)
-	calculatedMintAmount := k.calcKCoinMintAmount(ctx, kCoin, *referenceRatio.Ratio)
-	mintAmount := math.MinInt(calculatedMintAmount, maxMintAmount)
-
+	mintAmount := k.calcKCoinMintAmount(ctx, referenceRatio.Ratio, kCoin)
+	mintAmount = math.MinInt(mintAmount, maxMintAmount)
 	mintAmount = k.adjustForSupplyCap(ctx, kCoin, mintAmount)
-	if mintAmount.LTE(math.ZeroInt()) {
-		return nil
-	}
-
-	// maxMintAmount is given in the denom of the kCoin's reference denom, which is why it's converted to
-	// the kCoin
-	mintAmount, _, _, err = k.DexKeeper.SimulateTradeForReserve(ctx, referenceDenom, kCoin, mintAmount)
-	if err != nil {
-		return errors.Wrap(err, "could not simulate trade")
-	}
-
-	if mintAmount.LT(math.OneInt()) {
+	if mintAmount.LTE(math.OneInt()) {
 		return nil
 	}
 
@@ -64,9 +53,10 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
-	options := dextypes.TradeOptions{
-		CoinSource:          address,
-		CoinTarget:          address,
+	tradeCtx := dextypes.TradeContext{
+		Context:             ctx,
+		CoinSource:          address.String(),
+		CoinTarget:          address.String(),
 		GivenAmount:         mintAmount,
 		MaxPrice:            nil,
 		TradeDenomStart:     kCoin,
@@ -74,10 +64,10 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 		AllowIncomplete:     true,
 		ExcludeFromDiscount: true,
 		ProtocolTrade:       true,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
-	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
-	if err != nil {
+	if _, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx); err != nil {
 		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
 			return nil
 		}
@@ -88,33 +78,13 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 		return errors.Wrap(err, "could not execute incomplete trade")
 	}
 
-	burnedAmount, err := k.burnFunds(ctx, eventManager, utils.BaseCurrency)
-	if err != nil {
-		return errors.Wrap(err, "could not burn funds")
+	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+		return errors.Wrap(err, "could not settle trade balances")
 	}
 
-	eventManager.EmitEvent(
-		sdk.NewEvent("arbitrage_trade",
-			sdk.Attribute{Key: "denom_from", Value: options.TradeDenomStart},
-			sdk.Attribute{Key: "denom_to", Value: options.TradeDenomEnd},
-			sdk.Attribute{Key: "amount_used", Value: amountUsed.String()},
-			sdk.Attribute{Key: "amount_received", Value: amountReceived.String()},
-		),
-	)
-
-	eventManager.EmitEvent(
-		sdk.NewEvent("swap_coins_minted",
-			sdk.Attribute{Key: "denom", Value: kCoin},
-			sdk.Attribute{Key: "amount", Value: mintAmount.String()},
-		),
-	)
-
-	eventManager.EmitEvent(
-		sdk.NewEvent("swap_coins_burned",
-			sdk.Attribute{Key: "denom", Value: utils.BaseCurrency},
-			sdk.Attribute{Key: "amount", Value: burnedAmount.String()},
-		),
-	)
+	if _, err = k.burnFunds(ctx, utils.BaseCurrency); err != nil {
+		return errors.Wrap(err, "could not burn funds")
+	}
 
 	return nil
 }
@@ -129,12 +99,12 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 	return amountToAdd
 }
 
-func (k Keeper) calcKCoinMintAmount(ctx context.Context, kCoin string, referenceRatio math.LegacyDec) math.Int {
+func (k Keeper) calcKCoinMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
+	referenceRatio = math.LegacyOneDec().Quo(referenceRatio)
 	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
-	liqVirtual := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-	constantProduct := liqBase.Mul(liqVirtual)
-	newLiqVirtual, _ := constantProduct.Quo(referenceRatio).ApproxSqrt()
-	mintAmount := newLiqVirtual.Sub(liqVirtual)
+	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
+	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
+	mintAmount := constantProductRoot.Sub(liqKCoin)
 	return mintAmount.TruncateInt()
 }
 

@@ -9,19 +9,48 @@ import (
 
 func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 	return types.NewOrderCaches(
-		func() sdk.Coins {
-			dexAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
-			return k.BankKeeper.SpendableCoins(ctx, dexAcc.GetAddress())
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolTrade)
+			return acc.GetAddress()
+		},
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve)
+			return acc.GetAddress()
+		},
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+			return acc.GetAddress()
+		},
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFees)
+			return acc.GetAddress()
+		},
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
+			return acc.GetAddress()
+		},
+		func() math.LegacyDec {
+			return k.GetParams(ctx).TradeFee
+		},
+		func() math.LegacyDec {
+			return k.GetParams(ctx).ReserveShare
+		},
+		func() math.LegacyDec {
+			return k.GetParams(ctx).OrderFee
+		},
+		func() *types.CoinMap {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFees)
+			coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
+			return types.NewCoinMap(coins)
+		},
+		func() *types.CoinMap {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+			coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
+			return types.NewCoinMap(coins)
 		},
 		func(denom string) types.LiquidityPair {
-			liq, _ := k.GetLiquidityPair(ctx, denom)
-			return liq
-		},
-		func(other string) math.LegacyDec {
-			return k.GetFullLiquidityBase(ctx, other)
-		},
-		func(denom string) math.LegacyDec {
-			return k.GetFullLiquidityOther(ctx, denom)
+			pair, _ := k.GetLiquidityPair(ctx, denom)
+			return pair
 		},
 		func(denom string) []types.Liquidity {
 			return k.LiquidityIterator(ctx, denom).GetAll()

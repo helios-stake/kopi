@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,19 +26,19 @@ func (k Keeper) GetMarketStats(ctx context.Context, req *types.GetMarketStatsQue
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		available := vault.AmountOf(cAsset.BaseDenom)
-		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, available)
+		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, available.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).LoanSum
-		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowed.RoundInt())
+		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowed)
 		if err != nil {
 			return nil, err
 		}
 
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDenom)
-		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming)
+		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +54,7 @@ func (k Keeper) GetMarketStats(ctx context.Context, req *types.GetMarketStatsQue
 
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
 		provided := k.getCollateralSum(ctx, denom.Denom)
-		providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, provided)
+		providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, provided.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -131,7 +129,7 @@ func (k Keeper) getBorrowableAmountUSD(ctx context.Context, address string) (mat
 			return sum, err
 		}
 
-		borrowableAmountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowableAmount.TruncateInt())
+		borrowableAmountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowableAmount)
 		if err != nil {
 			return sum, err
 		}
@@ -157,19 +155,18 @@ func (k Keeper) getDepositUserStats(ctx context.Context, address string) (math.L
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		amountCAsset := coins.AmountOf(cAsset.Name)
 
-		key := collections.Join(cAsset.BaseDenom, address)
-		redeeming, found := k.redemptions.Get(ctx, key)
+		redeeming, found := k.redemptions.Get(ctx, cAsset.BaseDenom, address)
 		if !found {
 			redeeming.Amount = math.ZeroInt()
 		}
 
 		amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset)
-		cAssetUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
+		cAssetUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase)
 		if err != nil {
 			return totalDeposited, totalRedeeming, err
 		}
 
-		redeemingUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount)
+		redeemingUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount.ToLegacyDec())
 		if err != nil {
 			return totalDeposited, totalRedeeming, err
 		}
@@ -186,7 +183,7 @@ func (k Keeper) getUserLoansSumBase(ctx context.Context, address string) (math.L
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
-		valueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+		valueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loanValue)
 		if err != nil {
 			return sum, err
 		}
@@ -203,7 +200,7 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
-		valueUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+		valueUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue)
 		if err != nil {
 			return sum, interestRateSum, err
 		}
@@ -227,18 +224,17 @@ func (k Keeper) getCollateralUserSumUSD(ctx context.Context, address string) (ma
 	sumBorrowable := math.LegacyZeroDec()
 
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
-		key := collections.Join(denom.Denom, address)
-		amount, found := k.collateral.Get(ctx, key)
+		amount, found := k.collateral.Get(ctx, denom.Denom, address)
 		if !found {
 			continue
 		}
 
-		valueDepositUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, amount.Amount)
+		valueDepositUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, amount.Amount.ToLegacyDec())
 		if err != nil {
 			return sumDeposit, sumBorrowable, err
 		}
 
-		collateralLTV := amount.Amount.ToLegacyDec().Mul(denom.Ltv).RoundInt()
+		collateralLTV := amount.Amount.ToLegacyDec().Mul(denom.Ltv)
 		valueBorrowableUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, collateralLTV)
 		if err != nil {
 			return sumDeposit, sumBorrowable, err

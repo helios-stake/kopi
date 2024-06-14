@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
-
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -31,6 +29,10 @@ func (k msgServer) UpdateOrder(goCtx context.Context, msg *types.MsgUpdateOrder)
 		return nil, errors.Wrap(err, "could not parse amount")
 	}
 
+	if amount.LT(k.DenomKeeper.MinOrderSize(ctx, order.DenomFrom)) {
+		return nil, types.ErrOrderSizeTooSmall
+	}
+
 	if msg.TradeAmount == "" {
 		msg.TradeAmount = "0"
 	}
@@ -45,7 +47,7 @@ func (k msgServer) UpdateOrder(goCtx context.Context, msg *types.MsgUpdateOrder)
 		return nil, errors.Wrap(err, "could not send coins to address")
 	}
 
-	if err = k.checkSpendableCoins(ctx, address, order.DenomFrom, amount); err != nil {
+	if err = k.checkSpendableCoins(ctx, msg.Creator, order.DenomFrom, amount); err != nil {
 		return nil, errors.Wrap(err, "could not check spendable coins")
 	}
 
@@ -65,19 +67,12 @@ func (k msgServer) UpdateOrder(goCtx context.Context, msg *types.MsgUpdateOrder)
 
 	amountChange := amount.Sub(order.AmountLeft)
 
+	order.AmountGiven = order.AmountGiven.Add(amountChange)
 	order.AmountLeft = amount
 	order.TradeAmount = tradeAmount
 	order.MaxPrice = *maxPrice
 
 	k.SetOrder(ctx, order)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("order_updated",
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-			sdk.Attribute{Key: "amount_changed", Value: amountChange.String()},
-			sdk.Attribute{Key: "max_price", Value: maxPrice.String()},
-		),
-	)
 
 	return &order, nil
 }

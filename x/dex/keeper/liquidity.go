@@ -15,7 +15,7 @@ import (
 
 // SetLiquidity sets a specific liquidity in the store from its index. When the index is zero, i.e. it's a new entry,
 // the NextIndex is increased and updated as well.
-func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity, change math.Int) types.Liquidity {
+func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity) types.Liquidity {
 	if liquidity.Index == 0 {
 		nextIndex, _ := k.liquidityEntriesNextIndex.Get(ctx)
 		nextIndex++
@@ -24,8 +24,7 @@ func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity, cha
 		k.SetLiquidityEntryNextIndex(ctx, nextIndex)
 	}
 
-	k.liquidityEntries.Set(ctx, collections.Join(liquidity.Denom, liquidity.Index), liquidity)
-	k.updateLiquiditySum(ctx, liquidity.Denom, change)
+	k.liquidityEntries.Set(ctx, liquidity.Denom, liquidity.Index, liquidity)
 	return liquidity
 }
 
@@ -35,11 +34,6 @@ func (k Keeper) GetLiquidityEntryNextIndex(ctx context.Context) (uint64, bool) {
 
 func (k Keeper) SetLiquidityEntryNextIndex(ctx context.Context, nextIndex uint64) {
 	k.liquidityEntriesNextIndex.Set(ctx, nextIndex)
-}
-
-func (k Keeper) updateLiquiditySum(ctx context.Context, denom string, change math.Int) {
-	liqSum := k.GetLiquiditySum(ctx, denom).Add(change)
-	k.SetLiquiditySum(ctx, types.LiquiditySum{Denom: denom, Amount: liqSum})
 }
 
 // AddLiquidity adds liquidity to the dex for a given amount and address. The address is used to keep track which user
@@ -57,19 +51,21 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 	// The dex works by routing all trades via XKP. The chain is initialized with funds for the reserve, which adds
 	// those funds to the dex. When no liquidity for XKP has been added, we refuse new liquidity as long as no
 	// liquidity for XKP is added.
-	liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
-	if liqBase.Equal(math.ZeroInt()) && denom != utils.BaseCurrency {
+
+	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+	liqBase := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress()).AmountOf(utils.BaseCurrency)
+	if liqBase.IsZero() && denom != utils.BaseCurrency {
 		return types.ErrBaseLiqEmpty
 	}
 
 	_, liq := k.addLiquidity(ctx, denom, address.String(), amount, nil)
 
 	// When changing actual liquidity, the virtual liquidity has to be adjusted to keep the ratio.
-	if denom != utils.BaseCurrency {
-		k.updatePair(ctx, nil, denom)
-	} else {
-		k.updatePairs(ctx, nil)
-	}
+	//if denom != utils.BaseCurrency {
+	//	k.updatePair(ctx, nil, denom)
+	//} else {
+	//	k.updatePairs(ctx, nil)
+	//}
 
 	eventManager.EmitEvent(
 		sdk.NewEvent(
@@ -101,26 +97,22 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 			}
 
 			liq.Amount = liq.Amount.Add(amount)
-			k.SetLiquidity(ctx, liq, amount)
+			k.SetLiquidity(ctx, liq)
 			liquidityEntries[index] = liq
 			return liquidityEntries, liq
 		}
 	}
 
 	liq := types.Liquidity{Denom: denom, Address: address, Amount: amount}
-	liq = k.SetLiquidity(ctx, liq, amount)
+	liq = k.SetLiquidity(ctx, liq)
 	liquidityEntries = append(liquidityEntries, liq)
 
 	return liquidityEntries, liq
 }
 
-func (k Keeper) LiquidityIterator(ctx context.Context, denom string) *cache.Iterator[collections.Pair[string, uint64], types.Liquidity] {
-	extraFilters := []cache.Filter[collections.Pair[string, uint64]]{
-		func(key collections.Pair[string, uint64]) bool {
-			return key.K1() == denom
-		},
-	}
-	return k.liquidityEntries.Iterator(ctx, extraFilters...)
+func (k Keeper) LiquidityIterator(ctx context.Context, denom string) cache.Iterator[uint64, types.Liquidity] {
+	rng := collections.NewPrefixedPairRange[string, uint64](denom)
+	return k.liquidityEntries.Iterator(ctx, rng, denom, nil)
 }
 
 func (k Keeper) GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int {
@@ -168,14 +160,8 @@ func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.Liquidity) {
 }
 
 // RemoveLiquidity removes a liquidity from the store
-func (k Keeper) RemoveLiquidity(ctx context.Context, denom string, index uint64, change math.Int) {
-	if change.LT(math.ZeroInt()) {
-		panic("cannot be negative amount, positive amount is assumed")
-	}
-
-	key := collections.Join(denom, index)
-	k.liquidityEntries.Remove(ctx, key)
-	k.updateLiquiditySum(ctx, denom, change.Neg())
+func (k Keeper) RemoveLiquidity(ctx context.Context, denom string, index uint64) {
+	k.liquidityEntries.Remove(ctx, denom, index)
 }
 
 // UpdateVirtualLiquidities updates the virtual liquidity for each pair. This method is called at the end of each block.
@@ -185,29 +171,16 @@ func (k Keeper) RemoveLiquidity(ctx context.Context, denom string, index uint64,
 // liquidity to increase that denom's price.
 func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) {
 	decay := k.GetParams(ctx).VirtualLiquidityDecay
-	liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
+	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+	poolBalance := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress())
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		if denom != utils.BaseCurrency {
-			liq := k.GetLiquiditySum(ctx, denom)
+			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
-				pair, found := k.GetLiquidityPair(ctx, denom)
-
-				if !found {
-					pair.Denom = denom
-					pair.VirtualBase = math.LegacyZeroDec()
-					pair.VirtualOther = math.LegacyZeroDec()
-				}
-
-				if pair.VirtualOther.Equal(math.LegacyZeroDec()) {
-					factor := k.DenomKeeper.InitialVirtualLiquidityFactor(ctx, denom)
-					pair.VirtualOther = liqBase.ToLegacyDec().Quo(factor)
-				} else {
-					pair.VirtualOther = pair.VirtualOther.Mul(decay)
-				}
-
-				k.SetLiquidityPair(ctx, pair)
-				k.updateRatios(ctx, pair.Denom)
+				ratio, _ := k.GetRatio(ctx, denom)
+				ratio.Ratio = ratio.Ratio.Mul(decay)
+				k.SetRatio(ctx, ratio)
 			}
 		}
 	}

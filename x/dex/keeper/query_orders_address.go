@@ -18,14 +18,17 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 
 	orders := []*types.OrderResponse{}
 	for _, order := range k.GetAllOrdersByAddress(ctx, req.Address) {
-		if order.Creator == req.Address {
-			orderResponse, err := k.toOrderResponse(ctx, order)
-			if err != nil {
-				return nil, err
-			}
-
-			orders = append(orders, orderResponse)
+		if req.DenomFrom != "" && req.DenomFrom != order.DenomFrom ||
+			req.DenomTo != "" && req.DenomTo != order.DenomTo {
+			continue
 		}
+
+		orderResponse, err := k.toOrderResponse(ctx, order)
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, orderResponse)
 	}
 
 	return &types.QueryOrdersAddressResponse{Orders: orders}, nil

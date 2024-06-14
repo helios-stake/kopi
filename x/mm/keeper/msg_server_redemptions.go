@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -39,8 +37,7 @@ func (k msgServer) CreateRedemptionRequest(goCtx context.Context, msg *types.Msg
 		return nil, err
 	}
 
-	key := collections.Join(cAsset.BaseDenom, msg.Creator)
-	_, has := k.redemptions.Get(ctx, key)
+	_, has := k.redemptions.Get(ctx, cAsset.BaseDenom, msg.Creator)
 	if has {
 		return nil, types.ErrRedemptionRequestAlreadyExists
 
@@ -53,7 +50,9 @@ func (k msgServer) CreateRedemptionRequest(goCtx context.Context, msg *types.Msg
 		Fee:     fee,
 	}
 
-	k.redemptions.Set(ctx, key, redemption)
+	if err = k.SetRedemption(ctx, cAsset.BaseDenom, redemption); err != nil {
+		return nil, errors.Wrap(err, "could not set redemption request")
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_created",
@@ -75,8 +74,7 @@ func (k msgServer) CancelRedemptionRequest(goCtx context.Context, msg *types.Msg
 		return nil, err
 	}
 
-	key := collections.Join(cAsset.BaseDenom, msg.Creator)
-	redemption, has := k.redemptions.Get(ctx, key)
+	redemption, has := k.redemptions.Get(ctx, cAsset.BaseDenom, msg.Creator)
 	if !has {
 		return nil, types.ErrRedemptionRequestNotFound
 	}
@@ -87,7 +85,7 @@ func (k msgServer) CancelRedemptionRequest(goCtx context.Context, msg *types.Msg
 		return nil, err
 	}
 
-	k.redemptions.Remove(ctx, key)
+	k.redemptions.Remove(ctx, cAsset.BaseDenom, msg.Creator)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_canceled",
@@ -117,8 +115,7 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 		return nil, errors.Wrap(err, "invalid cAsset amount")
 	}
 
-	key := collections.Join(cAsset.BaseDenom, msg.Creator)
-	redemption, has := k.redemptions.Get(ctx, key)
+	redemption, has := k.redemptions.Get(ctx, cAsset.BaseDenom, msg.Creator)
 	if !has {
 		return nil, types.ErrRedemptionRequestNotFound
 	}
@@ -141,7 +138,9 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 	redemption.Fee = fee
 	redemption.Amount = cAssetAmount
 
-	k.redemptions.Set(ctx, key, redemption)
+	if err = k.SetRedemption(ctx, cAsset.BaseDenom, redemption); err != nil {
+		return nil, errors.Wrap(err, "could not set redemption")
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_updated",

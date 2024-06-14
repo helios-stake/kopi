@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,14 +33,13 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 		return nil, err
 	}
 
-	key := collections.Join(msg.Denom, msg.Creator)
-	collateral, found := k.collateral.Get(ctx, key)
+	collateral, found := k.collateral.Get(ctx, msg.Denom, msg.Creator)
 	if !found {
 		collateral = types.Collateral{Address: msg.Creator, Amount: math.ZeroInt()}
 	}
 
 	newAmount := collateral.Amount.Add(amount)
-	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount, amount)
+	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolCollateral, coins); err != nil {
@@ -77,8 +74,7 @@ func (k msgServer) RemoveCollateral(goCtx context.Context, msg *types.MsgRemoveC
 		return nil, types.ErrInvalidAddress
 	}
 
-	key := collections.Join(msg.Denom, msg.Creator)
-	collateral, found := k.collateral.Get(ctx, key)
+	collateral, found := k.collateral.Get(ctx, msg.Denom, msg.Creator)
 	if !found {
 		return nil, types.ErrNoCollateralFound
 	}
@@ -88,7 +84,7 @@ func (k msgServer) RemoveCollateral(goCtx context.Context, msg *types.MsgRemoveC
 		return nil, types.ErrNegativeCollateral
 	}
 
-	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount, amount.Neg())
+	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolCollateral, address, coins); err != nil {

@@ -32,7 +32,7 @@ func (k Keeper) calculateUtilityRate(ctx context.Context, cAsset *denomtypes.CAs
 	borrowableAmount := k.GetVaultAmount(ctx, cAsset)
 
 	sum := loanSum.Add(borrowableAmount.ToLegacyDec())
-	if sum.Equal(math.LegacyZeroDec()) {
+	if sum.IsZero() {
 		return math.LegacyZeroDec()
 	}
 

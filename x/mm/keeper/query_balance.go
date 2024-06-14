@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
@@ -35,11 +33,11 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		col := k.getProvidedCollateral(ctx, req.Address, denom)
 		sum := liq.Add(ord).Add(wal).Add(col)
 
-		liqUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, liq)
-		ordUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, ord)
-		walUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, wal)
-		colUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, col)
-		sumUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, sum)
+		liqUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, liq.ToLegacyDec())
+		ordUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, ord.ToLegacyDec())
+		walUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, wal.ToLegacyDec())
+		colUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, col.ToLegacyDec())
+		sumUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, sum.ToLegacyDec())
 
 		sumSumUSD = sumSumUSD.Add(sumUSD)
 		sumLiqUSD = sumLiqUSD.Add(liqUSD)
@@ -73,7 +71,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 }
 
 func (k Keeper) getProvidedCollateral(ctx context.Context, address, denom string) math.Int {
-	collateral, found := k.collateral.Get(ctx, collections.Join(denom, address))
+	collateral, found := k.collateral.Get(ctx, denom, address)
 	if !found {
 		return math.ZeroInt()
 	}

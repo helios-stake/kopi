@@ -2,23 +2,35 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/measurement"
 )
 
-type LoadPoolBalance func() sdk.Coins
+type LoadAccAddress func() sdk.AccAddress
+type LoadFee func() math.LegacyDec
+type LoadPoolBalance func() *CoinMap
 type LoadLiquidityPair func(denom string) LiquidityPair
-type LoadFullLiquidity func(denom string) math.LegacyDec
 type LoadLiquidity func(denom string) []Liquidity
 
-func NewOrderCaches(lpb LoadPoolBalance, llp LoadLiquidityPair, lflb, lflo LoadFullLiquidity, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(lat, lar, lal, laf, lao LoadAccAddress, ltf, lrfs, lof LoadFee, lpbr, lpbl LoadPoolBalance, llp LoadLiquidityPair, ll LoadLiquidity) *OrdersCaches {
 	return &OrdersCaches{
-		DexPool:            newItemCache(lpb),
-		LiquidityPair:      newOrderCache(llp),
-		FullLiquidityBase:  newOrderCache(lflb),
-		FullLiquidityOther: newOrderCache(lflo),
-		LiquidityMap:       newLiquidityMap(ll),
+		AccPoolTrade:      newItemCache(lat),
+		AccPoolReserve:    newItemCache(lar),
+		AccPoolLiquidity:  newItemCache(lal),
+		AccPoolFees:       newItemCache(laf),
+		AccPoolOrders:     newItemCache(lao),
+		TradeFee:          newItemCache(ltf),
+		ReserveFeeShare:   newItemCache(lrfs),
+		OrderFee:          newItemCache(lof),
+		ReimbursementPool: newItemCache(lpbr),
+		LiquidityPool:     newItemCache(lpbl),
+		LiquidityPair:     newOrderCache(llp),
+		LiquidityMap:      newLiquidityMap(ll),
 
-		PriceAmounts: make(map[Pair]math.LegacyDec),
+		PriceAmounts:          make(map[Pair]math.LegacyDec),
+		PriceMaxAmounts:       make(map[string]math.LegacyDec),
+		MaximumTradableAmount: make(map[string]*math.LegacyDec),
 	}
 }
 
@@ -27,18 +39,72 @@ type Pair struct {
 	DenomTo   string
 }
 
+type CoinMap struct {
+	cm map[string]math.Int
+}
+
+func NewCoinMap(coins sdk.Coins) *CoinMap {
+	coinMap := make(map[string]math.Int)
+	for _, coin := range coins {
+		coinMap[coin.Denom] = coin.Amount
+	}
+
+	return &CoinMap{coinMap}
+}
+
+func (cm *CoinMap) AmountOf(denom string) math.Int {
+	amount, has := cm.cm[denom]
+	if !has {
+		return math.ZeroInt()
+	}
+
+	return amount
+}
+
+func (cm *CoinMap) Sub(denom string, subAmount math.Int) {
+	amount, has := cm.cm[denom]
+	if has {
+		newAmount := amount.Sub(subAmount)
+		if newAmount.LT(math.ZeroInt()) {
+			panic(fmt.Sprintf("negative coin amount for %v", denom))
+		}
+
+		cm.cm[denom] = newAmount
+		return
+	}
+
+	panic(fmt.Sprintf("cannot sub denom that does not exist (%v)", denom))
+}
+
+func (cm *CoinMap) Add(denom string, addAmount math.Int) {
+	amount, has := cm.cm[denom]
+	if has {
+		cm.cm[denom] = amount.Add(addAmount)
+	} else {
+		cm.cm[denom] = addAmount
+	}
+}
+
 type OrdersCaches struct {
-	DexPool            *ItemCache[sdk.Coins]
-	LiquidityPair      *MapCache[LiquidityPair]
-	FullLiquidityBase  *MapCache[math.LegacyDec]
-	FullLiquidityOther *MapCache[math.LegacyDec]
-	PriceAmounts       map[Pair]math.LegacyDec
-	LiquidityMap       *LiquidityMap
+	AccPoolReserve        *ItemCache[sdk.AccAddress]
+	AccPoolTrade          *ItemCache[sdk.AccAddress]
+	AccPoolLiquidity      *ItemCache[sdk.AccAddress]
+	AccPoolFees           *ItemCache[sdk.AccAddress]
+	AccPoolOrders         *ItemCache[sdk.AccAddress]
+	TradeFee              *ItemCache[math.LegacyDec]
+	ReserveFeeShare       *ItemCache[math.LegacyDec]
+	OrderFee              *ItemCache[math.LegacyDec]
+	LiquidityPool         *ItemCache[*CoinMap]
+	ReimbursementPool     *ItemCache[*CoinMap]
+	LiquidityPair         *MapCache[LiquidityPair]
+	PriceAmounts          map[Pair]math.LegacyDec
+	PriceMaxAmounts       map[string]math.LegacyDec
+	LiquidityMap          *LiquidityMap
+	MaximumTradableAmount map[string]*math.LegacyDec
+	Measurement           *measurement.Measurement
 }
 
 func (oc *OrdersCaches) Clear() {
-	oc.FullLiquidityBase.clear()
-	oc.FullLiquidityOther.clear()
 	oc.PriceAmounts = make(map[Pair]math.LegacyDec)
 }
 
@@ -58,9 +124,9 @@ func (ic *ItemCache[T]) Set(t T) {
 }
 
 func (ic *ItemCache[T]) Get() T {
-	//if ic.item != nil {
-	//	return *ic.item
-	//}
+	if ic.item != nil {
+		return *ic.item
+	}
 
 	item := ic.loader()
 	ic.item = &item
@@ -88,14 +154,23 @@ func (mc *MapCache[T]) Set(denom string, t T) {
 }
 
 func (mc *MapCache[T]) Get(denom string) T {
-	pair, has := mc.m[denom]
-	if has {
-		return pair
+	value, has := mc.m[denom]
+	if !has {
+		value = mc.loader(denom)
+		mc.m[denom] = value
 	}
 
-	pair = mc.loader(denom)
-	mc.m[denom] = pair
-	return pair
+	return value
+}
+
+func (mc *MapCache[T]) GetHas(denom string) (T, bool) {
+	value, has := mc.m[denom]
+	if !has {
+		value = mc.loader(denom)
+		mc.m[denom] = value
+	}
+
+	return value, has
 }
 
 func (mc *MapCache[T]) clear() {

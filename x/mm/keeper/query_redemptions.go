@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	sdkmath "cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"google.golang.org/grpc/codes"
@@ -15,8 +13,7 @@ func (k Keeper) GetRedemptionRequest(ctx context.Context, req *types.GetRedempti
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	key := collections.Join(req.Denom, req.Address)
-	request, found := k.redemptions.Get(ctx, key)
+	request, found := k.redemptions.Get(ctx, req.Denom, req.Address)
 	if !found {
 		return &types.GetRedemptionRequestResponse{
 			Fee:          "0",
@@ -40,7 +37,7 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.Name)
-		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum)
+		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}

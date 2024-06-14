@@ -24,7 +24,7 @@ func (k Keeper) getCAssetSupply(ctx context.Context, cAsset *denomtypes.CAsset) 
 // the vault
 func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, addedAmount math.Int, cAsset *denomtypes.CAsset) math.Int {
 	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
-	if cAssetSupply.Equal(math.ZeroInt()) {
+	if cAssetSupply.IsZero() {
 		return addedAmount
 	}
 
@@ -65,7 +65,7 @@ func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset *denomtypes.CAs
 }
 
 func (k Keeper) ConvertToBaseAmount(ctx context.Context, cAsset *denomtypes.CAsset, amountCAsset math.Int) math.LegacyDec {
-	if amountCAsset.Equal(math.ZeroInt()) {
+	if amountCAsset.IsZero() {
 		return math.LegacyZeroDec()
 	}
 
@@ -76,7 +76,7 @@ func (k Keeper) ConvertToBaseAmount(ctx context.Context, cAsset *denomtypes.CAss
 }
 
 func convertToBaseAmount(supply, value, amountCAsset math.LegacyDec) math.LegacyDec {
-	if amountCAsset.Equal(math.LegacyZeroDec()) {
+	if amountCAsset.IsZero() {
 		return math.LegacyZeroDec()
 	}
 

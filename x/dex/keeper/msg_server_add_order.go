@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
-
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
@@ -21,6 +19,10 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 	amount, err := parseAmount(msg.Amount)
 	if err != nil {
 		return nil, err
+	}
+
+	if amount.LT(k.DenomKeeper.MinOrderSize(ctx, msg.DenomFrom)) {
+		return nil, types.ErrOrderSizeTooSmall
 	}
 
 	if msg.TradeAmount == "" {
@@ -64,6 +66,8 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		DenomFrom:         msg.DenomFrom,
 		DenomTo:           msg.DenomTo,
 		AmountLeft:        amount,
+		AmountGiven:       amount,
+		AmountReceived:    math.ZeroInt(),
 		TradeAmount:       tradeAmount,
 		MaxPrice:          *maxPrice,
 		AddedAt:           ctx.BlockHeight(),
@@ -72,24 +76,7 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		AllowIncomplete:   msg.AllowIncomplete,
 	}
 
-	order.Index, err = k.SetOrder(ctx, order)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not set order")
-	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("order_created",
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-			sdk.Attribute{Key: "address", Value: msg.Creator},
-			sdk.Attribute{Key: "denom_from", Value: msg.DenomFrom},
-			sdk.Attribute{Key: "denom_to", Value: msg.DenomTo},
-			sdk.Attribute{Key: "max_price", Value: maxPrice.String()},
-			sdk.Attribute{Key: "blocks", Value: strconv.Itoa(int(msg.Blocks))},
-			sdk.Attribute{Key: "amount_given", Value: amount.String()},
-			sdk.Attribute{Key: "interval", Value: strconv.Itoa(int(msg.Interval))},
-			sdk.Attribute{Key: "allow_incomplete", Value: strconv.FormatBool(msg.AllowIncomplete)},
-		),
-	)
+	order.Index = k.SetOrder(ctx, order)
 
 	return &order, nil
 }

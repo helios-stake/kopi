@@ -1,24 +1,22 @@
 package cache
 
-import (
-	"sort"
-)
+type ordered interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+		~float32 | ~float64 | ~string
+}
 
-type KeyValue[K, V any] struct {
+type KeyValue[K ordered, V any] struct {
 	key   K
 	value V
 }
 
-type OrderedList[K, V any] struct {
-	comparer KeyComparer
-	list     []KeyValue[K, V]
+func (kv KeyValue[K, V]) Value() V {
+	return kv.value
 }
 
-func newOrderedList[K, V any](comparer KeyComparer) *OrderedList[K, V] {
-	return &OrderedList[K, V]{
-		comparer: comparer,
-		list:     []KeyValue[K, V]{},
-	}
+type OrderedList[K ordered, V any] struct {
+	list []KeyValue[K, V]
 }
 
 func (ol *OrderedList[K, V]) Size() int {
@@ -31,6 +29,11 @@ func (ol *OrderedList[K, V]) Clear() {
 
 func (ol *OrderedList[K, V]) GetByIndex(index int) KeyValue[K, V] {
 	return ol.list[index]
+}
+
+func (ol *OrderedList[K, V]) Has(key K) bool {
+	_, has := ol.GetIndex(key)
+	return has
 }
 
 func (ol *OrderedList[K, V]) Get(key K) (V, bool) {
@@ -55,23 +58,8 @@ func (ol *OrderedList[K, V]) GetKeys() (keys []K) {
 	return
 }
 
-func (ol *OrderedList[K, V]) GetIndex(key K) (int, bool) {
-	low, high := 0, len(ol.list)-1
-
-	for low <= high {
-		mid := low + (high-low)/2
-
-		if ol.comparer.Equal(ol.list[mid].key, key) {
-			return mid, true
-		}
-		if ol.comparer.Less(ol.list[mid].key, key) {
-			low = mid + 1
-		} else {
-			high = mid - 1
-		}
-	}
-
-	return 0, false
+func (ol OrderedList[K, V]) GetIndex(key K) (int, bool) {
+	return getIndex(ol.list, key)
 }
 
 func (ol *OrderedList[K, V]) Remove(key K) {
@@ -88,22 +76,37 @@ func (ol *OrderedList[K, V]) Set(keyValue KeyValue[K, V]) {
 	if has {
 		ol.list[listIndex] = entry
 	} else {
-		ol.list = append(ol.list, entry)
-		ol.sort()
+		if listIndex == len(ol.list) {
+			ol.list = append(ol.list, entry)
+		} else {
+			ol.list = append(ol.list[:listIndex+1], ol.list[listIndex:]...)
+			ol.list[listIndex] = entry
+		}
 	}
 }
 
 func (ol *OrderedList[K, V]) set(keyValues []KeyValue[K, V]) {
 	ol.list = nil
 	for _, keyValue := range keyValues {
-		ol.list = append(ol.list, keyValue)
+		ol.Set(keyValue)
 	}
-
-	ol.sort()
 }
 
-func (ol *OrderedList[K, V]) sort() {
-	sort.Slice(ol.list, func(i, j int) bool {
-		return ol.comparer.Less(ol.list[i].key, ol.list[j].key)
-	})
+func getIndex[K ordered, V any](list []KeyValue[K, V], key K) (int, bool) {
+	low, high := 0, len(list)-1
+
+	for low <= high {
+		mid := low + (high-low)/2
+
+		if list[mid].key == key {
+			return mid, true
+		}
+		if list[mid].key < key {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+
+	return low, false
 }

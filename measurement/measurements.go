@@ -23,8 +23,16 @@ func NewMeasurements() *Measurement {
 }
 
 func (m *Measurement) Print(logger log.Logger) {
+	m.PrintSkip(logger, nil)
+}
+
+func (m *Measurement) PrintSkip(logger log.Logger, skip []string) {
 	keys := m.GetKeys()
 	for _, key := range keys {
+		if contains(skip, key) {
+			continue
+		}
+
 		millis, avg := m.millis(key)
 		logger.Info(fmt.Sprintf("%v: %.4fms (%v, %v)", key, millis, avg, m.count[key]))
 	}
@@ -55,4 +63,14 @@ func (m *Measurement) Start(key string) {
 func (m *Measurement) End(key string) {
 	m.count[key] += 1
 	m.nanos[key] += time.Since(m.running[key]).Nanoseconds()
+}
+
+func contains(list []string, value string) bool {
+	for _, v := range list {
+		if v == value {
+			return true
+		}
+	}
+
+	return false
 }

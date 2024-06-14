@@ -8,28 +8,30 @@ import (
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
+// CalculatePrice returns the price of a given currency pair. The price is expressed how much "FROM" you need to give
+// get one unit of "TO". I.e., the lower the returned value, the more valuable "FROM" is (or the less valuable "TO" is).
 func (k Keeper) CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error) {
 	price := math.LegacyOneDec()
 
 	if denomFrom != utils.BaseCurrency {
-		ratio, found := k.GetRatio(ctx, denomFrom)
-		if !found || ratio.Ratio == nil {
-			return math.LegacyDec{}, types.ErrNilRatio
+		ratio, err := k.GetRatio(ctx, denomFrom)
+		if err != nil {
+			return price, err
 		}
 
-		price = price.Quo(*ratio.Ratio)
+		price = price.Quo(ratio.Ratio)
 	}
 
 	if denomTo != utils.BaseCurrency {
-		ratio, found := k.GetRatio(ctx, denomTo)
-		if !found || ratio.Ratio == nil {
-			return math.LegacyDec{}, types.ErrNilRatio
+		ratio, err := k.GetRatio(ctx, denomTo)
+		if err != nil {
+			return price, err
 		}
 
-		price = price.Mul(*ratio.Ratio)
+		price = price.Mul(ratio.Ratio)
 	}
 
-	if price.Equal(math.LegacyZeroDec()) {
+	if price.IsZero() {
 		return math.LegacyDec{}, types.ErrZeroPrice
 	}
 
@@ -45,7 +47,7 @@ func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec
 			return price, errors.Wrap(err, "could not calculate price")
 		}
 
-		if price.Equal(math.LegacyZeroDec()) || p.GT(price) {
+		if price.IsZero() || p.GT(price) {
 			price = p
 		}
 	}
@@ -53,12 +55,12 @@ func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec
 	return price, nil
 }
 
-func (k Keeper) GetValueInBase(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error) {
+func (k Keeper) GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error) {
 	return k.GetValueIn(ctx, denom, utils.BaseCurrency, amount)
 }
 
-func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error) {
-	if amount.Equal(math.ZeroInt()) {
+func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error) {
+	if amount.IsZero() {
 		return math.LegacyZeroDec(), nil
 	}
 
@@ -67,11 +69,11 @@ func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Int
 		return math.LegacyDec{}, err
 	}
 
-	return amount.ToLegacyDec().Quo(price), nil
+	return amount.Quo(price), nil
 }
 
-func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.Int) (math.LegacyDec, error) {
-	if amount.Equal(math.ZeroInt()) {
+func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error) {
+	if amount.IsZero() {
 		return math.LegacyZeroDec(), nil
 	}
 
@@ -80,5 +82,5 @@ func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amoun
 		return math.LegacyDec{}, err
 	}
 
-	return amount.ToLegacyDec().Quo(price), nil
+	return amount.Quo(price), nil
 }

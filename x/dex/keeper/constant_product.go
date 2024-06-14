@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"context"
+	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
 )
@@ -29,8 +29,8 @@ func (fp FlatPrice) Backward(_, _, result math.LegacyDec) math.Int {
 	return result.RoundInt()
 }
 
-func (k Keeper) ConstantProductTrade(ctx context.Context, denomFrom, denomTo string, offer math.LegacyDec) math.LegacyDec {
-	poolFrom, poolTo := k.GetFullLiquidityBaseOther(ctx, denomFrom, denomTo)
+func (k Keeper) ConstantProductTrade(ordersCache *types.OrdersCaches, denomFrom, denomTo string, offer math.LegacyDec) math.LegacyDec {
+	poolFrom, poolTo := k.GetFullLiquidityBaseOtherCache(ordersCache, denomFrom, denomTo)
 	return ConstantProductTrade(poolFrom, poolTo, offer)
 }
 

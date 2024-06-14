@@ -55,7 +55,7 @@ func (k Keeper) CheckReserve(ctx context.Context, eventManager sdk.EventManagerI
 }
 
 func (k Keeper) checkReserveForDenom(ctx context.Context, eventManager sdk.EventManagerI, address sdk.AccAddress, coin sdk.Coin) error {
-	if coin.Amount.Equal(math.ZeroInt()) {
+	if coin.Amount.IsZero() {
 		return nil
 	}
 

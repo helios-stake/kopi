@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
@@ -23,11 +22,20 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 		return nil, err
 	}
 
-	if amount.Equal(math.ZeroInt()) {
+	if amount.IsZero() {
 		return nil, types.ErrZeroAmount
 	}
 
-	amountReceived, fee, price, err := k.TradeSimulation(ctx, req.DenomFrom, req.DenomTo, req.Address, amount, false)
+	tradeCtx := types.TradeContext{
+		Context:         ctx,
+		GivenAmount:     amount,
+		TradeDenomStart: req.DenomFrom,
+		TradeDenomEnd:   req.DenomTo,
+		DiscountAddress: req.Address,
+		OrdersCaches:    k.NewOrdersCaches(ctx),
+	}
+
+	amountReceived, fee, price, err := k.TradeSimulation(tradeCtx)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not simulate trade")
 	}

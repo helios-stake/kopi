@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -31,12 +29,6 @@ func (k msgServer) RemoveOrder(goCtx context.Context, msg *types.MsgRemoveOrder)
 
 	k.Keeper.RemoveOrder(ctx, order)
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("order_removed",
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-		),
-	)
-
 	return &types.Void{}, nil
 }
 
@@ -45,12 +37,6 @@ func (k msgServer) RemoveOrders(goCtx context.Context, msg *types.MsgRemoveOrder
 
 	for _, order := range k.GetAllOrdersByAddress(ctx, msg.Creator) {
 		k.Keeper.RemoveOrder(ctx, order)
-
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent("order_removed",
-				sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-			),
-		)
 	}
 
 	return &types.Void{}, nil

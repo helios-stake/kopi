@@ -285,6 +285,8 @@ message QueryGetOrderResponse {
 
 message QueryOrdersAddressRequest {
   string address = 1;
+  string denom_from = 2;
+  string denom_to = 3;
 }
 
 message QueryOrdersAddressResponse {
@@ -362,7 +364,7 @@ message QueryOrdersRequest {
 
 message OrderResponse {
   uint64 index = 1;
-  string creator = 2;
+  string address = 2;
   string denom_from = 3;
   string denom_to = 4;
   string amount_given = 5;

@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -27,26 +25,26 @@ func (k Keeper) GetDepositStats(ctx context.Context, req *types.GetDepositStatsQ
 	var stats []*types.DepositDenomStats
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		supply := k.BankKeeper.GetSupply(ctx, cAsset.Name).Amount
-		supplyUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, supply)
+		supplyUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, supply.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		available := vault.AmountOf(cAsset.BaseDenom)
-		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, available)
+		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, available.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).LoanSum
-		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowed.RoundInt())
+		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowed)
 		if err != nil {
 			return nil, err
 		}
 
 		deposited := k.calculateCAssetValue(ctx, cAsset)
 		borrowLimit := deposited.Mul(cAsset.BorrowLimit)
-		borrowLimitUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowLimit.RoundInt())
+		borrowLimitUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowLimit)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +55,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, req *types.GetDepositStatsQ
 		}
 
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDenom)
-		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming)
+		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -140,19 +138,19 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 			coin = sdk.NewCoin(cAsset.Name, math.ZeroInt())
 		}
 
-		redeeming, found := k.redemptions.Get(ctx, collections.Join(cAsset.BaseDenom, req.Address))
+		redeeming, found := k.redemptions.Get(ctx, cAsset.BaseDenom, req.Address)
 		if !found {
 			redeeming.Amount = math.ZeroInt()
 		}
 
 		amountCAsset := math.LegacyNewDecFromInt(coin.Amount)
 		amountBase := convertToBaseAmount(cAssetSupply.ToLegacyDec(), cAssetValue, amountCAsset)
-		cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
+		cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase)
 		if err != nil {
 			return nil, err
 		}
 
-		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount)
+		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -215,19 +213,19 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	utilityRate := k.getUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-	redeeming, found := k.redemptions.Get(ctx, collections.Join(cAsset.BaseDenom, req.Address))
+	redeeming, found := k.redemptions.Get(ctx, cAsset.BaseDenom, req.Address)
 	if !found {
 		redeeming.Amount = math.ZeroInt()
 	}
 
 	amountCAsset := coins.AmountOf(cAsset.Name)
 	amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset)
-	cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
+	cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase)
 	if err != nil {
 		return nil, err
 	}
 
-	redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount)
+	redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount.ToLegacyDec())
 	if err != nil {
 		return nil, err
 	}

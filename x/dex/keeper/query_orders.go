@@ -40,23 +40,31 @@ func (k Keeper) OrdersNum(_ context.Context, req *types.QueryOrdersNumRequest) (
 }
 
 func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.OrderResponse, error) {
-	amountLeftUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft)
+	amountLeftUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft.ToLegacyDec())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get amount left in usd")
+	}
+
+	amountReceivedUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountReceived.ToLegacyDec())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get amount received in usd")
 	}
 
 	return &types.OrderResponse{
-		Index:           order.Index,
-		Creator:         order.Creator,
-		DenomFrom:       order.DenomFrom,
-		DenomTo:         order.DenomTo,
-		TradeAmount:     order.TradeAmount.String(),
-		AmountLeft:      order.AmountLeft.String(),
-		AmountLeftUsd:   amountLeftUSD.String(),
-		MaxPrice:        order.MaxPrice.String(),
-		NumBlocks:       order.NumBlocks,
-		BlockEnd:        uint64(order.AddedAt) + order.NumBlocks,
-		AllowIncomplete: order.AllowIncomplete,
+		Index:             order.Index,
+		Address:           order.Creator,
+		DenomFrom:         order.DenomFrom,
+		DenomTo:           order.DenomTo,
+		TradeAmount:       order.TradeAmount.String(),
+		AmountLeft:        order.AmountLeft.String(),
+		AmountLeftUsd:     amountLeftUSD.String(),
+		AmountGiven:       order.AmountGiven.String(),
+		AmountReceived:    order.AmountReceived.String(),
+		AmountReceivedUsd: amountReceivedUSD.String(),
+		MaxPrice:          order.MaxPrice.String(),
+		NumBlocks:         order.NumBlocks,
+		BlockEnd:          uint64(order.AddedAt) + order.NumBlocks,
+		AllowIncomplete:   order.AllowIncomplete,
 	}, nil
 }
 

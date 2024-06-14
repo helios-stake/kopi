@@ -75,7 +75,7 @@ func parseAmount(amountStr string, canBeZero bool) (math.Int, error) {
 		return math.Int{}, types.ErrNegativeAmount
 	}
 
-	if !canBeZero && amount.Equal(math.ZeroInt()) {
+	if !canBeZero && amount.IsZero() {
 		return math.Int{}, types.ErrZeroAmount
 	}
 

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"fmt"
@@ -89,7 +88,7 @@ func (k Keeper) processCreationFee(ctx context.Context, address string) error {
 		return fmt.Errorf("feeAmount is nil")
 	}
 
-	if feeAmount.Equal(math.ZeroInt()) {
+	if feeAmount.IsZero() {
 		return nil
 	}
 
