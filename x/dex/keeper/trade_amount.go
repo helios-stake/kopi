@@ -35,11 +35,10 @@ func (k Keeper) TradeAmountDecay(ctx context.Context) {
 	for iterator.Valid() {
 		tradeAmount := iterator.GetNext()
 
-		tradeAmount.Amount = tradeAmount.Amount.Mul(decayFactor)
-
-		if tradeAmount.Amount.LT(math.LegacyNewDec(1_000_000)) {
+		if tradeAmount.Amount.IsNil() || tradeAmount.Amount.LT(math.LegacyNewDec(1_000_000)) {
 			k.tradeAmounts.Remove(ctx, tradeAmount.Address)
 		} else {
+			tradeAmount.Amount = tradeAmount.Amount.Mul(decayFactor)
 			k.tradeAmounts.Set(ctx, tradeAmount.Address, tradeAmount)
 		}
 	}
