@@ -24,8 +24,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type FactoryDenom struct {
-	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
-	Admin string `protobuf:"bytes,2,opt,name=admin,proto3" json:"admin,omitempty" yaml:"admin"`
+	Admin       string `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty" yaml:"admin"`
+	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty" yaml:"display_name"`
+	FullName    string `protobuf:"bytes,3,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty" yaml:"full_name"`
+	IconHash    string `protobuf:"bytes,4,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty" yaml:"icon_hash"`
+	Exponent    uint64 `protobuf:"varint,5,opt,name=exponent,proto3" json:"exponent,omitempty"`
 }
 
 func (m *FactoryDenom) Reset()         { *m = FactoryDenom{} }
@@ -61,18 +64,39 @@ func (m *FactoryDenom) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FactoryDenom proto.InternalMessageInfo
 
-func (m *FactoryDenom) GetDenom() string {
-	if m != nil {
-		return m.Denom
-	}
-	return ""
-}
-
 func (m *FactoryDenom) GetAdmin() string {
 	if m != nil {
 		return m.Admin
 	}
 	return ""
+}
+
+func (m *FactoryDenom) GetDisplayName() string {
+	if m != nil {
+		return m.DisplayName
+	}
+	return ""
+}
+
+func (m *FactoryDenom) GetFullName() string {
+	if m != nil {
+		return m.FullName
+	}
+	return ""
+}
+
+func (m *FactoryDenom) GetIconHash() string {
+	if m != nil {
+		return m.IconHash
+	}
+	return ""
+}
+
+func (m *FactoryDenom) GetExponent() uint64 {
+	if m != nil {
+		return m.Exponent
+	}
+	return 0
 }
 
 func init() {
@@ -82,20 +106,26 @@ func init() {
 func init() { proto.RegisterFile("kopi/tokenfactory/denoms.proto", fileDescriptor_a32b3c5c1ac60b7a) }
 
 var fileDescriptor_a32b3c5c1ac60b7a = []byte{
-	// 204 bytes of a gzipped FileDescriptorProto
+	// 303 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xce, 0x2f, 0xc8,
 	0xd4, 0x2f, 0xc9, 0xcf, 0x4e, 0xcd, 0x4b, 0x4b, 0x4c, 0x2e, 0xc9, 0x2f, 0xaa, 0xd4, 0x4f, 0x49,
 	0xcd, 0xcb, 0xcf, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x04, 0xc9, 0xeb, 0x21,
-	0xcb, 0x4b, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x65, 0xf5, 0x41, 0x2c, 0x88, 0x42, 0xa5, 0x14,
-	0x2e, 0x1e, 0x37, 0x88, 0x02, 0x17, 0x90, 0x7e, 0x21, 0x35, 0x2e, 0x56, 0xb0, 0x41, 0x12, 0x8c,
-	0x0a, 0x8c, 0x1a, 0x9c, 0x4e, 0x02, 0x9f, 0xee, 0xc9, 0xf3, 0x54, 0x26, 0xe6, 0xe6, 0x58, 0x29,
-	0x81, 0x85, 0x95, 0x82, 0x20, 0xd2, 0x20, 0x75, 0x89, 0x29, 0xb9, 0x99, 0x79, 0x12, 0x4c, 0xe8,
-	0xea, 0xc0, 0xc2, 0x4a, 0x41, 0x10, 0x69, 0x2b, 0x96, 0x17, 0x0b, 0xe4, 0x19, 0x9d, 0x3c, 0x4f,
-	0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18,
-	0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x3f, 0x3d, 0xb3, 0x24, 0xa3, 0x34,
-	0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0xe4, 0x66, 0xdd, 0xdc, 0xfc, 0xbc, 0xd4, 0x4a, 0x30, 0x53,
-	0xbf, 0x02, 0xd5, 0x83, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0x60, 0x77, 0x1b, 0x03, 0x02,
-	0x00, 0x00, 0xff, 0xff, 0xa0, 0xaa, 0xdb, 0x4a, 0x02, 0x01, 0x00, 0x00,
+	0xcb, 0x4b, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x65, 0xf5, 0x41, 0x2c, 0x88, 0x42, 0xa5, 0x5f,
+	0x8c, 0x5c, 0x3c, 0x6e, 0x10, 0x15, 0x2e, 0x20, 0x03, 0x84, 0xd4, 0xb8, 0x58, 0x13, 0x53, 0x72,
+	0x33, 0xf3, 0x24, 0x18, 0x15, 0x18, 0x35, 0x38, 0x9d, 0x04, 0x3e, 0xdd, 0x93, 0xe7, 0xa9, 0x4c,
+	0xcc, 0xcd, 0xb1, 0x52, 0x02, 0x0b, 0x2b, 0x05, 0x41, 0xa4, 0x85, 0xac, 0xb8, 0x78, 0x52, 0x32,
+	0x8b, 0x0b, 0x72, 0x12, 0x2b, 0xe3, 0xf3, 0x12, 0x73, 0x53, 0x25, 0x98, 0xc0, 0xca, 0xc5, 0x3f,
+	0xdd, 0x93, 0x17, 0x86, 0x28, 0x47, 0x96, 0x55, 0x0a, 0xe2, 0x86, 0x72, 0xfd, 0x12, 0x73, 0x53,
+	0x85, 0x0c, 0xb9, 0x38, 0xd3, 0x4a, 0x73, 0x72, 0x20, 0x1a, 0x99, 0xc1, 0x1a, 0x45, 0x3e, 0xdd,
+	0x93, 0x17, 0x80, 0x68, 0x84, 0x4b, 0x29, 0x05, 0x71, 0x80, 0xd8, 0x30, 0x2d, 0x99, 0xc9, 0xf9,
+	0x79, 0xf1, 0x19, 0x89, 0xc5, 0x19, 0x12, 0x2c, 0xe8, 0x5a, 0xe0, 0x52, 0x4a, 0x41, 0x1c, 0x20,
+	0xb6, 0x47, 0x62, 0x71, 0x86, 0x90, 0x14, 0x17, 0x47, 0x6a, 0x45, 0x41, 0x7e, 0x5e, 0x6a, 0x5e,
+	0x89, 0x04, 0xab, 0x02, 0xa3, 0x06, 0x4b, 0x10, 0x9c, 0x6f, 0xc5, 0xf2, 0x62, 0x81, 0x3c, 0xa3,
+	0x93, 0xe7, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1,
+	0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44, 0xe9, 0xa7, 0x67, 0x96,
+	0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea, 0x83, 0x82, 0x52, 0x37, 0x37, 0x3f, 0x2f, 0xb5,
+	0x12, 0xcc, 0xd4, 0xaf, 0x40, 0x0d, 0xf7, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36, 0x70, 0x70,
+	0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x8a, 0x9a, 0xea, 0xcc, 0x99, 0x01, 0x00, 0x00,
 }
 
 func (this *FactoryDenom) Equal(that interface{}) bool {
@@ -117,10 +147,19 @@ func (this *FactoryDenom) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Denom != that1.Denom {
+	if this.Admin != that1.Admin {
 		return false
 	}
-	if this.Admin != that1.Admin {
+	if this.DisplayName != that1.DisplayName {
+		return false
+	}
+	if this.FullName != that1.FullName {
+		return false
+	}
+	if this.IconHash != that1.IconHash {
+		return false
+	}
+	if this.Exponent != that1.Exponent {
 		return false
 	}
 	return true
@@ -145,17 +184,36 @@ func (m *FactoryDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Exponent != 0 {
+		i = encodeVarintDenoms(dAtA, i, uint64(m.Exponent))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.IconHash) > 0 {
+		i -= len(m.IconHash)
+		copy(dAtA[i:], m.IconHash)
+		i = encodeVarintDenoms(dAtA, i, uint64(len(m.IconHash)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.FullName) > 0 {
+		i -= len(m.FullName)
+		copy(dAtA[i:], m.FullName)
+		i = encodeVarintDenoms(dAtA, i, uint64(len(m.FullName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DisplayName) > 0 {
+		i -= len(m.DisplayName)
+		copy(dAtA[i:], m.DisplayName)
+		i = encodeVarintDenoms(dAtA, i, uint64(len(m.DisplayName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Admin) > 0 {
 		i -= len(m.Admin)
 		copy(dAtA[i:], m.Admin)
 		i = encodeVarintDenoms(dAtA, i, uint64(len(m.Admin)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintDenoms(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -179,13 +237,24 @@ func (m *FactoryDenom) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Denom)
-	if l > 0 {
-		n += 1 + l + sovDenoms(uint64(l))
-	}
 	l = len(m.Admin)
 	if l > 0 {
 		n += 1 + l + sovDenoms(uint64(l))
+	}
+	l = len(m.DisplayName)
+	if l > 0 {
+		n += 1 + l + sovDenoms(uint64(l))
+	}
+	l = len(m.FullName)
+	if l > 0 {
+		n += 1 + l + sovDenoms(uint64(l))
+	}
+	l = len(m.IconHash)
+	if l > 0 {
+		n += 1 + l + sovDenoms(uint64(l))
+	}
+	if m.Exponent != 0 {
+		n += 1 + sovDenoms(uint64(m.Exponent))
 	}
 	return n
 }
@@ -227,38 +296,6 @@ func (m *FactoryDenom) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDenoms
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDenoms
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDenoms
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Admin", wireType)
 			}
 			var stringLen uint64
@@ -289,6 +326,121 @@ func (m *FactoryDenom) Unmarshal(dAtA []byte) error {
 			}
 			m.Admin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DisplayName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DisplayName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FullName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FullName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IconHash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IconHash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exponent", wireType)
+			}
+			m.Exponent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Exponent |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDenoms(dAtA[iNdEx:])

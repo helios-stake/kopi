@@ -2,11 +2,12 @@ package cache
 
 import (
 	"context"
+	"sync"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/collections/codec"
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"sync"
 )
 
 type ItemTransaction[V any] struct {
@@ -286,8 +287,4 @@ func (ic *ItemCache[V]) ClearTransactions() {
 
 func (ic *ItemCache[V]) CheckCache(_ context.Context) error {
 	return nil
-}
-
-func ValueComparerUint64(v1, v2 uint64) bool {
-	return v1 == v2
 }

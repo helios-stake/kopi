@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -31,7 +32,7 @@ func (k Keeper) GetRatio(ctx context.Context, denom string) (types.Ratio, error)
 }
 
 func (k Keeper) GetAllRatio(ctx context.Context) (list []types.Ratio) {
-	return k.ratios.Iterator(ctx, nil, nil).GetAll()
+	return k.ratios.Iterator(ctx, nil).GetAll()
 }
 
 func compareRatios(r1, r2 types.Ratio) bool {

@@ -3,15 +3,15 @@ package keeper_test
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/cache"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
-	"github.com/kopi-money/kopi/x/swap/keeper"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
 	"github.com/stretchr/testify/require"
 
@@ -19,11 +19,11 @@ import (
 )
 
 func TestBurn1(t *testing.T) {
-	k, msg, dexK, ctx := keepertest.SetupSwapMsgServer(t)
+	k, msg, dexK, reserveK, ctx := keepertest.SetupSwapMsgServer(t)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
-	addLiquidity(ctx, k, t, "ukusd", 100000)
-	addLiquidity(ctx, k, t, "uwusdc", 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 1_000_000_000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "uwusdc", 10)
 
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Alice)
@@ -32,47 +32,50 @@ func TestBurn1(t *testing.T) {
 	err := k.BankKeeper.SendCoins(ctx, addr, acc, reserveCoins)
 	require.NoError(t, err)
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 
-	_, err = keepertest.Trade(ctx, msg, &dextypes.MsgTrade{
-		Creator:   keepertest.Bob,
-		DenomFrom: "ukusd",
-		DenomTo:   "uwusdc",
-		Amount:    "10000",
+	_, err = keepertest.Sell(ctx, msg, &dextypes.MsgSell{
+		Creator:        keepertest.Bob,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "100000",
 	})
 	require.NoError(t, err)
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
 
-	dexKeeper := k.DexKeeper.(dexkeeper.Keeper)
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return dexKeeper.BeginBlockCheckReserve(innerCtx, innerCtx.EventManager(), innerCtx.BlockHeight())
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return reserveK.BeginBlockCheckReserve(innerCtx)
 	}))
 
-	priceBase, err := k.DexKeeper.CalculatePrice(ctx, utils.BaseCurrency, "uwusdc")
+	priceBase, err := k.DexKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
-	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, "ukusd")
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.CheckBurn(innerCtx, "ukusd", maxBurnAmount)
+	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, constants.KUSD)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CheckBurn(innerCtx, constants.KUSD, maxBurnAmount)
 	}))
 	require.True(t, liquidityBalanced(ctx, dexK))
 
-	price3, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price3, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price3.LT(price2))
+
+	price2F, _ := price2.Float64()
+	price3F, _ := price3.Float64()
+
+	require.Less(t, price3F, price2F)
 }
 
 func TestBurn2(t *testing.T) {
-	k, msg, dexK, ctx := keepertest.SetupSwapMsgServer(t)
+	k, msg, dexK, _, ctx := keepertest.SetupSwapMsgServer(t)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
-	addLiquidity(ctx, k, t, "ukusd", 100000)
-	addLiquidity(ctx, k, t, "uwusdc", 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
 
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	reserveCoins := sdk.NewCoins(sdk.NewCoin("uwusdc", math.NewInt(10)))
@@ -80,31 +83,31 @@ func TestBurn2(t *testing.T) {
 	err := k.BankKeeper.SendCoins(ctx, addr, acc, reserveCoins)
 	require.NoError(t, err)
 
-	price1, _ := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price1, _ := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
-	_, err = keepertest.Trade(ctx, msg, &dextypes.MsgTrade{
-		Creator:   keepertest.Bob,
-		DenomFrom: "ukusd",
-		DenomTo:   "uwusdc",
-		Amount:    "10000",
+	_, err = keepertest.Sell(ctx, msg, &dextypes.MsgSell{
+		Creator:        keepertest.Bob,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "10000",
 	})
 	require.NoError(t, err)
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
 
-	priceBase, err := k.DexKeeper.CalculatePrice(ctx, utils.BaseCurrency, "uwusdc")
+	priceBase, err := k.DexKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
 	for i := 0; i < 10; i++ {
-		require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 			return k.Burn(innerCtx)
 		}))
 
 		var price3 math.LegacyDec
-		price3, err = k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+		price3, err = k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 		require.NoError(t, err)
 		require.True(t, price3.LT(price2))
 	}
@@ -112,19 +115,7 @@ func TestBurn2(t *testing.T) {
 	require.True(t, liquidityBalanced(ctx, dexK))
 }
 
-func addLiquidity(ctx sdk.Context, k keeper.Keeper, t *testing.T, denom string, amount int64) {
-	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
-	require.NoError(t, err)
-
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.DexKeeper.AddLiquidity(innerCtx, innerCtx.EventManager(), addr, denom, math.NewInt(amount))
-	}))
-
-	liq := k.DexKeeper.GetLiquiditySum(ctx, denom)
-	require.Equal(t, liq.Int64(), amount)
-}
-
-func addReserveFundsToDex(ctx sdk.Context, acc swaptypes.AccountKeeper, dex swaptypes.DexKeeper, bank swaptypes.BankKeeper, t *testing.T, denom string, amount int64) {
+func addReserveFundsToDex(ctx context.Context, acc swaptypes.AccountKeeper, dex swaptypes.DexKeeper, bank swaptypes.BankKeeper, t *testing.T, denom string, amount int64) {
 	reserveAcc := acc.GetModuleAccount(ctx, dextypes.PoolReserve)
 
 	coin := sdk.NewCoin(denom, math.LegacyNewDec(amount*2).RoundInt())
@@ -138,8 +129,9 @@ func addReserveFundsToDex(ctx sdk.Context, acc swaptypes.AccountKeeper, dex swap
 	err = bank.SendCoins(ctx, mintAcc, addr, coins)
 	require.NoError(t, err)
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return dex.AddLiquidity(innerCtx, innerCtx.EventManager(), reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err = dex.AddLiquidity(innerCtx, reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
+		return err
 	}))
 }
 
@@ -151,51 +143,51 @@ func TestBurn3(t *testing.T) {
 }
 
 func burnScenario(t *testing.T, sellAmount int64) int64 {
-	k, _, dexK, ctx := keepertest.SetupSwapMsgServer(t)
+	k, _, dexK, _, ctx := keepertest.SetupSwapMsgServer(t)
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 10000)
-	addLiquidity(ctx, k, t, "ukusd", 10000)
-	addLiquidity(ctx, k, t, "uwusdc", 10000)
-	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
+	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	tradeCtx := dextypes.TradeContext{
-		Context:         ctx,
-		CoinSource:      addr.String(),
-		CoinTarget:      addr.String(),
-		GivenAmount:     math.NewInt(sellAmount),
-		TradeDenomStart: "ukusd",
-		TradeDenomEnd:   "uwusdc",
-		AllowIncomplete: true,
-		MaxPrice:        nil,
-		TradeBalances:   dexkeeper.NewTradeBalances(),
+		Context:             ctx,
+		CoinSource:          addr.String(),
+		CoinTarget:          addr.String(),
+		TradeAmount:         math.NewInt(sellAmount),
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: "uwusdc",
+		MaxPrice:            nil,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyZeroDec(),
 	}
 
-	var amountUsed math.Int
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	var tradeResult dextypes.TradeResult
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		tradeResult, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		return err
 	}))
 
-	require.True(t, amountUsed.GT(math.ZeroInt()))
+	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.GT(math.LegacyOneDec()))
 
-	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, "ukusd")
+	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, constants.KUSD)
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.CheckBurn(innerCtx, "ukusd", maxBurnAmount)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CheckBurn(innerCtx, constants.KUSD, maxBurnAmount)
 	}))
-	_, err = k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	_, err = k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, liquidityBalanced(ctx, dexK))
 
-	return k.BankKeeper.GetSupply(ctx, "ukopi").Amount.Int64()
+	return k.BankKeeper.GetSupply(ctx, constants.BaseCurrency).Amount.Int64()
 }
 
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {

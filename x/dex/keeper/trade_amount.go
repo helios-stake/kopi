@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
@@ -29,7 +30,7 @@ func (k Keeper) AddTradeAmount(ctx context.Context, address string, amount math.
 }
 
 func (k Keeper) TradeAmountDecay(ctx context.Context) {
-	iterator := k.tradeAmounts.Iterator(ctx, nil, nil)
+	iterator := k.tradeAmounts.Iterator(ctx, nil)
 	decayFactor := k.GetParams(ctx).TradeAmountDecay
 
 	for iterator.Valid() {

@@ -1,7 +1,10 @@
 package keeper_test
 
 import (
+	"context"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	"github.com/stretchr/testify/require"
 
@@ -10,9 +13,12 @@ import (
 )
 
 func TestParamsQuery(t *testing.T) {
-	keeper, _, ctx := keepertest.SwapKeeper(t)
+	keeper, _, _, ctx := keepertest.SwapKeeper(t)
 	params := types.DefaultParams()
-	require.NoError(t, keeper.SetParams(ctx, params))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return keeper.SetParams(innerCtx, params)
+	}))
 
 	response, err := keeper.Params(ctx, &types.QueryParamsRequest{})
 	require.NoError(t, err)

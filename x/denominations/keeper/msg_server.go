@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
@@ -17,7 +15,3 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 var _ types.MsgServer = msgServer{}
-
-func startTX(ctx sdk.Context) sdk.Context {
-	return ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight(), true))
-}

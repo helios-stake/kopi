@@ -21,5 +21,7 @@ func (k Keeper) GetBorrowInterestRate(ctx context.Context, req *types.GetBorrowI
 	utilityRate := k.calculateUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-	return &types.GetBorrowInterestRateResponse{InterestRate: interestRate.String()}, nil
+	return &types.GetBorrowInterestRateResponse{
+		InterestRate: interestRate.String(),
+	}, nil
 }

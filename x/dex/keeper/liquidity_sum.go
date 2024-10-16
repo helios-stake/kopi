@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
@@ -13,6 +14,10 @@ func (k Keeper) SumLiquidity(ctx context.Context, denom string) math.Int {
 	iterator := k.LiquidityIterator(ctx, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
+		if liq.Amount.IsNil() || liq.Amount.IsZero() {
+			continue
+		}
+
 		liqSum = liqSum.Add(liq.Amount)
 	}
 

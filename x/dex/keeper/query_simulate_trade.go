@@ -2,22 +2,29 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
-	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
+type simulate func(ctx types.TradeContext) (types.TradeSimulationResult, error)
+
+func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
+	return k.querySimulateTrade(ctx, req, k.SimulateSell)
+}
+
+func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
+	return k.querySimulateTrade(ctx, req, k.SimulateBuy)
+}
+
+func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulateTradeRequest, simulateFunc simulate) (*types.QuerySimulateTradeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	amount, err := parseAmount(req.Amount)
+	amount, err := ParseAmount(req.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -27,38 +34,39 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 	}
 
 	tradeCtx := types.TradeContext{
-		Context:         ctx,
-		GivenAmount:     amount,
-		TradeDenomStart: req.DenomFrom,
-		TradeDenomEnd:   req.DenomTo,
-		DiscountAddress: req.Address,
-		OrdersCaches:    k.NewOrdersCaches(ctx),
+		Context:             ctx,
+		TradeAmount:         amount,
+		TradeDenomGiving:    req.DenomGiving,
+		TradeDenomReceiving: req.DenomReceiving,
+		DiscountAddress:     req.Address,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
 	}
 
-	amountReceived, fee, price, err := k.TradeSimulation(tradeCtx)
+	tradeResult, err := simulateFunc(tradeCtx)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not simulate trade")
+		return nil, fmt.Errorf("could not simulate trade: %w", err)
 	}
 
-	priceFromUSD, err := k.GetPriceInUSD(ctx, req.DenomFrom)
+	priceGivingUSD, err := k.GetPriceInUSD(ctx, req.DenomGiving)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get price in USD")
+		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
 
-	priceToUSD, err := k.GetPriceInUSD(ctx, req.DenomTo)
+	priceReceivingUSD, err := k.GetPriceInUSD(ctx, req.DenomReceiving)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get price in USD")
+		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
 
-	res := types.QuerySimulateTradeResponse{
-		AmountReceived:      amountReceived.Int64(),
-		AmountReceivedInUsd: amountReceived.ToLegacyDec().Quo(priceToUSD).RoundInt64(),
-		AmountGivenInUsd:    amount.ToLegacyDec().Quo(priceFromUSD).RoundInt64(),
-		Fee:                 fee.RoundInt64(),
+	price := tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec())
+
+	return &types.QuerySimulateTradeResponse{
+		AmountGiven:         tradeResult.AmountGiven.Int64(),
+		AmountGivenInUsd:    tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt64(),
+		AmountReceived:      tradeResult.AmountReceived.Int64(),
+		AmountReceivedInUsd: tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt64(),
+		Fee:                 tradeResult.FeeGiven.Int64(),
 		Price:               price.String(),
-		PriceFromToUsd:      priceFromUSD.String(),
-		PriceToToUsd:        priceToUSD.String(),
-	}
-
-	return &res, nil
+		PriceGivenInUsd:     priceGivingUSD.String(),
+		PriceReceivedInUsd:  priceReceivingUSD.String(),
+	}, nil
 }

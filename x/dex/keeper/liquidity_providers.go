@@ -70,7 +70,8 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 			k.RemoveLiquidity(ctx.TradeContext.Context, denomTo, liq.Index)
 			deleteIndexes = append(deleteIndexes, index)
 		} else {
-			k.SetLiquidity(ctx.TradeContext.Context, liq)
+			k.SetLiquidity(ctx.TradeContext.Context, denomTo, liq)
+			liquidityList[index] = liq
 		}
 	}
 
@@ -97,8 +98,8 @@ func removeIndexes(liquidityList []types.Liquidity, indexes []int) []types.Liqui
 }
 
 func (k Keeper) distributeFeeForLiquidityProviders(ctx types.TradeStepContext, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
-	providerFee := k.getProviderFee(ctx.TradeContext.Context)
 	liquidityEntries := ctx.TradeContext.OrdersCaches.LiquidityMap.Get(denom)
+	providerFee := ctx.OrdersCaches.ProviderFee.Get()
 
 	liquidityProviderIndex := 0
 	sendSum := math.ZeroInt()
@@ -107,10 +108,11 @@ func (k Keeper) distributeFeeForLiquidityProviders(ctx types.TradeStepContext, l
 		liquidityProvider := (*liquidityProviders)[liquidityProviderIndex]
 		liquidityProviderIndex += 1
 
-		amount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amountProvided.RoundInt())
+		amount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amountProvided.TruncateInt())
 		sendSum = sendSum.Add(amount)
 		feeForLiquidityProvidersLeft = feeForLiquidityProvidersLeft.Sub(amount)
 		liquidityProvider.amountProvided = liquidityProvider.amountProvided.Mul(providerFee)
+
 		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, amount, liquidityEntries)
 	}
 
@@ -130,11 +132,22 @@ func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *t
 	liquidityEntries := ordersCaches.LiquidityMap.Get(denom)
 	provided := liquidityProviders.provided()
 
-	for _, liquidityProvider := range *provided {
-		eligable := liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
+	fundsToDistributeRemaining := fundsToDistribute
+	for index, liquidityProvider := range *provided {
+		var eligable math.Int
+		if index+1 == len(*provided) {
+			// In case of the last liquidity provider, we use the remaining funds to make sure there are no leftovers
+			// (cause by potential rounding issues)
+			eligable = fundsToDistributeRemaining
+		} else {
+			eligable = liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
+		}
+
 		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, eligable, liquidityEntries)
+		fundsToDistributeRemaining = fundsToDistributeRemaining.Sub(eligable)
 	}
 
+	ordersCaches.LiquidityMap.Set(denom, liquidityEntries)
 	ordersCaches.LiquidityPool.Get().Add(denom, fundsToDistribute)
 	ctx.TradeBalances.AddTransfer(
 		ordersCaches.AccPoolTrade.Get().String(),

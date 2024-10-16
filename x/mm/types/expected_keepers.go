@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -33,6 +34,10 @@ type BankKeeper interface {
 	GetSupply(ctx context.Context, denom string) sdk.Coin
 }
 
+type BlockspeedKeeper interface {
+	BlocksPerYear(ctx context.Context) (math.LegacyDec, error)
+}
+
 type DenomKeeper interface {
 	Denoms(ctx context.Context) []string
 	GetCAssets(context.Context) []*denomtypes.CAsset
@@ -48,14 +53,14 @@ type DexKeeper interface {
 	cache.Cache
 
 	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
-	ExecuteTrade(cctx dextypes.TradeContext) (math.Int, math.Int, math.Int, math.Int, math.Int, error)
+	ExecuteBuy(cctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetAllOrdersByAddress(ctx context.Context, address string) []dextypes.Order
-	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetHighestUSDReference(ctx context.Context) (string, error)
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
-	TradeSimulation(ctx dextypes.TradeContext) (math.Int, math.LegacyDec, math.LegacyDec, error)
+	SimulateSell(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
 }

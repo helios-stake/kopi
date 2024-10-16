@@ -1,7 +1,10 @@
 package keeper_test
 
 import (
+	"context"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	"github.com/stretchr/testify/require"
 
@@ -13,6 +16,8 @@ func TestGetParams(t *testing.T) {
 	_, k, ctx := keepertest.MmKeeper(t)
 	params := types.DefaultParams()
 
-	require.NoError(t, k.SetParams(ctx, params))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.SetParams(innerCtx, params)
+	}))
 	require.EqualValues(t, params, k.GetParams(ctx))
 }

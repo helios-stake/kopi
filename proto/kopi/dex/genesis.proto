@@ -17,7 +17,7 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 message GenesisState {
   Params        params = 1 [(gogoproto.nullable) = false];
 
-  repeated Liquidity         liquidity_list = 2 [(gogoproto.nullable) = false];
+  repeated DenomLiquidity    liquidity_list = 2 [(gogoproto.nullable) = false];
   repeated Ratio             ratio_list = 3 [(gogoproto.nullable) = false];
   repeated Order             orderList = 4 [(gogoproto.nullable) = false];
   repeated WalletTradeAmount wallet_trade_amount = 5 [(gogoproto.nullable) = false];

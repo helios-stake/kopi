@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/errors"
 	"fmt"
 	"strings"
 
@@ -11,42 +10,39 @@ import (
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
-func (k Keeper) validateMsg(ctx context.Context, creator, denom string, amount math.Int) (sdk.AccAddress, error) {
+func (k Keeper) precheckTrade(ctx context.Context, creator, denom string, amount *math.Int, allowIncomplete bool) error {
+	return k.precheckTradeWithBalance(ctx, creator, denom, amount, allowIncomplete, true)
+}
+
+func (k Keeper) precheckTradeWithBalance(ctx context.Context, creator, denom string, amount *math.Int, allowIncomplete, checkBalance bool) error {
 	if !amount.GT(math.ZeroInt()) {
-		return nil, types.ErrNegativeAmount
+		return types.ErrNegativeAmount
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return nil, types.ErrDenomNotFound
+		return types.ErrDenomNotFound
 	}
 
 	address, err := sdk.AccAddressFromBech32(creator)
 	if err != nil {
-		return nil, types.ErrInvalidAddress
-	}
-
-	if err = k.checkSpendableCoins(ctx, creator, denom, amount); err != nil {
-		return nil, errors.Wrap(err, "error checking spendable coins")
-	}
-
-	return address, nil
-}
-
-func (k Keeper) checkSpendableCoins(ctx context.Context, address, denom string, amount math.Int) error {
-	acc, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
 		return types.ErrInvalidAddress
 	}
 
-	spendableCoins := k.BankKeeper.SpendableCoins(ctx, acc).AmountOf(denom)
-	if spendableCoins.IsNil() || amount.GT(spendableCoins) {
-		return types.ErrNotEnoughFunds
+	if checkBalance {
+		spendable := k.BankKeeper.SpendableCoin(ctx, address, denom).Amount
+		if spendable.LT(*amount) {
+			if allowIncomplete {
+				amount = &spendable
+			} else {
+				return types.ErrNotEnoughFunds
+			}
+		}
 	}
 
 	return nil
 }
 
-func parseAmount(amountStr string) (math.Int, error) {
+func ParseAmount(amountStr string) (math.Int, error) {
 	amountStr = strings.ReplaceAll(amountStr, ",", "")
 	amountInt, ok := math.NewIntFromString(amountStr)
 	if !ok {

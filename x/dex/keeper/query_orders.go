@@ -2,59 +2,132 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+func (k Keeper) Order(ctx context.Context, req *types.QueryOrderRequest) (*types.QueryOrderResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	order, ok := k.GetOrder(ctx, req.Index)
+	if !ok {
+		return nil, types.ErrOrderNotFound
+	}
+
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
+	}
+
+	orderResponse, err := k.toOrderResponse(ctx, order, referenceDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryOrderResponse{
+		Order: orderResponse,
+	}, nil
+}
+
 func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*types.QueryOrdersResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var orders []*types.OrderResponse
-
-	iterator := k.OrderIterator(ctx)
-	for iterator.Valid() {
-		order := iterator.GetNext()
-		orderResponse, err := k.toOrderResponse(ctx, order)
-		if err != nil {
-			return nil, err
-		}
-
-		orders = append(orders, orderResponse)
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
-	return &types.QueryOrdersResponse{Orders: orders}, nil
+	orders, pageRes, err := query.CollectionPaginate(
+		ctx,
+		k.orders,
+		req.Pagination,
+		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
+			return k.toOrderResponse(ctx, order, referenceDenom)
+		},
+	)
+
+	return &types.QueryOrdersResponse{
+		Orders:     orders,
+		Pagination: pageRes,
+	}, nil
 }
 
-func (k Keeper) OrdersNum(_ context.Context, req *types.QueryOrdersNumRequest) (*types.QueryOrdersNumResponse, error) {
+func (k Keeper) OrdersNum(_ context.Context, _ *types.QueryOrdersNumRequest) (*types.QueryOrdersNumResponse, error) {
+	return &types.QueryOrdersNumResponse{Num: int64(k.GetAllOrdersNum())}, nil
+}
+
+func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddressRequest) (*types.QueryOrdersAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	return &types.QueryOrdersNumResponse{Num: int64(k.GetAllOrdersNum())}, nil
-}
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.OrderResponse, error) {
-	amountLeftUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft.ToLegacyDec())
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get amount left in usd")
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
-	amountReceivedUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountReceived.ToLegacyDec())
+	orders, pageRes, err := query.CollectionFilteredPaginate(
+		ctx,
+		k.orders,
+		req.Pagination,
+		func(_ uint64, order types.Order) (include bool, err error) {
+			if order.Creator != req.Address {
+				return false, nil
+			}
+
+			if req.DenomGiving != "" && order.DenomGiving != req.DenomGiving {
+				return false, nil
+			}
+
+			if req.DenomReceiving != "" && order.DenomReceiving != req.DenomReceiving {
+				return false, nil
+			}
+
+			return true, nil
+		},
+		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
+			return k.toOrderResponse(ctx, order, referenceDenom)
+		},
+	)
+
+	return &types.QueryOrdersAddressResponse{
+		Orders:     orders,
+		Pagination: pageRes,
+	}, nil
+}
+
+func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, referenceDenom string) (*types.OrderResponse, error) {
+	amountLeftUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.AmountLeft.ToLegacyDec())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get amount received in usd")
+		return nil, fmt.Errorf("could not get amount left in usd: %w", err)
+	}
+
+	amountReceivedUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.AmountReceived.ToLegacyDec())
+	if err != nil {
+		return nil, fmt.Errorf("could not get amount received in usd: %w", err)
+	}
+
+	maxPriceUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.MaxPrice)
+	if err != nil {
+		return nil, fmt.Errorf("could not get amount received in usd: %w", err)
 	}
 
 	return &types.OrderResponse{
 		Index:             order.Index,
 		Address:           order.Creator,
-		DenomFrom:         order.DenomFrom,
-		DenomTo:           order.DenomTo,
+		DenomGiving:       order.DenomGiving,
+		DenomReceiving:    order.DenomReceiving,
 		TradeAmount:       order.TradeAmount.String(),
 		AmountLeft:        order.AmountLeft.String(),
 		AmountLeftUsd:     amountLeftUSD.String(),
@@ -62,18 +135,22 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.
 		AmountReceived:    order.AmountReceived.String(),
 		AmountReceivedUsd: amountReceivedUSD.String(),
 		MaxPrice:          order.MaxPrice.String(),
+		MaxPriceUsd:       maxPriceUSD.String(),
 		NumBlocks:         order.NumBlocks,
 		BlockEnd:          uint64(order.AddedAt) + order.NumBlocks,
 		AllowIncomplete:   order.AllowIncomplete,
 	}, nil
 }
 
-func (k Keeper) OrdersByPair(goCtx context.Context, req *types.OrdersByPairRequest) (*types.QueryOrdersByPairResponse, error) {
+func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest) (*types.QueryOrdersByPairResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
+	}
 
 	var asks, bids []*types.OrderResponse
 
@@ -81,8 +158,9 @@ func (k Keeper) OrdersByPair(goCtx context.Context, req *types.OrdersByPairReque
 	for iterator.Valid() {
 		order := iterator.GetNext()
 
-		if order.DenomFrom == req.DenomFrom && order.DenomTo == req.DenomTo {
-			orderResponse, err := k.toOrderResponse(ctx, order)
+		if order.DenomGiving == req.DenomGiving && order.DenomReceiving == req.DenomReceiving {
+			var orderResponse *types.OrderResponse
+			orderResponse, err = k.toOrderResponse(ctx, order, referenceDenom)
 			if err != nil {
 				return nil, err
 			}
@@ -90,8 +168,9 @@ func (k Keeper) OrdersByPair(goCtx context.Context, req *types.OrdersByPairReque
 			bids = append(bids, orderResponse)
 		}
 
-		if order.DenomFrom == req.DenomTo && order.DenomTo == req.DenomFrom {
-			orderResponse, err := k.toOrderResponse(ctx, order)
+		if order.DenomGiving == req.DenomReceiving && order.DenomReceiving == req.DenomGiving {
+			var orderResponse *types.OrderResponse
+			orderResponse, err = k.toOrderResponse(ctx, order, referenceDenom)
 			if err != nil {
 				return nil, err
 			}
@@ -100,5 +179,8 @@ func (k Keeper) OrdersByPair(goCtx context.Context, req *types.OrdersByPairReque
 		}
 	}
 
-	return &types.QueryOrdersByPairResponse{Bids: bids, Asks: asks}, nil
+	return &types.QueryOrdersByPairResponse{
+		Bids: bids,
+		Asks: asks,
+	}, nil
 }

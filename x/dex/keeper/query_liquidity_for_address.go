@@ -45,10 +45,12 @@ func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiqui
 		liquidities = append(liquidities, &liquidity)
 	}
 
-	return &types.QueryLiquidityForAddressResponse{Liquidity: liquidities}, nil
+	return &types.QueryLiquidityForAddressResponse{
+		Liquidity: liquidities,
+	}, nil
 }
 
-func (k Keeper) getAvailableBalance(ctx sdk.Context, address, denom string) (math.Int, error) {
+func (k Keeper) getAvailableBalance(ctx context.Context, address, denom string) (math.Int, error) {
 	acc, _ := sdk.AccAddressFromBech32(address)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc)
 

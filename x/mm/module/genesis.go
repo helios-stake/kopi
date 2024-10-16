@@ -1,7 +1,7 @@
 package mm
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"context"
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/mm/keeper"
@@ -9,17 +9,17 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
+	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		// this line is used by starport scaffolding # genesis/module/init
-		if err := k.SetParams(ctx, genState.Params); err != nil {
+		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return err
 		}
 
-		k.SetNextLoanIndex(ctx, genState.NextLoanIndex)
+		k.SetNextLoanIndex(innerCtx, genState.NextLoanIndex)
 
 		for _, loans := range genState.Loans {
-			k.SetLoanSum(ctx, types.LoanSum{
+			k.SetLoanSum(innerCtx, types.LoanSum{
 				Denom:     loans.Denom,
 				NumLoans:  uint64(len(loans.Loans)),
 				LoanSum:   loans.LoanSum,
@@ -27,19 +27,19 @@ func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState
 			})
 
 			for _, loan := range loans.Loans {
-				k.SetLoan(ctx, loans.Denom, *loan)
+				k.SetLoan(innerCtx, loans.Denom, *loan)
 			}
 		}
 
 		for _, collaterals := range genState.Collaterals {
 			for _, collateral := range collaterals.Collaterals {
-				k.SetCollateral(ctx, collaterals.Denom, collateral.Address, collateral.Amount)
+				k.SetCollateral(innerCtx, collaterals.Denom, collateral.Address, collateral.Amount)
 			}
 		}
 
 		for _, denomRedemptions := range genState.DenomRedemptions {
 			for _, denomRedemption := range denomRedemptions.Redemptions {
-				if err := k.SetRedemption(ctx, denomRedemptions.Denom, types.Redemption{
+				if err := k.SetRedemption(innerCtx, denomRedemptions.Denom, types.Redemption{
 					Address: denomRedemption.Address,
 					AddedAt: denomRedemption.AddedAt,
 					Amount:  denomRedemption.Amount,
@@ -57,7 +57,7 @@ func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState
 }
 
 // ExportGenesis returns the module's exported genesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 

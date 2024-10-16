@@ -2,9 +2,11 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
-	"cosmossdk.io/errors"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
+
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -29,28 +31,8 @@ func (k msgServer) AddDeposit(goCtx context.Context, msg *types.MsgAddDeposit) (
 		return nil, types.ErrInvalidAddress
 	}
 
-	if err = k.checkSpendableCoins(ctx, address, msg.Denom, amount); err != nil {
+	if _, err = k.Deposit(ctx, address, cAsset, amount); err != nil {
 		return nil, err
-	}
-
-	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
-	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolVault, coins); err != nil {
-		return nil, errors.Wrap(err, "could not send coins to module")
-	}
-
-	newCAssetTokens := k.CalculateNewCAssetAmount(ctx, amount, cAsset)
-	if newCAssetTokens.LTE(math.ZeroInt()) {
-		k.logger.Error("zero c assets printed")
-		return nil, types.ErrZeroCAssets
-	}
-
-	coins = sdk.NewCoins(sdk.NewCoin(cAsset.Name, newCAssetTokens))
-	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
-		return nil, err
-	}
-
-	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, coins); err != nil {
-		return nil, errors.Wrap(err, "could not send coins to module")
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -62,6 +44,33 @@ func (k msgServer) AddDeposit(goCtx context.Context, msg *types.MsgAddDeposit) (
 	)
 
 	return &types.Void{}, nil
+}
+
+func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset *denomtypes.CAsset, amount math.Int) (math.Int, error) {
+	if k.BankKeeper.SpendableCoin(ctx, address, cAsset.BaseDexDenom).Amount.LT(amount) {
+		return math.Int{}, types.ErrNotEnoughFunds
+	}
+
+	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, amount))
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolVault, coins); err != nil {
+		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
+	}
+
+	newCAssetTokens := k.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	if newCAssetTokens.LTE(math.ZeroInt()) {
+		return math.Int{}, types.ErrZeroCAssets
+	}
+
+	coins = sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, newCAssetTokens))
+	if err := k.BankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
+		return math.Int{}, err
+	}
+
+	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, coins); err != nil {
+		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
+	}
+
+	return newCAssetTokens, nil
 }
 
 func parseAmount(amountStr string, canBeZero bool) (math.Int, error) {
@@ -80,20 +89,4 @@ func parseAmount(amountStr string, canBeZero bool) (math.Int, error) {
 	}
 
 	return amount, nil
-}
-
-func (k Keeper) checkSpendableCoins(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error {
-	var spendableCoins math.Int
-	for _, coin := range k.BankKeeper.SpendableCoins(ctx, address) {
-		if coin.Denom == denom {
-			spendableCoins = coin.Amount
-			break
-		}
-	}
-
-	if spendableCoins.IsNil() || amount.GT(spendableCoins) {
-		return types.ErrNotEnoughFunds
-	}
-
-	return nil
 }

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/kopi-money/kopi/constants"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -15,7 +16,7 @@ func TestRedemptions1(t *testing.T) {
 
 	_, err := msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Carol,
-		Denom:        "ukusd",
+		Denom:        constants.KUSD,
 		CAssetAmount: "100",
 		Fee:          "0",
 	})
@@ -28,12 +29,12 @@ func TestRedemptions2(t *testing.T) {
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc)
-	found, balance1 := coins.Find("ukusd")
+	found, balance1 := coins.Find(constants.KUSD)
 	require.True(t, found)
 
 	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "10",
 	})
 
@@ -41,16 +42,16 @@ func TestRedemptions2(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "10",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
 	require.NoError(t, handleRedemptions(ctx, k))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 0, len(iterator.GetAll()))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
-	found, balance2 := coins.Find("ukusd")
+	found, balance2 := coins.Find(constants.KUSD)
 	require.True(t, found)
 	diff := balance1.Amount.Sub(balance2.Amount)
 	require.Equal(t, math.NewInt(1), diff)
@@ -61,19 +62,19 @@ func TestRedemptions3(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "10000",
 	}))
 
 	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
-		Denom:   "ukopi",
+		Denom:   constants.BaseCurrency,
 		Amount:  "1000000",
 	}))
 
 	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "9000",
 	}))
 
@@ -81,40 +82,40 @@ func TestRedemptions3(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "2000",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	redemptions := iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 
 	require.Equal(t, keepertest.Alice, redemptions[0].Address)
 	require.Equal(t, math.NewInt(2000), redemptions[0].Amount)
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
+	require.Equal(t, math.LegacyNewDecWithPrec(5, 2), redemptions[0].Fee)
 
 	require.NoError(t, handleRedemptions(ctx, k))
 
-	iterator = k.RedemptionIterator(ctx, "ukusd")
+	iterator = k.RedemptionIterator(ctx, constants.KUSD)
 	redemptions = iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 
 	require.Equal(t, keepertest.Alice, redemptions[0].Address)
 	require.Equal(t, math.NewInt(1000), redemptions[0].Amount)
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
+	require.Equal(t, math.LegacyNewDecWithPrec(5, 2), redemptions[0].Fee)
 
 	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "1",
 	}))
 
-	iterator = k.RedemptionIterator(ctx, "ukusd")
+	iterator = k.RedemptionIterator(ctx, constants.KUSD)
 	redemptions = iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 
 	require.Equal(t, keepertest.Alice, redemptions[0].Address)
 	require.Equal(t, int64(1000), redemptions[0].Amount.Int64())
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
+	require.Equal(t, math.LegacyNewDecWithPrec(5, 2), redemptions[0].Fee)
 }
 
 func TestRedemptions5(t *testing.T) {
@@ -122,7 +123,7 @@ func TestRedemptions5(t *testing.T) {
 
 	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "500",
 	})
 
@@ -130,7 +131,7 @@ func TestRedemptions5(t *testing.T) {
 
 	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Bob,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "500",
 	})
 
@@ -145,12 +146,12 @@ func TestRedemptions6(t *testing.T) {
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc)
-	found, balance1 := coins.Find("ukusd")
+	found, balance1 := coins.Find(constants.KUSD)
 	require.True(t, found)
 
 	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "1000",
 	})
 
@@ -158,19 +159,19 @@ func TestRedemptions6(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "1000",
-		Fee:          "0.5",
+		Fee:          "0.05",
 	}))
 
 	require.NoError(t, handleRedemptions(ctx, k))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 0, len(iterator.GetAll()))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
-	found, balance2 := coins.Find("ukusd")
+	found, balance2 := coins.Find(constants.KUSD)
 	require.True(t, found)
 	diff := balance1.Amount.Sub(balance2.Amount)
-	require.Equal(t, math.NewInt(500), diff)
+	require.Equal(t, int64(50), diff.Int64())
 }
 
 func TestRedemptions7(t *testing.T) {
@@ -178,7 +179,7 @@ func TestRedemptions7(t *testing.T) {
 
 	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "1000",
 	})
 
@@ -186,9 +187,9 @@ func TestRedemptions7(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "1000",
-		Fee:          "0.5",
+		Fee:          "0.05",
 	}))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 1, len(iterator.GetAll()))
 }

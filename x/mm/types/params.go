@@ -4,77 +4,61 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/pkg/errors"
 )
 
 var (
-	KeyCollateralDiscount  = []byte("CollateralDiscount")
-	KeyMinRedemptionFee    = []byte("MinRedemptionFee")
-	KeyMinimumInterestRate = []byte("MinimumInterestRate")
-	KeyA                   = []byte("A")
-	KeyB                   = []byte("B")
+	CollateralDiscount      = math.LegacyNewDecWithPrec(95, 2) // 0.95
+	ProtocolShare           = math.LegacyNewDecWithPrec(5, 1)  // 0.5
+	MinRedemptionFee        = math.LegacyNewDecWithPrec(1, 2)  // 0.01
+	MaxRedemptionFee        = math.LegacyNewDecWithPrec(5, 2)  // 0.05
+	MinimumInterestRate     = math.LegacyNewDecWithPrec(5, 2)  // 0.05
+	A                       = math.LegacyNewDec(12)
+	B                       = math.LegacyNewDec(131072)
+	BlockSpeedMovingAverage = math.LegacyNewDecWithPrec(999, 3) // 0.999
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-var (
-	CollateralDiscount  = math.LegacyNewDecWithPrec(95, 2) // 0.95
-	ProtocolShare       = math.LegacyNewDecWithPrec(5, 1)  // 0.5
-	MinRedemptionFee    = math.LegacyNewDecWithPrec(1, 2)  // 0.01
-	MinimumInterestRate = math.LegacyNewDecWithPrec(5, 2)  // 0.05
-	A                   = math.LegacyNewDec(12)
-	B                   = math.LegacyNewDec(131072)
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		CollateralDiscount: CollateralDiscount,
-		ProtocolShare:      ProtocolShare,
-		MinRedemptionFee:   MinRedemptionFee,
-		MinInterestRate:    MinimumInterestRate,
-		A:                  A,
-		B:                  B,
-	}
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyCollateralDiscount, &p.CollateralDiscount, validateZeroOne),
-		paramtypes.NewParamSetPair(KeyMinRedemptionFee, &p.MinRedemptionFee, validateZeroOne),
-		paramtypes.NewParamSetPair(KeyMinimumInterestRate, &p.MinInterestRate, validateZeroOne),
-		paramtypes.NewParamSetPair(KeyA, &p.A, validateNumber),
-		paramtypes.NewParamSetPair(KeyB, &p.B, validateNumber),
+		CollateralDiscount:      CollateralDiscount,
+		ProtocolShare:           ProtocolShare,
+		MinRedemptionFee:        MinRedemptionFee,
+		MaxRedemptionFee:        MaxRedemptionFee,
+		MinInterestRate:         MinimumInterestRate,
+		A:                       A,
+		B:                       B,
+		BlockSpeedMovingAverage: BlockSpeedMovingAverage,
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if err := validateZeroOne(p.CollateralDiscount); err != nil {
-		return errors.Wrap(err, "invalid collateral discount")
+		return fmt.Errorf("invalid collateral discount: %w", err)
 	}
 
 	if err := validateZeroOne(p.MinRedemptionFee); err != nil {
-		return errors.Wrap(err, "invalid minimum redemption fee")
+		return fmt.Errorf("invalid minimum redemption fee: %w", err)
+	}
+
+	if err := validateZeroOne(p.MaxRedemptionFee); err != nil {
+		return fmt.Errorf("invalid maximum redemption fee: %w", err)
+	}
+
+	if !p.MinRedemptionFee.LT(p.MaxRedemptionFee) {
+		return fmt.Errorf("minimum redemption fee must not be larger than maximum redemption fee")
 	}
 
 	if err := validateZeroOne(p.MinInterestRate); err != nil {
-		return errors.Wrap(err, "invalid minimum interest rate")
+		return fmt.Errorf("invalid minimum interest rate: %w", err)
 	}
 
 	if err := validateNumber(p.A); err != nil {
-		return errors.Wrap(err, "invalid A")
+		return fmt.Errorf("invalid A: %w", err)
 	}
 
 	if err := validateNumber(p.B); err != nil {
-		return errors.Wrap(err, "invalid B")
+		return fmt.Errorf("invalid B: %w", err)
 	}
 
 	return nil
@@ -96,15 +80,15 @@ func validateZeroOne(d any) error {
 	}
 
 	if v.IsNil() {
-		return errors.New("value is nil")
+		return fmt.Errorf("value is nil")
 	}
 
 	if v.GT(math.LegacyOneDec()) {
-		return errors.New("fee must not be larger than 1")
+		return fmt.Errorf("fee must not be larger than 1")
 	}
 
 	if v.LT(math.LegacyZeroDec()) {
-		return errors.New("fee must be smaller than 0")
+		return fmt.Errorf("fee must be smaller than 0")
 	}
 
 	return nil

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package kopi.blockspeed;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/blockspeed/types";
+
+message Blockspeed {
+  int64 previous_timestamp = 1;
+
+  bytes average_time = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

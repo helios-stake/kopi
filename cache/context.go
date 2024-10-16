@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -68,4 +69,24 @@ func getTXKey(goCtx context.Context) *TXKey {
 	}
 
 	return nil
+}
+
+func getCurrentHeight(goCtx context.Context) int64 {
+	baseCtx, ok := goCtx.(sdk.Context)
+	if ok {
+		return baseCtx.BlockHeight()
+	}
+
+	valueCtx, ok := goCtx.(ValueContext)
+	if ok {
+		innerCtx := valueCtx.Value(sdk.SdkContextKey)
+		if innerCtx != nil {
+			baseCtx, ok = innerCtx.(sdk.Context)
+			if ok {
+				return baseCtx.BlockHeight()
+			}
+		}
+	}
+
+	return 0
 }

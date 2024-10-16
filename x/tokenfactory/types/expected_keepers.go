@@ -10,6 +10,8 @@ import (
 type AccountKeeper interface {
 	GetAccount(context.Context, sdk.AccAddress) sdk.AccountI // only used for simulation
 	// Methods imported from account should be defined here
+
+	GetModuleAccount(ctx context.Context, moduleName string) sdk.ModuleAccountI
 }
 
 // BankKeeper defines the expected interface for the Bank module.
@@ -25,10 +27,18 @@ type BankKeeper interface {
 
 	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
 	MintCoins(ctx context.Context, name string, amt sdk.Coins) error
+
+	GetSupply(ctx context.Context, denom string) sdk.Coin
+
+	IterateAllBalances(ctx context.Context, cb func(sdk.AccAddress, sdk.Coin) bool)
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.
 type ParamSubspace interface {
 	Get(context.Context, []byte, interface{})
 	Set(context.Context, []byte, interface{})
+}
+
+type DenomKeeper interface {
+	IsKCoin(ctx context.Context, denom string) bool
 }

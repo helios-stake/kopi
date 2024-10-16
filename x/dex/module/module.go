@@ -5,7 +5,6 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	"cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	"encoding/json"
 	"fmt"
@@ -66,7 +65,7 @@ func (AppModuleBasic) Name() string {
 
 // RegisterLegacyAminoCodec registers the amino codec for the module, which is used
 // to marshal and unmarshal structs to/from []byte in order to persist them in the module's KVStore.
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {}
 
 // RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message.
 func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
@@ -80,7 +79,7 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 }
 
 // ValidateGenesis used to validate the GenesisState, given in its json.RawMessage form.
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var genState types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &genState); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
@@ -163,17 +162,14 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(goCtx context.Context) error {
-	if err := am.keeper.Initialize(goCtx); err != nil {
-		return errors.Wrap(err, "could not initialize dex module")
+func (am AppModule) BeginBlock(ctx context.Context) error {
+	if err := am.keeper.Initialize(ctx); err != nil {
+		return fmt.Errorf("could not initialize dex module: %w", err)
 	}
 
-	return cache.Transact(goCtx, func(ctx sdk.Context) error {
-		am.keeper.UpdateVirtualLiquidities(ctx)
-
-		if err := am.keeper.BeginBlockCheckReserve(ctx, ctx.EventManager(), ctx.BlockHeight()); err != nil {
-			return errors.Wrap(err, "error checking reserve at beginning of block")
-		}
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		am.keeper.ResetTradeFeeTracker(innerCtx)
+		am.keeper.UpdateVirtualLiquidities(innerCtx)
 
 		return nil
 	})
@@ -181,16 +177,21 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(goCtx context.Context) error {
-	return cache.Transact(goCtx, func(ctx sdk.Context) error {
-		if err := am.keeper.ExecuteOrders(ctx, ctx.EventManager(), ctx.BlockHeight()); err != nil {
-			return errors.Wrap(err, "error executing orders")
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
+		eventManager := sdk.UnwrapSDKContext(innerCtx).EventManager()
+		blockHeight := sdk.UnwrapSDKContext(innerCtx).BlockHeight()
+
+		if err := am.keeper.ExecuteOrders(innerCtx, eventManager, blockHeight); err != nil {
+			return fmt.Errorf("error executing orders: %w", err)
 		}
 
 		// Apply the trade amount decay once every day
-		if ctx.BlockHeight()%86400 == 0 {
-			am.keeper.TradeAmountDecay(ctx)
+		if blockHeight%86400 == 0 {
+			am.keeper.TradeAmountDecay(innerCtx)
 		}
+
+		am.keeper.EmitTradeFeeEvent(innerCtx)
 
 		return nil
 	})

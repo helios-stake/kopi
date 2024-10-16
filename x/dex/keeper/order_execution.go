@@ -2,12 +2,15 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"strconv"
+
+	"github.com/kopi-money/kopi/x/dex/constant_product"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/pkg/errors"
-	"strconv"
 )
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
@@ -25,10 +28,10 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	// cache directly
 	orders := iterator.GetAllFromCache()
 
-	for _, keyValue := range orders {
+	for index, keyValue := range orders {
 		order := keyValue.Value().Value()
 		if order == nil {
-			k.logger.Info("order is nil, should not happen")
+			k.Logger().Info("order is nil, should not happen")
 			continue
 		}
 
@@ -36,15 +39,15 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		blockEnd := k.calculateBlockEnd(maxOrderLife, blockHeight, int64(order.NumBlocks))
 		if blockHeight > blockEnd {
 			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
-				tradeBalances.AddTransfer(ordersCaches.AccPoolOrders.Get().String(), order.Creator, order.DenomFrom, order.AmountLeft)
+				tradeBalances.AddTransfer(ordersCaches.AccPoolOrders.Get().String(), order.Creator, order.DenomGiving, order.AmountLeft)
 			}
 
 			eventManager.EmitEvent(
 				sdk.NewEvent("order_expired",
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
 					sdk.Attribute{Key: "address", Value: order.Creator},
-					sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
-					sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+					sdk.Attribute{Key: "denom_giving", Value: order.DenomGiving},
+					sdk.Attribute{Key: "denom_receiving", Value: order.DenomReceiving},
 					sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
 					sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
 					sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
@@ -62,9 +65,9 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		}
 
 		// Next we do the actual execution
-		tradeVolumeBase, remove, err := k.executeOrder(ctx, ordersCaches, tradeBalances, fee, order)
+		tradeVolumeBase, remove, err := k.executeOrder(ctx, ordersCaches, fee, order)
 		if err != nil {
-			return errors.Wrap(err, "error executing order")
+			return fmt.Errorf("error executing order (list index %v): %w", index, err)
 		}
 
 		if tradeVolumeBase.GT(math.ZeroInt()) {
@@ -77,8 +80,8 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				sdk.NewEvent("order_completed",
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
 					sdk.Attribute{Key: "address", Value: order.Creator},
-					sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
-					sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+					sdk.Attribute{Key: "denom_giving", Value: order.DenomGiving},
+					sdk.Attribute{Key: "denom_receiving", Value: order.DenomReceiving},
 					sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
 					sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
 					sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
@@ -100,20 +103,20 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	}
 
 	if err := tradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return errors.Wrap(err, "could not settle trade balances")
+		return fmt.Errorf("could not settle trade balances: %w", err)
 	}
 
 	return nil
 }
 
-func (k Keeper) executeOrder(ctx context.Context, ordersCaches *types.OrdersCaches, tradeBalances *TradeBalances, fee math.LegacyDec, order *types.Order) (math.Int, bool, error) {
-	denomPair := types.Pair{DenomFrom: order.DenomFrom, DenomTo: order.DenomTo}
+func (k Keeper) executeOrder(ctx context.Context, ordersCaches *types.OrdersCaches, fee math.LegacyDec, order *types.Order) (math.Int, bool, error) {
+	denomPair := types.Pair{DenomFrom: order.DenomGiving, DenomTo: order.DenomReceiving}
 	previousMaxPrice, has := ordersCaches.PriceAmounts[denomPair]
 	if has && order.MaxPrice.LT(previousMaxPrice) {
 		return math.ZeroInt(), false, nil
 	}
 
-	priceAmount := k.calculateAmountGivenPrice(ordersCaches, order.DenomFrom, order.DenomTo, order.MaxPrice, fee).TruncateInt()
+	priceAmount := k.calculateAmountGivenPrice(ordersCaches, order.DenomGiving, order.DenomReceiving, order.MaxPrice, fee, constant_product.CalculateMaximumGiving).TruncateInt()
 	if priceAmount.LTE(math.ZeroInt()) {
 		if !has || previousMaxPrice.LT(order.MaxPrice) {
 			ordersCaches.PriceAmounts[denomPair] = order.MaxPrice
@@ -132,21 +135,23 @@ func (k Keeper) executeOrder(ctx context.Context, ordersCaches *types.OrdersCach
 	}
 
 	address := sdk.MustAccAddressFromBech32(order.Creator)
+	orderTradeBalances := NewTradeBalances()
 	tradeCtx := types.TradeContext{
-		Context:         ctx,
-		CoinSource:      ordersCaches.AccPoolOrders.Get().String(),
-		CoinTarget:      address.String(),
-		GivenAmount:     amount,
-		TradeDenomStart: order.DenomFrom,
-		TradeDenomEnd:   order.DenomTo,
-		MaxPrice:        &order.MaxPrice,
-		AllowIncomplete: order.AllowIncomplete,
-		TradeBalances:   tradeBalances,
-		OrdersCaches:    ordersCaches,
-		IsOrder:         true,
+		Context:                ctx,
+		CoinSource:             ordersCaches.AccPoolOrders.Get().String(),
+		CoinTarget:             address.String(),
+		TradeAmount:            amount,
+		MaximumAvailableAmount: order.AmountLeft,
+		TradeDenomGiving:       order.DenomGiving,
+		TradeDenomReceiving:    order.DenomReceiving,
+		MaxPrice:               &order.MaxPrice,
+		TradeBalances:          orderTradeBalances,
+		OrdersCaches:           ordersCaches,
+		IsOrder:                true,
+		Fee:                    fee,
 	}
 
-	usedAmount, amountReceived1, amountReceived2, _, _, err := k.ExecuteTrade(tradeCtx)
+	tradeResult, err := k.ExecuteSell(tradeCtx)
 	if err != nil {
 		if errors.Is(err, types.ErrTradeAmountTooSmall) {
 			return math.ZeroInt(), false, nil
@@ -155,30 +160,34 @@ func (k Keeper) executeOrder(ctx context.Context, ordersCaches *types.OrdersCach
 			return math.ZeroInt(), false, nil
 		}
 
-		msg := fmt.Sprintf("could not execute trade (%v%v > %v)", order.AmountLeft.String(), order.DenomFrom, order.DenomTo)
-		return math.Int{}, false, errors.Wrap(err, msg)
+		msg := fmt.Sprintf("could not execute trade (%v%v > %v)", amount.String(), order.DenomGiving, order.DenomReceiving)
+		return math.Int{}, false, fmt.Errorf("%v: %w", msg, err)
 	}
 
-	if usedAmount.IsZero() {
+	if err = orderTradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+		return math.Int{}, false, fmt.Errorf("could not settle balances: %w", err)
+	}
+
+	if tradeResult.AmountGiven.IsZero() {
 		return math.ZeroInt(), false, nil
 	}
 
-	order.AmountLeft = order.AmountLeft.Sub(usedAmount)
-	order.AmountReceived = order.AmountReceived.Add(amountReceived2)
+	order.AmountLeft = order.AmountLeft.Sub(tradeResult.AmountGiven)
+	order.AmountReceived = order.AmountReceived.Add(tradeResult.AmountReceived)
 
 	// AmountLeft should never be negative zero. The comparison is still considering lower
 	// than zero to cover potential rounding issues
 	fullyExecuted := order.AmountLeft.LTE(math.ZeroInt())
 
 	if order.AmountLeft.LT(math.ZeroInt()) {
-		return math.Int{}, false, fmt.Errorf("order has negative amount left (%v, %v)", usedAmount.String(), order.AmountLeft.String())
+		return math.Int{}, false, fmt.Errorf("order has negative amount left (%v, %v)", tradeResult.AmountGiven.String(), order.AmountLeft.String())
 	}
 
 	if !fullyExecuted {
 		k.SetOrder(ctx, *order)
 	}
 
-	return amountReceived1, fullyExecuted, nil
+	return tradeResult.AmountIntermediate, fullyExecuted, nil
 }
 
 // calculateBlockEnd calculates the maximum block height that an order can be alive. If the requested block height is

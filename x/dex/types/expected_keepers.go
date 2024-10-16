@@ -40,6 +40,7 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
+	ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
 	InitialVirtualLiquidityFactor(ctx context.Context, denom string) (math.LegacyDec, error)

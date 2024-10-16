@@ -71,17 +71,26 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	blocktimemodulev1 "github.com/kopi-money/kopi/api/kopi/blockspeed/module"
 	denominationsmodulev1 "github.com/kopi-money/kopi/api/kopi/denominations/module"
 	dexmodulev1 "github.com/kopi-money/kopi/api/kopi/dex/module"
 	mmmodulev1 "github.com/kopi-money/kopi/api/kopi/mm/module"
+	reservemodulev1 "github.com/kopi-money/kopi/api/kopi/reserve/module"
+	strategiesmodulev1 "github.com/kopi-money/kopi/api/kopi/strategies/module"
 	swapmodulev1 "github.com/kopi-money/kopi/api/kopi/swap/module"
 	tokenfactorymodulev1 "github.com/kopi-money/kopi/api/kopi/tokenfactory/module"
+	_ "github.com/kopi-money/kopi/x/blockspeed/module" // import for side-effects
+	blocktimemoduletypes "github.com/kopi-money/kopi/x/blockspeed/types"
 	_ "github.com/kopi-money/kopi/x/denominations/module" // import for side-effects
 	denominationsmoduletypes "github.com/kopi-money/kopi/x/denominations/types"
 	_ "github.com/kopi-money/kopi/x/dex/module" // import for side-effects
 	dexmoduletypes "github.com/kopi-money/kopi/x/dex/types"
 	_ "github.com/kopi-money/kopi/x/mm/module" // import for side-effects
 	mmmoduletypes "github.com/kopi-money/kopi/x/mm/types"
+	_ "github.com/kopi-money/kopi/x/reserve/module" // import for side-effects
+	reservemoduletypes "github.com/kopi-money/kopi/x/reserve/types"
+	_ "github.com/kopi-money/kopi/x/strategies/module" // import for side-effects
+	strategiesmoduletypes "github.com/kopi-money/kopi/x/strategies/types"
 	_ "github.com/kopi-money/kopi/x/swap/module" // import for side-effects
 	swapmoduletypes "github.com/kopi-money/kopi/x/swap/types"
 	_ "github.com/kopi-money/kopi/x/tokenfactory/module" // import for side-effects
@@ -128,6 +137,9 @@ var (
 		swapmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		strategiesmoduletypes.ModuleName,
+		reservemoduletypes.ModuleName,
+		blocktimemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -152,11 +164,14 @@ var (
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		// chain modules
+		reservemoduletypes.ModuleName,
 		denominationsmoduletypes.ModuleName,
 		dexmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		strategiesmoduletypes.ModuleName,
+		blocktimemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -176,10 +191,13 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		denominationsmoduletypes.ModuleName,
-		dexmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
+		strategiesmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
+		dexmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		reservemoduletypes.ModuleName,
+		blocktimemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -201,9 +219,9 @@ var (
 		{Account: icatypes.ModuleName},
 
 		// DEX
+		{Account: dexmoduletypes.ModuleName, Permissions: []string{authtypes.Minter}},
 		{Account: dexmoduletypes.PoolLiquidity},
 		{Account: dexmoduletypes.PoolTrade},
-		{Account: dexmoduletypes.PoolFees},
 		{Account: dexmoduletypes.PoolOrders},
 		{Account: dexmoduletypes.PoolReserve, Permissions: []string{authtypes.Burner}},
 
@@ -216,8 +234,14 @@ var (
 		{Account: mmmoduletypes.PoolCollateral},
 		{Account: mmmoduletypes.PoolRedemption},
 
+		// Strategies
+		{Account: strategiesmoduletypes.PoolArbitrage, Permissions: []string{authtypes.Burner, authtypes.Minter}},
+		{Account: strategiesmoduletypes.PoolAutomationFunds},
+
 		// Tokenfactory
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Burner, authtypes.Minter}},
+		{Account: tokenfactorytypes.PoolFactoryLiquidity, Permissions: []string{authtypes.Burner, authtypes.Minter}},
+		{Account: tokenfactorytypes.PoolUnlocking, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -370,6 +394,18 @@ var (
 			{
 				Name:   tokenfactorytypes.ModuleName,
 				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{}),
+			},
+			{
+				Name:   strategiesmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&strategiesmodulev1.Module{}),
+			},
+			{
+				Name:   reservemoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&reservemodulev1.Module{}),
+			},
+			{
+				Name:   blocktimemoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&blocktimemodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

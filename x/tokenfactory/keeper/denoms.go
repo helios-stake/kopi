@@ -2,87 +2,83 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/store/prefix"
-	storetypes "cosmossdk.io/store/types"
+	"crypto/sha256"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/runtime"
+	"regexp"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
+	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func toFullName(denom string) string {
-	return fmt.Sprintf("factory/%v", denom)
-}
+var factoryDenomReg = regexp.MustCompile(`^factory/[A-F0-9]{64}$`)
 
-func (k Keeper) GetAllDenoms(ctx context.Context) (list []types.FactoryDenom) {
-	iterator := k.DenomIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.FactoryDenom
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+func ToFullName(denom string) string {
+	if factoryDenomReg.Match([]byte(denom)) {
+		return denom
 	}
 
-	return
+	denom = toHash(denom)
+	denom = fmt.Sprintf("factory/%v", denom)
+	return denom
+}
+
+func toHash(text string) string {
+	h := sha256.New()
+	h.Write([]byte(text))
+	bs := h.Sum(nil)
+	text = fmt.Sprintf("%x", bs)
+	text = strings.ToUpper(text)
+	return text
+}
+
+func (k Keeper) GetAllDenoms(ctx context.Context) []types.FactoryDenom {
+	iterator := k.factoryDenoms.Iterator(ctx, nil)
+	return iterator.GetAll()
 }
 
 func (k Keeper) SetDenom(ctx context.Context, denom types.FactoryDenom) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
-
-	b := k.cdc.MustMarshal(&denom)
-	store.Set(types.KeyDenom(denom.Denom), b)
+	k.factoryDenoms.Set(ctx, denom.FullName, denom)
 }
 
-// GetDenom returns a deposits from its index
-func (k Keeper) GetDenom(ctx context.Context, denom string) (types.FactoryDenom, bool) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
+func (k Keeper) GetDenomByDisplayName(ctx context.Context, displayName string) (types.FactoryDenom, bool) {
+	return k.GetDenomByFullName(ctx, ToFullName(displayName))
+}
 
-	b := store.Get(types.KeyDenom(denom))
-	if b == nil {
-		return types.FactoryDenom{}, false
+func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.FactoryDenom, bool) {
+	return k.factoryDenoms.Get(ctx, fullName)
+}
+
+func (k Keeper) CreateDenom(ctx context.Context, address, displayName, iconHash string, exponent uint64) (types.FactoryDenom, error) {
+	fullName := ToFullName(displayName)
+	_, exists := k.GetDenomByFullName(ctx, fullName)
+	if exists {
+		return types.FactoryDenom{}, types.ErrDenomAlreadyExists
 	}
 
-	var deposit types.FactoryDenom
-	k.cdc.MustUnmarshal(b, &deposit)
-	return deposit, true
-}
-
-func (k Keeper) DenomStore(ctx context.Context) storetypes.KVStore {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
-}
-
-func (k Keeper) DenomIterator(ctx context.Context) storetypes.Iterator {
-	return storetypes.KVStorePrefixIterator(k.DenomStore(ctx), []byte{})
-}
-
-func (k Keeper) CreateDenom(ctx context.Context, denom, address string) error {
-	_, exists := k.GetDenom(ctx, denom)
-	if exists {
-		return types.ErrDenomAlreadyExists
+	if exponent < 1 {
+		return types.FactoryDenom{}, fmt.Errorf("exponent has to be at least 1")
 	}
 
 	if err := k.processCreationFee(ctx, address); err != nil {
-		return err
+		return types.FactoryDenom{}, err
 	}
 
-	k.SetDenom(ctx, types.FactoryDenom{
-		Denom: denom,
-		Admin: address,
-	})
+	factoryDenom := types.FactoryDenom{
+		Admin:       address,
+		DisplayName: displayName,
+		FullName:    fullName,
+		IconHash:    strings.ToUpper(iconHash),
+		Exponent:    exponent,
+	}
 
-	return nil
+	k.SetDenom(ctx, factoryDenom)
+	return factoryDenom, nil
 }
 
 func (k Keeper) processCreationFee(ctx context.Context, address string) error {
-	addr, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
-		return types.ErrInvalidAddress
-	}
-
 	feeAmount := k.GetParams(ctx).CreationFee
 	if feeAmount.IsNil() {
 		return fmt.Errorf("feeAmount is nil")
@@ -92,13 +88,14 @@ func (k Keeper) processCreationFee(ctx context.Context, address string) error {
 		return nil
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin("ukopi", feeAmount))
-	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, coins); err != nil {
-		return err
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return types.ErrInvalidAddress
 	}
 
-	if err = k.BankKeeper.BurnCoins(ctx, types.ModuleName, coins); err != nil {
-		return err
+	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, feeAmount))
+	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, dextypes.PoolReserve, coins); err != nil {
+		return fmt.Errorf("could not send coins from account to module: %w", err)
 	}
 
 	return nil

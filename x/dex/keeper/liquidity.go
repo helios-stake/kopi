@@ -2,20 +2,21 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"sort"
+	"strconv"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/cache"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"github.com/pkg/errors"
-	"sort"
-	"strconv"
 )
 
 // SetLiquidity sets a specific liquidity in the store from its index. When the index is zero, i.e. it's a new entry,
 // the NextIndex is increased and updated as well.
-func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity) types.Liquidity {
+func (k Keeper) SetLiquidity(ctx context.Context, denom string, liquidity types.Liquidity) types.Liquidity {
 	if liquidity.Index == 0 {
 		nextIndex, _ := k.liquidityEntriesNextIndex.Get(ctx)
 		nextIndex++
@@ -24,7 +25,7 @@ func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity) typ
 		k.SetLiquidityEntryNextIndex(ctx, nextIndex)
 	}
 
-	k.liquidityEntries.Set(ctx, liquidity.Denom, liquidity.Index, liquidity)
+	k.liquidityEntries.Set(ctx, denom, liquidity.Index, liquidity)
 	return liquidity
 }
 
@@ -38,14 +39,18 @@ func (k Keeper) SetLiquidityEntryNextIndex(ctx context.Context, nextIndex uint64
 
 // AddLiquidity adds liquidity to the dex for a given amount and address. The address is used to keep track which user
 // has added how much.
-func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI, address sdk.AccAddress, denom string, amount math.Int) error {
+func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return types.ErrDenomNotFound
+		return math.Int{}, types.ErrDenomNotFound
+	}
+
+	if k.BankKeeper.SpendableCoin(ctx, address, denom).Amount.LT(amount) {
+		return math.Int{}, types.ErrNotEnoughFunds
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolLiquidity, coins); err != nil {
-		return errors.Wrap(err, "could not send coins to module")
+		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
 	}
 
 	// The dex works by routing all trades via XKP. The chain is initialized with funds for the reserve, which adds
@@ -53,21 +58,14 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 	// liquidity for XKP is added.
 
 	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
-	liqBase := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress()).AmountOf(utils.BaseCurrency)
-	if liqBase.IsZero() && denom != utils.BaseCurrency {
-		return types.ErrBaseLiqEmpty
+	liqBase := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress()).AmountOf(constants.BaseCurrency)
+	if liqBase.IsZero() && denom != constants.BaseCurrency {
+		return math.Int{}, types.ErrBaseLiqEmpty
 	}
 
 	_, liq := k.addLiquidity(ctx, denom, address.String(), amount, nil)
 
-	// When changing actual liquidity, the virtual liquidity has to be adjusted to keep the ratio.
-	//if denom != utils.BaseCurrency {
-	//	k.updatePair(ctx, nil, denom)
-	//} else {
-	//	k.updatePairs(ctx, nil)
-	//}
-
-	eventManager.EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent(
 			"liquidity_added",
 			sdk.Attribute{Key: "denom", Value: denom},
@@ -77,7 +75,7 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 		),
 	)
 
-	return nil
+	return liq.Amount, nil
 }
 
 func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int, liquidityEntries []types.Liquidity) ([]types.Liquidity, types.Liquidity) {
@@ -97,14 +95,14 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 			}
 
 			liq.Amount = liq.Amount.Add(amount)
-			k.SetLiquidity(ctx, liq)
+			k.SetLiquidity(ctx, denom, liq)
 			liquidityEntries[index] = liq
 			return liquidityEntries, liq
 		}
 	}
 
-	liq := types.Liquidity{Denom: denom, Address: address, Amount: amount}
-	liq = k.SetLiquidity(ctx, liq)
+	liq := types.Liquidity{Address: address, Amount: amount}
+	liq = k.SetLiquidity(ctx, denom, liq)
 	liquidityEntries = append(liquidityEntries, liq)
 
 	return liquidityEntries, liq
@@ -112,7 +110,7 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 
 func (k Keeper) LiquidityIterator(ctx context.Context, denom string) cache.Iterator[uint64, types.Liquidity] {
 	rng := collections.NewPrefixedPairRange[string, uint64](denom)
-	return k.liquidityEntries.Iterator(ctx, rng, denom, nil)
+	return k.liquidityEntries.Iterator(ctx, rng, denom)
 }
 
 func (k Keeper) GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int {
@@ -144,16 +142,23 @@ func (k Keeper) GetLiquidityEntriesByAddress(ctx context.Context, denom, address
 	return num
 }
 
-func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.Liquidity) {
+func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.DenomLiquidity) {
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		iterator := k.LiquidityIterator(ctx, denom)
+
+		denomLiquidity := types.DenomLiquidity{Denom: denom}
 		for iterator.Valid() {
-			list = append(list, iterator.GetNext())
+			liq := iterator.GetNext()
+			denomLiquidity.Entries = append(denomLiquidity.Entries, &liq)
 		}
+
+		sort.SliceStable(denomLiquidity.Entries, func(i, j int) bool {
+			return denomLiquidity.Entries[i].Index < denomLiquidity.Entries[j].Index
+		})
 	}
 
 	sort.SliceStable(list, func(i, j int) bool {
-		return list[i].Index < list[j].Index
+		return list[i].Denom < list[j].Denom
 	})
 
 	return
@@ -175,7 +180,7 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) {
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress())
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		if denom != utils.BaseCurrency {
+		if denom != constants.BaseCurrency {
 			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
 				ratio, _ := k.GetRatio(ctx, denom)
@@ -187,13 +192,13 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) {
 }
 
 func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error) {
-	if denom == utils.BaseCurrency {
-		liq := k.GetLiquiditySum(ctx, utils.BaseCurrency)
+	if denom == constants.BaseCurrency {
+		liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
 		return liq.ToLegacyDec(), nil
 	}
 
 	liq := k.GetFullLiquidityOther(ctx, denom)
-	price, err := k.CalculatePrice(ctx, denom, utils.BaseCurrency)
+	price, err := k.CalculatePrice(ctx, denom, constants.BaseCurrency)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -202,8 +207,7 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 }
 
 func compareLiquidity(l1, l2 types.Liquidity) bool {
-	return l1.Denom == l2.Denom &&
-		l1.Index == l2.Index &&
+	return l1.Index == l2.Index &&
 		l1.Amount.Equal(l2.Amount) &&
 		l1.Address == l2.Address
 }

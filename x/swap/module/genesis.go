@@ -1,7 +1,7 @@
 package swap
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"context"
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/swap/keeper"
@@ -9,16 +9,16 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
+	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 
 		// this line is used by starport scaffolding # genesis/module/init
-		if err := k.SetParams(ctx, genState.Params); err != nil {
+		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return err
 		}
 
-		k.CommitToCache(ctx)
-		if err := k.CommitToDB(ctx); err != nil {
+		k.CommitToCache(innerCtx)
+		if err := k.CommitToDB(innerCtx); err != nil {
 			return err
 		}
 
@@ -29,7 +29,7 @@ func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState
 }
 
 // ExportGenesis returns the module's exported genesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 

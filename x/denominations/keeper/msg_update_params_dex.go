@@ -2,50 +2,31 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"github.com/kopi-money/kopi/cache"
+	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func (k msgServer) AddDEXDenom(goCtx context.Context, req *types.MsgAddDEXDenom) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 
-		factor, err := math.LegacyNewDecFromStr(req.Factor)
+		dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
 		if err != nil {
 			return err
 		}
 
-		minLiquidity, ok := math.NewIntFromString(req.MinLiquidity)
-		if !ok {
-			return fmt.Errorf("invalid min liquidity value: %v", req.MinLiquidity)
-		}
-
-		minOrderSize, ok := math.NewIntFromString(req.MinOrderSize)
-		if !ok {
-			return fmt.Errorf("invalid min order size: %v", req.MinOrderSize)
-		}
-
-		dexDenom := &types.DexDenom{
-			Name:         req.Name,
-			Factor:       &factor,
-			MinLiquidity: minLiquidity,
-			MinOrderSize: minOrderSize,
-		}
-
 		params.DexDenoms = append(params.DexDenoms, dexDenom)
 
-		if err = k.SetParams(ctx, params); err != nil {
+		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -55,19 +36,14 @@ func (k msgServer) AddDEXDenom(goCtx context.Context, req *types.MsgAddDEXDenom)
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateDEXDenomMinimumLiquidity(goCtx context.Context, req *types.MsgUpdateDEXDenomMinimumLiquidity) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.MsgDexUpdateMinimumLiquidity) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		minLiquidity, ok := math.NewIntFromString(req.MinLiquidity)
-		if !ok {
-			return fmt.Errorf("invalid min liquidity value: %v", req.MinLiquidity)
-		}
-
+		params := k.GetParams(innerCtx)
+		minLiquidity, _ := math.NewIntFromString(req.MinLiquidity)
 		dexDenoms := []*types.DexDenom{}
 		found := false
 
@@ -86,7 +62,7 @@ func (k msgServer) UpdateDEXDenomMinimumLiquidity(goCtx context.Context, req *ty
 
 		params.DexDenoms = dexDenoms
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -96,19 +72,14 @@ func (k msgServer) UpdateDEXDenomMinimumLiquidity(goCtx context.Context, req *ty
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateDEXDenomMinimumOrderSize(goCtx context.Context, req *types.MsgUpdateDEXDenomMinimumOrderSize) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.MsgDexUpdateMinimumOrderSize) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		minOrderSize, ok := math.NewIntFromString(req.MinOrderSize)
-		if !ok {
-			return fmt.Errorf("invalid min liquidity value: %v", req.MinOrderSize)
-		}
-
+		params := k.GetParams(innerCtx)
+		minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
 		dexDenoms := []*types.DexDenom{}
 		found := false
 
@@ -127,7 +98,7 @@ func (k msgServer) UpdateDEXDenomMinimumOrderSize(goCtx context.Context, req *ty
 
 		params.DexDenoms = dexDenoms
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -135,4 +106,39 @@ func (k msgServer) UpdateDEXDenomMinimumOrderSize(goCtx context.Context, req *ty
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func createDexDenom(dexDenoms types.DexDenoms, name, factorStr, minLiquidityStr, minOrderSizeStr string, exponent uint64) (*types.DexDenom, error) {
+	factor, denom, err := types.ExtractNumberAndString(factorStr)
+	if err != nil {
+		return nil, err
+	}
+
+	if denom != "" {
+		if denom == constants.BaseCurrency {
+			return nil, types.ErrInvalidFactorReference
+		}
+
+		referenceDenom := dexDenoms.Get(denom)
+		if referenceDenom == nil {
+			return nil, types.ErrInvalidFactorReference
+		}
+
+		factor = referenceDenom.Factor.Mul(factor)
+	}
+
+	if factor.LTE(math.LegacyZeroDec()) {
+		return nil, types.ErrInvalidFactor
+	}
+
+	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
+	minOrderSize, _ := math.NewIntFromString(minOrderSizeStr)
+
+	return &types.DexDenom{
+		Name:         name,
+		Factor:       &factor,
+		MinLiquidity: minLiquidity,
+		MinOrderSize: minOrderSize,
+		Exponent:     exponent,
+	}, nil
 }

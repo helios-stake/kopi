@@ -1,11 +1,13 @@
 package keeper_test
 
 import (
+	"github.com/kopi-money/kopi/constants"
+	"testing"
+
 	"cosmossdk.io/math"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestTradeBalances1(t *testing.T) {
@@ -13,7 +15,7 @@ func TestTradeBalances1(t *testing.T) {
 	acc2 := keepertest.Bob
 
 	tb := dexkeeper.NewTradeBalances()
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(100))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(100))
 
 	transfers, err := tb.MergeTransfers()
 	require.NoError(t, err)
@@ -27,8 +29,8 @@ func TestTradeBalances2(t *testing.T) {
 	acc2 := keepertest.Bob
 
 	tb := dexkeeper.NewTradeBalances()
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(100))
-	tb.AddTransfer(acc2, acc1, "ukusd", math.NewInt(100))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(100))
+	tb.AddTransfer(acc2, acc1, constants.KUSD, math.NewInt(100))
 
 	transfers, err := tb.MergeTransfers()
 	require.NoError(t, err)
@@ -40,8 +42,8 @@ func TestTradeBalances3(t *testing.T) {
 	acc2 := keepertest.Bob
 
 	tb := dexkeeper.NewTradeBalances()
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(100))
-	tb.AddTransfer(acc2, acc1, "ukusd", math.NewInt(50))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(100))
+	tb.AddTransfer(acc2, acc1, constants.KUSD, math.NewInt(50))
 
 	transfers, err := tb.MergeTransfers()
 	require.NoError(t, err)
@@ -54,8 +56,8 @@ func TestTradeBalances4(t *testing.T) {
 	acc2 := keepertest.Bob
 
 	tb := dexkeeper.NewTradeBalances()
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(100))
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(50))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(100))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(50))
 
 	transfers, err := tb.MergeTransfers()
 	require.NoError(t, err)
@@ -69,8 +71,8 @@ func TestTradeBalances5(t *testing.T) {
 	acc3 := keepertest.Carol
 
 	tb := dexkeeper.NewTradeBalances()
-	tb.AddTransfer(acc1, acc2, "ukusd", math.NewInt(100))
-	tb.AddTransfer(acc2, acc3, "ukusd", math.NewInt(100))
+	tb.AddTransfer(acc1, acc2, constants.KUSD, math.NewInt(100))
+	tb.AddTransfer(acc2, acc3, constants.KUSD, math.NewInt(100))
 
 	transfers, err := tb.MergeTransfers()
 	require.NoError(t, err)

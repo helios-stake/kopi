@@ -1,0 +1,20 @@
+syntax = "proto3";
+package kopi.blockspeed;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "kopi/blockspeed/blockspeed.proto";
+import "kopi/blockspeed/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/blockspeed/types";
+
+// GenesisState defines the blockspeed module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  Blockspeed blockspeed = 2;
+}

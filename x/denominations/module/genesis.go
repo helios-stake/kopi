@@ -2,7 +2,7 @@ package denominations
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/denominations/keeper"
@@ -10,10 +10,10 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(goCtx context.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
+	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		// this line is used by starport scaffolding # genesis/module/init
-		if err := k.SetParams(ctx, genState.Params); err != nil {
+		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return err
 		}
 
@@ -24,7 +24,7 @@ func InitGenesis(goCtx context.Context, k keeper.Keeper, genState types.GenesisS
 }
 
 // ExportGenesis returns the module's exported genesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 

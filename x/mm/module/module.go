@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kopi-money/kopi/cache"
-	"github.com/pkg/errors"
 
+	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
@@ -41,8 +41,9 @@ var (
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 
-	_ types.DenomKeeper = (*denomkeeper.Keeper)(nil)
-	_ types.DexKeeper   = (*dexkeeper.Keeper)(nil)
+	_ types.BlockspeedKeeper = (*blockspeedkeeper.Keeper)(nil)
+	_ types.DenomKeeper      = (*denomkeeper.Keeper)(nil)
+	_ types.DexKeeper        = (*dexkeeper.Keeper)(nil)
 )
 
 // ----------------------------------------------------------------------------
@@ -162,7 +163,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return errors.Wrap(err, "could not initialize mm module")
+		return fmt.Errorf("could not initialize mm module: %w", err)
 	}
 
 	return nil
@@ -170,16 +171,18 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(goCtx context.Context) error {
-	return cache.Transact(goCtx, func(ctx sdk.Context) error {
-		am.keeper.ApplyInterest(ctx)
-
-		if err := am.keeper.HandleLiquidations(ctx, ctx.EventManager()); err != nil {
-			return errors.Wrap(err, "HandleLiquidations")
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		if err := am.keeper.ApplyInterest(innerCtx); err != nil {
+			return fmt.Errorf("ApplyInterest: %w", err)
 		}
 
-		if err := am.keeper.HandleRedemptions(ctx, ctx.EventManager()); err != nil {
-			return errors.Wrap(err, "HandleRedemptions")
+		if err := am.keeper.HandleLiquidations(innerCtx); err != nil {
+			return fmt.Errorf("HandleLiquidations: %w", err)
+		}
+
+		if err := am.keeper.HandleRedemptions(innerCtx); err != nil {
+			return fmt.Errorf("HandleRedemptions: %w", err)
 		}
 
 		return nil
@@ -211,10 +214,11 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	Logger       log.Logger
 
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-	DenomKeeper   types.DenomKeeper
-	DexKeeper     types.DexKeeper
+	AccountKeeper    types.AccountKeeper
+	BankKeeper       types.BankKeeper
+	BlockspeedKeeper types.BlockspeedKeeper
+	DenomKeeper      types.DenomKeeper
+	DexKeeper        types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -236,6 +240,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Logger,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.BlockspeedKeeper,
 		in.DenomKeeper,
 		in.DexKeeper,
 		authority.String(),

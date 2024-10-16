@@ -1,60 +1,61 @@
 package keeper_test
 
 import (
+	"context"
+	"testing"
+
 	"github.com/kopi-money/kopi/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
-	"testing"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
-	"github.com/kopi-money/kopi/utils"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMint1(t *testing.T) {
-	k, _, dexK, ctx := keepertest.SetupSwapMsgServer(t)
+	k, dexMsg, dexK, _, ctx := keepertest.SetupSwapMsgServer(t)
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
-	addLiquidity(ctx, k, t, "ukusd", 100000)
-	addLiquidity(ctx, k, t, "uwusdc", 100000)
-	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, "uwusdc", 100000))
+	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	tradeCtx := dextypes.TradeContext{
-		Context:         ctx,
-		CoinSource:      addr.String(),
-		CoinTarget:      addr.String(),
-		GivenAmount:     math.NewInt(5000),
-		TradeDenomStart: "uwusdc",
-		TradeDenomEnd:   "ukusd",
-		AllowIncomplete: true,
-		MaxPrice:        nil,
-		TradeBalances:   dexkeeper.NewTradeBalances(),
+		Context:             ctx,
+		CoinSource:          addr.String(),
+		CoinTarget:          addr.String(),
+		TradeAmount:         math.NewInt(5000),
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyZeroDec(),
 	}
 
-	var amountUsed math.Int
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	var tradeResult dextypes.TradeResult
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		tradeResult, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		return err
 	}))
 
-	require.True(t, amountUsed.GT(math.ZeroInt()))
+	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
-	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.CheckMint(innerCtx, "ukusd", maxMintAmount)
+	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, constants.KUSD)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CheckMint(innerCtx, constants.KUSD, maxMintAmount)
 	}))
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
@@ -70,92 +71,88 @@ func TestMint2(t *testing.T) {
 }
 
 func mintScenario(t *testing.T, buyAmount int64) int64 {
-	k, _, dexK, ctx := keepertest.SetupSwapMsgServer(t)
+	k, dexMsg, dexK, _, ctx := keepertest.SetupSwapMsgServer(t)
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
-	addLiquidity(ctx, k, t, "ukusd", 100000)
-	addLiquidity(ctx, k, t, "uwusdc", 100000)
-	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, "uwusdc", 100000))
+	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	tradeCtx := dextypes.TradeContext{
-		CoinSource:      addr.String(),
-		CoinTarget:      addr.String(),
-		GivenAmount:     math.NewInt(buyAmount),
-		TradeDenomStart: "uwusdc",
-		TradeDenomEnd:   "ukusd",
-		AllowIncomplete: true,
-		MaxPrice:        nil,
-		TradeBalances:   dexkeeper.NewTradeBalances(),
+		CoinSource:          addr.String(),
+		CoinTarget:          addr.String(),
+		TradeAmount:         math.NewInt(buyAmount),
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
-	var amountUsed math.Int
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	var tradeResult dextypes.TradeResult
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		tradeResult, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		return err
 	}))
 
 	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
 
-	require.True(t, amountUsed.GT(math.ZeroInt()))
+	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
-	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.CheckMint(innerCtx, "ukusd", maxMintAmount)
+	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, constants.KUSD)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CheckMint(innerCtx, constants.KUSD, maxMintAmount)
 	}))
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
 
 	require.True(t, liquidityBalanced(ctx, dexK))
 
-	return k.BankKeeper.GetSupply(ctx, "ukusd").Amount.Int64()
+	return k.BankKeeper.GetSupply(ctx, constants.KUSD).Amount.Int64()
 }
 
 func TestMint3(t *testing.T) {
-	k, _, _, ctx := keepertest.SetupSwapMsgServer(t)
+	k, dexMsg, _, _, ctx := keepertest.SetupSwapMsgServer(t)
 
-	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
 	tradeCtx := dextypes.TradeContext{
-		CoinSource:      addr.String(),
-		CoinTarget:      addr.String(),
-		GivenAmount:     math.NewInt(100_000_000_000),
-		TradeDenomStart: "uwusdc",
-		TradeDenomEnd:   utils.BaseCurrency,
-		AllowIncomplete: true,
-		MaxPrice:        nil,
-		TradeBalances:   dexkeeper.NewTradeBalances(),
+		CoinSource:          addr.String(),
+		CoinTarget:          addr.String(),
+		TradeAmount:         math.NewInt(100_000_000_000),
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.BaseCurrency,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		_, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		_, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		return err
 	}))
 
 	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
 
-	supply1 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
+	supply1 := k.BankKeeper.GetSupply(ctx, constants.KUSD).Amount
 
-	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.CheckMint(innerCtx, "ukusd", maxMintAmount)
+	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, constants.KUSD)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CheckMint(innerCtx, constants.KUSD, maxMintAmount)
 	}))
 
-	supply2 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
+	supply2 := k.BankKeeper.GetSupply(ctx, constants.KUSD).Amount
 
 	// supply has to be unchanged because uwusdt is used as reference after uwusdc "crashed"
 	require.True(t, supply1.Equal(supply2))

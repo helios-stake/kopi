@@ -1,18 +1,14 @@
 package keeper
 
 import (
+	"context"
 	"testing"
 
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	"github.com/kopi-money/kopi/cache"
+
 	"cosmossdk.io/log"
-	"cosmossdk.io/store"
-	"cosmossdk.io/store/metrics"
-	storetypes "cosmossdk.io/store/types"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	dbm "github.com/cosmos/cosmos-db"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
@@ -21,32 +17,179 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, sdk.Context) {
-	dexKeeper, _, _ := DexKeeper(t)
-	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
+func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, context.Context) {
+	dexKeeper, ctx, keys := DexKeeper(t)
 
-	db := dbm.NewMemDB()
-	stateStore := store.NewCommitMultiStore(db, log.NewNopLogger(), metrics.NewNoOpMetrics())
-	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
-	require.NoError(t, stateStore.LoadLatestVersion())
-
-	registry := codectypes.NewInterfaceRegistry()
-	cdc := codec.NewProtoCodec(registry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	k := keeper.NewKeeper(
-		cdc,
-		runtime.NewKVStoreService(storeKey),
+		keys.cdc,
+		runtime.NewKVStoreService(keys.tof),
 		log.NewNopLogger(),
 		dexKeeper.AccountKeeper,
-		dexKeeper.BankKeeper,
+		dexKeeper.BankKeeper.(types.BankKeeper),
+		dexKeeper.DenomKeeper,
 		authority.String(),
 	)
-
-	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
+	cache.AddCache(k)
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.SetParams(innerCtx, types.DefaultParams())
+	}))
 
 	return k, ctx
+}
+
+func SetupTokenfactoryMsgServer(t *testing.T) (keeper.Keeper, types.MsgServer, context.Context) {
+	k, ctx := TokenfactoryKeeper(t)
+	addFunds(ctx, k.BankKeeper.(bankkeeper.BaseKeeper), t)
+	return k, keeper.NewMsgServerImpl(k), ctx
+}
+
+func CreateFactoryDenom(ctx context.Context, msgServer types.MsgServer, creator, name string, exponent uint64) (string, error) {
+	var factoryDenomHash string
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		response, err := msgServer.CreateDenom(innerCtx, &types.MsgCreateDenom{
+			Creator:  creator,
+			Name:     name,
+			Exponent: exponent,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		factoryDenomHash = response.FullName
+		return nil
+	})
+
+	return factoryDenomHash, err
+}
+
+func MintFactoryDenom(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, targetAddress, amount string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.MintDenom(innerCtx, &types.MsgMintDenom{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			TargetAddress:        targetAddress,
+			Amount:               amount,
+		})
+		return err
+	})
+}
+
+func BurnFactoryDenom(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, amount string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.BurnDenom(innerCtx, &types.MsgBurnDenom{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			Amount:               amount,
+		})
+		return err
+	})
+}
+
+func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount, kCoin, kCoinAmount, poolFee string, unlockBlocks uint64) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.CreatePool(innerCtx, &types.MsgCreatePool{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			FactoryDenomAmount:   factoryDenomAmount,
+			KCoin:                kCoin,
+			KCoinAmount:          kCoinAmount,
+			PoolFee:              poolFee,
+			UnlockBlocks:         unlockBlocks,
+		})
+		return err
+	})
+}
+
+func UpdateLiquidityPoolSettings(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, poolFee string, unlockBlocks uint64) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.UpdateLiquidityPoolSettings(innerCtx, &types.MsgUpdateLiquidityPoolSettings{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			PoolFee:              poolFee,
+			UnlockBlocks:         unlockBlocks,
+		})
+		return err
+	})
+}
+
+func AddFactoryLiquidity(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.AddLiquidity(innerCtx, &types.MsgAddLiquidity{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			FactoryDenomAmount:   factoryDenomAmount,
+		})
+		return err
+	})
+}
+
+func UnlockLiquidity(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.UnlockLiquidity(innerCtx, &types.MsgUnlockLiquidity{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			FactoryDenomAmount:   factoryDenomAmount,
+		})
+		return err
+	})
+}
+
+func FactoryDenomSell(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, denomGiving, denomReceiving, amount, maxPrice string, allowIncomplete bool) (*types.MsgTradeResponse, error) {
+	var response *types.MsgTradeResponse
+	var err error
+
+	err = cache.Transact(ctx, func(innerCtx context.Context) error {
+		response, err = msgServer.Sell(innerCtx, &types.MsgSell{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			DenomGiving:          denomGiving,
+			DenomReceiving:       denomReceiving,
+			Amount:               amount,
+			MaxPrice:             maxPrice,
+			AllowIncomplete:      allowIncomplete,
+		})
+		return err
+	})
+
+	return response, err
+}
+
+func FactoryDenomBuy(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, denomGiving, denomReceiving, amount, maxPrice string, allowIncomplete bool) (*types.MsgTradeResponse, error) {
+	var response *types.MsgTradeResponse
+	var err error
+
+	err = cache.Transact(ctx, func(innerCtx context.Context) error {
+		response, err = msgServer.Buy(innerCtx, &types.MsgBuy{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			DenomGiving:          denomGiving,
+			DenomReceiving:       denomReceiving,
+			Amount:               amount,
+			MaxPrice:             maxPrice,
+			AllowIncomplete:      allowIncomplete,
+		})
+		return err
+	})
+
+	return response, err
+}
+
+func FactoryDenomBuyback(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, amount string) error {
+	var err error
+
+	err = cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err = msgServer.Buyback(innerCtx, &types.MsgBuyback{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			BuybackAmount:        amount,
+		})
+		return err
+	})
+
+	return err
 }

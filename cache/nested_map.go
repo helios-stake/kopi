@@ -2,14 +2,13 @@ package cache
 
 import (
 	"context"
+	"fmt"
+	"sync"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/collections/codec"
-	"cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/measurement"
-	"sync"
 )
 
 type CollectionNestedMap[K, V any] interface {
@@ -156,14 +155,14 @@ func (nmc *NestedMapCache[K1, K2, V]) Initialize(ctx context.Context) error {
 
 	iterator, err := nmc.collection.Iterate(ctx, nil)
 	if err != nil {
-		return errors.Wrap(err, "could not create collection iterator")
+		return fmt.Errorf("could not create collection iterator: %w", err)
 	}
 
 	var key collections.Pair[K1, K2]
 	for ; iterator.Valid(); iterator.Next() {
 		key, err = iterator.Key()
 		if err != nil {
-			return errors.Wrap(err, "could not get key")
+			return fmt.Errorf("could not get key: %w", err)
 		}
 
 		entry, has := nmc.loadFromStorage(ctx, key.K1(), key.K2())
@@ -247,39 +246,6 @@ func (nmc *NestedMapCache[K1, K2, V]) Set(ctx context.Context, key1 K1, key2 K2,
 	mapTransaction.set(key1, key2, newEntry, previous)
 }
 
-func (nmc *NestedMapCache[K1, K2, V]) SetM(ctx context.Context, key1 K1, key2 K2, value V, m *measurement.Measurement) {
-	m.Start("MCS1")
-
-	txKey := getTXKey(ctx)
-	if txKey == nil {
-		panic("calling set without initialized cache transaction")
-	}
-
-	m.End("MCS1")
-	m.Start("MCS2")
-
-	previous, has := nmc.cache.Get(key1, key2)
-	if !has {
-		previous = Entry[V]{}
-	}
-
-	m.End("MCS2")
-	m.Start("MCS3")
-
-	key := collections.Join(key1, key2)
-	newEntry := Entry[V]{
-		value: &value,
-		cost:  CalculateReadCostMap(nmc.prefix, nmc.kc, nmc.vc, key, value),
-	}
-
-	m.End("MCS3")
-	m.Start("MCS4")
-	defer m.End("MCS4")
-
-	mapTransaction := nmc.transactions.Get(*txKey)
-	mapTransaction.set(key1, key2, newEntry, previous)
-}
-
 func (nmc *NestedMapCache[K1, K2, V]) Remove(ctx context.Context, key1 K1, key2 K2) {
 	txKey := getTXKey(ctx)
 	if txKey == nil {
@@ -298,7 +264,7 @@ func (nmc *NestedMapCache[K1, K2, V]) Remove(ctx context.Context, key1 K1, key2 
 // Iterator returns an iterator which contains a list of all keys. Since the cache doesn't know about all keys, they
 // have to be loaded from storage first. Then interim changes to the data have to be applied to the keys, i.e.
 // adding new ones or removes those that have been deleted. If new keys are added, the list has to be sorted once more.
-func (nmc *NestedMapCache[K1, K2, V]) Iterator(ctx context.Context, rng collections.Ranger[collections.Pair[K1, K2]], key1 K1, filter Filter[K2]) Iterator[K2, V] {
+func (nmc *NestedMapCache[K1, K2, V]) Iterator(ctx context.Context, rng collections.Ranger[collections.Pair[K1, K2]], key1 K1) Iterator[K2, V] {
 	var changes *OrderedList[K2, Entry[V]]
 	var removals []K2
 
@@ -325,7 +291,7 @@ func (nmc *NestedMapCache[K1, K2, V]) Iterator(ctx context.Context, rng collecti
 		}
 	}
 
-	return newIterator[K2, V](ctx, cache, changes, valueGetter, removals, createIterator, filter, nmc.currentHeight)
+	return newIterator[K2, V](ctx, cache, changes, valueGetter, removals, createIterator, nmc.currentHeight)
 }
 
 func (nmc *NestedMapCache[K1, K2, V]) Size() int {
@@ -343,11 +309,11 @@ func (nmc *NestedMapCache[K1, K2, V]) CommitToDB(ctx context.Context) error {
 			key := collections.Join(outerChangeList.key, change.key)
 			if change.value.value != nil {
 				if err := nmc.collection.Set(ctx, key, *change.value.value); err != nil {
-					return errors.Wrap(err, "could not add value to collection")
+					return fmt.Errorf("could not add value to collection: %w", err)
 				}
 			} else {
 				if err := nmc.collection.Remove(ctx, key); err != nil {
-					return errors.Wrap(err, "could not remove value from collection")
+					return fmt.Errorf("could not remove value from collection: %w", err)
 				}
 			}
 		}
@@ -414,7 +380,7 @@ func (nmc *NestedMapCache[K1, K2, V]) ClearTransactions() {
 
 func (nmc *NestedMapCache[K1, K2, V]) CheckCache(ctx context.Context) error {
 	if err := nmc.checkCacheComplete(ctx); err != nil {
-		return errors.Wrap(err, "error checkCacheComplete")
+		return fmt.Errorf("error checkCacheComplete: %w", err)
 	}
 
 	return nil
@@ -423,7 +389,7 @@ func (nmc *NestedMapCache[K1, K2, V]) CheckCache(ctx context.Context) error {
 func (nmc *NestedMapCache[K1, K2, V]) checkCollectionComplete(goCtx context.Context, key1 K1) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := nmc.Iterator(goCtx, nil, key1, nil)
+	iterator := nmc.Iterator(goCtx, nil, key1)
 
 	for iterator.Valid() {
 		keyValue := iterator.GetNextKeyValue()
@@ -455,7 +421,7 @@ func (nmc *NestedMapCache[K1, K2, V]) checkCollectionComplete(goCtx context.Cont
 func (nmc *NestedMapCache[K1, K2, V]) checkCacheComplete(ctx context.Context) error {
 	iterator, err := nmc.collection.Iterate(ctx, nil)
 	if err != nil {
-		return errors.Wrap(err, "could not create iterator")
+		return fmt.Errorf("could not create iterator: %w", err)
 	}
 
 	keyValues, err := iterator.KeyValues()

@@ -2,17 +2,18 @@ package cache
 
 import (
 	"context"
+	"testing"
+
 	"cosmossdk.io/collections"
 	"github.com/kopi-money/kopi/cache/cachetest"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func createMapCache() (context.Context, *MapCache[string, uint64]) {
 	store, ctx := cachetest.Deps()
 	sb := collections.NewSchemaBuilder(store)
 
-	mapCache := NewCacheMap[string, uint64](
+	mapCache := NewMapCache[string, uint64](
 		sb,
 		collections.NewPrefix(0),
 		"testmap",
@@ -32,7 +33,7 @@ func TestMap1(t *testing.T) {
 	mapCache.Set(ctx, "a", 1)
 
 	counter := 0
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	for iterator.Valid() {
 		counter++
 		item := iterator.GetNextKeyValue()
@@ -51,7 +52,7 @@ func TestMap2(t *testing.T) {
 	mapCache.Set(ctx, "b", 1)
 
 	counter := 0
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	for iterator.Valid() {
 		counter++
 		item := iterator.GetNextKeyValue()
@@ -71,7 +72,7 @@ func TestMap3(t *testing.T) {
 	mapCache.Set(ctx, "c", 1)
 
 	counter := 0
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	for iterator.Valid() {
 		counter++
 		item := iterator.GetNextKeyValue()
@@ -90,7 +91,7 @@ func TestMap4(t *testing.T) {
 	mapCache.Remove(ctx, "a")
 
 	counter := 0
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	for iterator.Valid() {
 		counter++
 		item := iterator.GetNextKeyValue()
@@ -110,7 +111,7 @@ func TestMap5(t *testing.T) {
 	mapCache.Remove(ctx, "a")
 
 	counter := 0
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	for iterator.Valid() {
 		counter++
 		item := iterator.GetNextKeyValue()
@@ -126,23 +127,23 @@ func TestMap6(t *testing.T) {
 	defer TransactionHandler.ClearTransactions()
 
 	mapCache.Set(ctx, "a", 1)
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	require.Equal(t, 1, len(iterator.GetAll()))
 
 	mapCache.Set(ctx, "a", 1)
-	iterator = mapCache.Iterator(ctx, nil, nil)
+	iterator = mapCache.Iterator(ctx, nil)
 	require.Equal(t, 1, len(iterator.GetAll()))
 
 	mapCache.Set(ctx, "b", 2)
-	iterator = mapCache.Iterator(ctx, nil, nil)
+	iterator = mapCache.Iterator(ctx, nil)
 	require.Equal(t, 2, len(iterator.GetAll()))
 
 	mapCache.Remove(ctx, "a")
-	iterator = mapCache.Iterator(ctx, nil, nil)
+	iterator = mapCache.Iterator(ctx, nil)
 	require.Equal(t, 1, len(iterator.GetAll()))
 
 	mapCache.Remove(ctx, "b")
-	iterator = mapCache.Iterator(ctx, nil, nil)
+	iterator = mapCache.Iterator(ctx, nil)
 	require.Equal(t, 0, len(iterator.GetAll()))
 }
 
@@ -154,7 +155,7 @@ func TestMap7(t *testing.T) {
 	_, has := mapCache.Get(ctx, "a")
 	require.False(t, has)
 
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	require.Equal(t, 0, len(iterator.GetAll()))
 }
 
@@ -176,7 +177,7 @@ func TestMap8(t *testing.T) {
 	_, has = mapCache.Get(ctx, "a")
 	require.False(t, has)
 
-	iterator := mapCache.Iterator(ctx, nil, nil)
+	iterator := mapCache.Iterator(ctx, nil)
 	require.Equal(t, 0, len(iterator.GetAll()))
 }
 

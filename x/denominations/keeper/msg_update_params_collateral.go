@@ -2,44 +2,31 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func (k msgServer) AddCollateralDenom(goCtx context.Context, req *types.MsgAddCollateralDenom) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) CollateralAddDenom(ctx context.Context, req *types.MsgCollateralAddDenom) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
+		ltv, _ := math.LegacyNewDecFromStr(req.Ltv)
+		maxDeposit, _ := math.NewIntFromString(req.MaxDeposit)
 
-		ltv, err := math.LegacyNewDecFromStr(req.Ltv)
-		if err != nil {
-			return err
-		}
-
-		maxDeposit, ok := math.NewIntFromString(req.MaxDeposit)
-		if !ok {
-			return fmt.Errorf("invalid max deposit value: %v", req.MaxDeposit)
-		}
-
-		collateralDenom := types.CollateralDenom{
-			Denom:      req.Denom,
+		params.CollateralDenoms = append(params.CollateralDenoms, &types.CollateralDenom{
+			DexDenom:   req.Denom,
 			Ltv:        ltv,
 			MaxDeposit: maxDeposit,
-		}
+		})
 
-		params.CollateralDenoms = append(params.CollateralDenoms, &collateralDenom)
-
-		if err = k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 		return nil
@@ -48,24 +35,19 @@ func (k msgServer) AddCollateralDenom(goCtx context.Context, req *types.MsgAddCo
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateCollateralDenomLTV(goCtx context.Context, req *types.MsgUpdateCollateralDenomLTV) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) CollateralUpdateLTV(ctx context.Context, req *types.MsgCollateralUpdateLTV) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		ltv, err := math.LegacyNewDecFromStr(req.Ltv)
-		if err != nil {
-			return err
-		}
-
+		params := k.GetParams(innerCtx)
+		ltv, _ := math.LegacyNewDecFromStr(req.Ltv)
 		collateralDenoms := []*types.CollateralDenom{}
 		found := false
 
 		for _, collateralDenom := range params.CollateralDenoms {
-			if collateralDenom.Denom == req.Denom {
+			if collateralDenom.DexDenom == req.Denom {
 				collateralDenom.Ltv = ltv
 				found = true
 			}
@@ -79,7 +61,7 @@ func (k msgServer) UpdateCollateralDenomLTV(goCtx context.Context, req *types.Ms
 
 		params.CollateralDenoms = collateralDenoms
 
-		if err = k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -89,24 +71,20 @@ func (k msgServer) UpdateCollateralDenomLTV(goCtx context.Context, req *types.Ms
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateCollateralDenomMaxDeposit(goCtx context.Context, req *types.MsgUpdateCollateralDenomMaxDeposit) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) CollateralUpdateDepositLimit(ctx context.Context, req *types.MsgCollateralUpdateDepositLimit) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 
-		maxDeposit, ok := math.NewIntFromString(req.MaxDeposit)
-		if !ok {
-			return fmt.Errorf("invalid max deposit value: %v", req.MaxDeposit)
-		}
-
+		maxDeposit, _ := math.NewIntFromString(req.MaxDeposit)
 		collateralDenoms := []*types.CollateralDenom{}
 		found := false
 
 		for _, collateralDenom := range params.CollateralDenoms {
-			if collateralDenom.Denom == req.Denom {
+			if collateralDenom.DexDenom == req.Denom {
 				collateralDenom.MaxDeposit = maxDeposit
 				found = true
 			}
@@ -120,7 +98,7 @@ func (k msgServer) UpdateCollateralDenomMaxDeposit(goCtx context.Context, req *t
 
 		params.CollateralDenoms = collateralDenoms
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 

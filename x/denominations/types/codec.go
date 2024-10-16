@@ -11,20 +11,33 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	// this line is used by starport scaffolding # 3
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAddCAsset{},
-		&MsgAddCollateralDenom{},
-		&MsgAddDEXDenom{},
-		&MsgAddKCoin{},
-		&MsgAddKCoinReferences{},
-		&MsgRemoveKCoinReferences{},
-		&MsgUpdateCAssetDexFeeShare{},
-		&MsgUpdateCollateralDenomMaxDeposit{},
-		&MsgUpdateCollateralDenomLTV{},
-		&MsgUpdateDEXDenomMinimumLiquidity{},
-		&MsgUpdateDEXDenomMinimumOrderSize{},
-		&MsgUpdateKCoinSupply{},
-		&MsgUpdateKCoinMintAmount{},
-		&MsgUpdateKCoinBurnAmount{},
+		&MsgDexAddDenom{},
+		&MsgDexUpdateMinimumLiquidity{},
+		&MsgDexUpdateMinimumOrderSize{},
+
+		&MsgKCoinAddDenom{},
+		&MsgKCoinAddReferences{},
+		&MsgKCoinRemoveReferences{},
+		&MsgKCoinUpdateSupplyLimit{},
+		&MsgKCoinUpdateMintAmount{},
+		&MsgKCoinUpdateBurnAmount{},
+
+		&MsgCollateralAddDenom{},
+		&MsgCollateralUpdateDepositLimit{},
+		&MsgCollateralUpdateLTV{},
+
+		&MsgCAssetAddDenom{},
+		&MsgCAssetUpdateDexFeeShare{},
+		&MsgCAssetUpdateBorrowLimit{},
+		&MsgCAssetUpdateMinimumLoanSize{},
+
+		&MsgAddArbitrageDenom{},
+		&MsgArbitrageUpdateBuyThreshold{},
+		&MsgArbitrageUpdateSellThreshold{},
+		&MsgArbitrageUpdateBuyAmount{},
+		&MsgArbitrageUpdateSellAmount{},
+		&MsgArbitrageUpdateRedemptionFee{},
+		&MsgArbitrageUpdateRedemptionFeeReserveShare{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

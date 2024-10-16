@@ -8,8 +8,8 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 message Order {
   uint64 index = 1;
   string creator = 2;
-  string denom_from = 3;
-  string denom_to = 4;
+  string denom_giving = 3;
+  string denom_receiving = 4;
 
   bytes amount_given = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",

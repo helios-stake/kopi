@@ -1,0 +1,17 @@
+syntax = "proto3";
+package kopi.reserve;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "kopi/reserve/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/reserve/types";
+
+// GenesisState defines the reserve module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}

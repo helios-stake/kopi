@@ -13,12 +13,31 @@ option go_package = "github.com/kopi-money/kopi/x/swap/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
+  rpc UpdateBurnThreshold (MsgUpdateBurnThreshold) returns (Void);
+  rpc UpdateMintThreshold (MsgUpdateMintThreshold) returns (Void);
   rpc UpdateStakingShare (MsgUpdateStakingShare) returns (Void);
 }
 
 message Void {}
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateBurnThreshold {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/swap/MsgUpdateBurnThreshold";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string burn_threshold = 2;
+}
+
+
+message MsgUpdateMintThreshold {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/swap/MsgUpdateMintThreshold";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string mint_threshold = 2;
+}
+
+
 message MsgUpdateStakingShare {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "kopi/x/swap/MsgUpdateStakingShare";

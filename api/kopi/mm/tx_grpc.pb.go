@@ -30,7 +30,7 @@ const (
 	Msg_RepayLoan_FullMethodName                    = "/kopi.mm.Msg/RepayLoan"
 	Msg_UpdateCollateralDiscount_FullMethodName     = "/kopi.mm.Msg/UpdateCollateralDiscount"
 	Msg_UpdateInterestRateParameters_FullMethodName = "/kopi.mm.Msg/UpdateInterestRateParameters"
-	Msg_UpdateRedemptionFee_FullMethodName          = "/kopi.mm.Msg/UpdateRedemptionFee"
+	Msg_UpdateRedemptionFees_FullMethodName         = "/kopi.mm.Msg/UpdateRedemptionFees"
 	Msg_UpdateProtocolShare_FullMethodName          = "/kopi.mm.Msg/UpdateProtocolShare"
 )
 
@@ -49,7 +49,7 @@ type MsgClient interface {
 	RepayLoan(ctx context.Context, in *MsgRepayLoan, opts ...grpc.CallOption) (*Void, error)
 	UpdateCollateralDiscount(ctx context.Context, in *MsgUpdateCollateralDiscount, opts ...grpc.CallOption) (*Void, error)
 	UpdateInterestRateParameters(ctx context.Context, in *MsgUpdateInterestRateParameters, opts ...grpc.CallOption) (*Void, error)
-	UpdateRedemptionFee(ctx context.Context, in *MsgUpdateRedemptionFee, opts ...grpc.CallOption) (*Void, error)
+	UpdateRedemptionFees(ctx context.Context, in *MsgUpdateRedemptionFees, opts ...grpc.CallOption) (*Void, error)
 	UpdateProtocolShare(ctx context.Context, in *MsgUpdateProtocolShare, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -160,9 +160,9 @@ func (c *msgClient) UpdateInterestRateParameters(ctx context.Context, in *MsgUpd
 	return out, nil
 }
 
-func (c *msgClient) UpdateRedemptionFee(ctx context.Context, in *MsgUpdateRedemptionFee, opts ...grpc.CallOption) (*Void, error) {
+func (c *msgClient) UpdateRedemptionFees(ctx context.Context, in *MsgUpdateRedemptionFees, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateRedemptionFee_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdateRedemptionFees_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ type MsgServer interface {
 	RepayLoan(context.Context, *MsgRepayLoan) (*Void, error)
 	UpdateCollateralDiscount(context.Context, *MsgUpdateCollateralDiscount) (*Void, error)
 	UpdateInterestRateParameters(context.Context, *MsgUpdateInterestRateParameters) (*Void, error)
-	UpdateRedemptionFee(context.Context, *MsgUpdateRedemptionFee) (*Void, error)
+	UpdateRedemptionFees(context.Context, *MsgUpdateRedemptionFees) (*Void, error)
 	UpdateProtocolShare(context.Context, *MsgUpdateProtocolShare) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -235,8 +235,8 @@ func (UnimplementedMsgServer) UpdateCollateralDiscount(context.Context, *MsgUpda
 func (UnimplementedMsgServer) UpdateInterestRateParameters(context.Context, *MsgUpdateInterestRateParameters) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateInterestRateParameters not implemented")
 }
-func (UnimplementedMsgServer) UpdateRedemptionFee(context.Context, *MsgUpdateRedemptionFee) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateRedemptionFee not implemented")
+func (UnimplementedMsgServer) UpdateRedemptionFees(context.Context, *MsgUpdateRedemptionFees) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRedemptionFees not implemented")
 }
 func (UnimplementedMsgServer) UpdateProtocolShare(context.Context, *MsgUpdateProtocolShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProtocolShare not implemented")
@@ -452,20 +452,20 @@ func _Msg_UpdateInterestRateParameters_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateRedemptionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateRedemptionFee)
+func _Msg_UpdateRedemptionFees_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateRedemptionFees)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateRedemptionFee(ctx, in)
+		return srv.(MsgServer).UpdateRedemptionFees(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateRedemptionFee_FullMethodName,
+		FullMethod: Msg_UpdateRedemptionFees_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateRedemptionFee(ctx, req.(*MsgUpdateRedemptionFee))
+		return srv.(MsgServer).UpdateRedemptionFees(ctx, req.(*MsgUpdateRedemptionFees))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -540,8 +540,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateInterestRateParameters_Handler,
 		},
 		{
-			MethodName: "UpdateRedemptionFee",
-			Handler:    _Msg_UpdateRedemptionFee_Handler,
+			MethodName: "UpdateRedemptionFees",
+			Handler:    _Msg_UpdateRedemptionFees_Handler,
 		},
 		{
 			MethodName: "UpdateProtocolShare",

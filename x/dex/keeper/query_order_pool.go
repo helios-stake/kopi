@@ -5,15 +5,9 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) OrderPool(ctx context.Context, req *types.QueryOrderPoolRequest) (*types.QueryOrderPoolResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
+func (k Keeper) OrderPool(ctx context.Context, _ *types.QueryOrderPoolRequest) (*types.QueryOrderPoolResponse, error) {
 	orderCoins := k.OrderSum(ctx)
 
 	addr := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
@@ -40,7 +34,9 @@ func (k Keeper) OrderPool(ctx context.Context, req *types.QueryOrderPoolRequest)
 		balances = append(balances, balance)
 	}
 
-	return &types.QueryOrderPoolResponse{Balance: balances}, nil
+	return &types.QueryOrderPoolResponse{
+		Balance: balances,
+	}, nil
 }
 
 func (k Keeper) OrderSum(ctx context.Context) map[string]math.Int {
@@ -49,11 +45,11 @@ func (k Keeper) OrderSum(ctx context.Context) map[string]math.Int {
 	iterator := k.OrderIterator(ctx)
 	for iterator.Valid() {
 		order := iterator.GetNext()
-		if _, exists := coins[order.DenomFrom]; !exists {
-			coins[order.DenomFrom] = math.ZeroInt()
+		if _, exists := coins[order.DenomGiving]; !exists {
+			coins[order.DenomGiving] = math.ZeroInt()
 		}
 
-		coins[order.DenomFrom] = coins[order.DenomFrom].Add(order.AmountLeft)
+		coins[order.DenomGiving] = coins[order.DenomGiving].Add(order.AmountLeft)
 	}
 
 	return coins

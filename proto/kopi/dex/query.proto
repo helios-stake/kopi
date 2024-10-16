@@ -84,8 +84,11 @@ service Query {
   rpc ReserveFundsPerDenom (QueryReserveFundsPerDenomRequest) returns (Denom) {
     option (google.api.http).get = "/kopi/dex/reserve/funds/by_denom";
   }
-  rpc SimulateTrade (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
-    option (google.api.http).get = "/kopi/dex/simulate_trade";
+  rpc QuerySimulateSell (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
+    option (google.api.http).get = "/kopi/dex/simulate/sell";
+  }
+  rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
+    option (google.api.http).get = "/kopi/dex/simulate/buy";
   }
 
   // this line is used by starport scaffolding # 2
@@ -106,8 +109,8 @@ message QueryLiquidityPoolResponse {
 }
 
 message OrdersByPairRequest {
-  string denom_from = 1;
-  string denom_to = 2;
+  string denom_giving = 1;
+  string denom_receiving = 2;
 }
 
 message QueryOrdersByPairResponse {
@@ -132,8 +135,8 @@ message QueryReserveFundsResponse {
 }
 
 message QueryPriceRequest {
-  string denom_from = 1;
-  string denom_to = 2;
+  string denom_giving = 1;
+  string denom_receiving = 2;
 }
 
 message QueryPriceResponse {
@@ -285,12 +288,16 @@ message QueryGetOrderResponse {
 
 message QueryOrdersAddressRequest {
   string address = 1;
-  string denom_from = 2;
-  string denom_to = 3;
+  string denom_giving = 2;
+  string denom_receiving = 3;
+
+  cosmos.base.query.v1beta1.PageRequest pagination = 4;
 }
 
 message QueryOrdersAddressResponse {
   repeated OrderResponse orders = 1;
+
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryOrdersNumRequest {}
@@ -306,11 +313,10 @@ message QueryOrdersSumResponse {
 }
 
 message QueryOrdersDenomSumRequest {
-  string denom_to = 1;
 }
 
 message OrdersSum {
-  string denom_from = 1;
+  string denom_giving = 1;
   string sum = 2;
 }
 
@@ -319,20 +325,21 @@ message QueryOrdersDenomSumResponse {
 }
 
 message QuerySimulateTradeRequest {
-  string denom_from = 1;
-  string denom_to = 2;
+  string denom_giving = 1;
+  string denom_receiving = 2;
   string address = 3;
   string amount = 4;
 }
 
 message QuerySimulateTradeResponse {
-  int64  amount_given_in_usd = 1;
-  int64  amount_received = 2;
-  int64  amount_received_in_usd = 3;
-  int64  fee = 4;
-  string price = 5;
-  string price_from_to_usd = 6;
-  string price_to_to_usd = 7;
+  int64  amount_given = 1;
+  int64  amount_given_in_usd = 2;
+  int64  amount_received = 3;
+  int64  amount_received_in_usd = 4;
+  int64  fee = 5;
+  string price = 6;
+  string price_given_in_usd = 7;
+  string price_received_in_usd = 8;
 }
 
 message OrderBookSum {
@@ -343,7 +350,7 @@ message OrderBookSum {
 }
 
 message QueryDepthToRequest {
-  string denom_to = 1;
+  string denom_receiving = 1;
 }
 
 message QueryDepthToResponse {
@@ -351,7 +358,7 @@ message QueryDepthToResponse {
 }
 
 message QueryDepthFromRequest {
-  string denom_from = 1;
+  string denom_giving = 1;
 }
 
 message QueryDepthFromResponse {
@@ -365,8 +372,8 @@ message QueryOrdersRequest {
 message OrderResponse {
   uint64 index = 1;
   string address = 2;
-  string denom_from = 3;
-  string denom_to = 4;
+  string denom_giving = 3;
+  string denom_receiving = 4;
   string amount_given = 5;
   string amount_left = 6;
   string amount_left_usd = 7;
@@ -374,9 +381,10 @@ message OrderResponse {
   string amount_received_usd = 9;
   string trade_amount = 10;
   string max_price = 11;
-  uint64 num_blocks = 12;
-  uint64 block_end = 13;
-  bool allow_incomplete = 14;
+  string max_price_usd = 12;
+  uint64 num_blocks = 13;
+  uint64 block_end = 14;
+  bool allow_incomplete = 15;
 }
 
 message QueryOrdersResponse {

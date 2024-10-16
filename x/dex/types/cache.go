@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/measurement"
 )
@@ -13,20 +14,19 @@ type LoadPoolBalance func() *CoinMap
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
 
-func NewOrderCaches(lat, lar, lal, laf, lao LoadAccAddress, ltf, lrfs, lof LoadFee, lpbr, lpbl LoadPoolBalance, llp LoadLiquidityPair, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, llp LoadLiquidityPair, ll LoadLiquidity) *OrdersCaches {
 	return &OrdersCaches{
-		AccPoolTrade:      newItemCache(lat),
-		AccPoolReserve:    newItemCache(lar),
-		AccPoolLiquidity:  newItemCache(lal),
-		AccPoolFees:       newItemCache(laf),
-		AccPoolOrders:     newItemCache(lao),
-		TradeFee:          newItemCache(ltf),
-		ReserveFeeShare:   newItemCache(lrfs),
-		OrderFee:          newItemCache(lof),
-		ReimbursementPool: newItemCache(lpbr),
-		LiquidityPool:     newItemCache(lpbl),
-		LiquidityPair:     newOrderCache(llp),
-		LiquidityMap:      newLiquidityMap(ll),
+		AccPoolTrade:     newItemCache(lat),
+		AccPoolReserve:   newItemCache(lar),
+		AccPoolLiquidity: newItemCache(lal),
+		AccPoolOrders:    newItemCache(lao),
+		TradeFee:         newItemCache(ltf),
+		ReserveFeeShare:  newItemCache(lrfs),
+		OrderFee:         newItemCache(lof),
+		ProviderFee:      newItemCache(lpf),
+		LiquidityPool:    newItemCache(lpbl),
+		LiquidityPair:    newOrderCache(llp),
+		LiquidityMap:     newLiquidityMap(ll),
 
 		PriceAmounts:          make(map[Pair]math.LegacyDec),
 		PriceMaxAmounts:       make(map[string]math.LegacyDec),
@@ -89,11 +89,11 @@ type OrdersCaches struct {
 	AccPoolReserve        *ItemCache[sdk.AccAddress]
 	AccPoolTrade          *ItemCache[sdk.AccAddress]
 	AccPoolLiquidity      *ItemCache[sdk.AccAddress]
-	AccPoolFees           *ItemCache[sdk.AccAddress]
 	AccPoolOrders         *ItemCache[sdk.AccAddress]
 	TradeFee              *ItemCache[math.LegacyDec]
 	ReserveFeeShare       *ItemCache[math.LegacyDec]
 	OrderFee              *ItemCache[math.LegacyDec]
+	ProviderFee           *ItemCache[math.LegacyDec]
 	LiquidityPool         *ItemCache[*CoinMap]
 	ReimbursementPool     *ItemCache[*CoinMap]
 	LiquidityPair         *MapCache[LiquidityPair]

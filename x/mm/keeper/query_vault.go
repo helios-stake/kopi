@@ -5,29 +5,25 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/mm/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetVaultValues(ctx context.Context, req *types.GetVaultValuesQuery) (*types.GetVaultValuesResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
+func (k Keeper) GetVaultValues(ctx context.Context, _ *types.GetVaultValuesQuery) (*types.GetVaultValuesResponse, error) {
 	var vaults []*types.Vault
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		vault := types.Vault{
-			Denom:   cAsset.BaseDenom,
-			Balance: k.getBalance(ctx, cAsset.BaseDenom).String(),
-			LoanSum: k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).LoanSum.String(),
-			Supply:  k.BankKeeper.GetSupply(ctx, cAsset.Name).Amount.String(),
+			Denom:   cAsset.BaseDexDenom,
+			Balance: k.getBalance(ctx, cAsset.BaseDexDenom).String(),
+			LoanSum: k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum.String(),
+			Supply:  k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount.String(),
 		}
 
 		vaults = append(vaults, &vault)
 	}
 
-	return &types.GetVaultValuesResponse{Vaults: vaults}, nil
+	return &types.GetVaultValuesResponse{
+		Vaults: vaults,
+	}, nil
 }
 
 func (k Keeper) getBalance(ctx context.Context, denom string) math.Int {

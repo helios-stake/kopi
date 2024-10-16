@@ -1,0 +1,93 @@
+package keeper
+
+import (
+	"context"
+	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/kopi/x/strategies/types"
+)
+
+func (k Keeper) AutomationsAll(ctx context.Context, _ *types.QueryAutomationsAllRequest) (*types.QueryAutomationsResponse, error) {
+	return &types.QueryAutomationsResponse{
+		Automations: k.GetAutomations(ctx),
+	}, nil
+}
+
+func (k Keeper) AutomationsAddress(ctx context.Context, req *types.QueryAutomationsAddressRequest) (*types.QueryAutomationsResponse, error) {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	return &types.QueryAutomationsResponse{
+		Automations: k.GetAutomationsByAddress(ctx, req.Address),
+	}, nil
+}
+
+func (k Keeper) AutomationsIndex(ctx context.Context, req *types.QueryAutomationsByIndex) (*types.Automation, error) {
+	index, err := strconv.Atoi(req.Index)
+	if err != nil {
+		return nil, fmt.Errorf("invalid index: %w", err)
+	}
+
+	automation, has := k.automations.Get(ctx, uint64(index))
+	if !has {
+		return nil, types.ErrAutomationNotFound
+	}
+
+	return &automation, nil
+}
+
+func (k Keeper) AutomationsAddressFunds(ctx context.Context, req *types.QueryAutomationsAddressFundsRequest) (*types.QueryAutomationsAddressFundsResponse, error) {
+	acc, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	funds := k.GetAutomationFunds(ctx, req.Address)
+	coins := k.BankKeeper.SpendableCoin(ctx, acc, constants.KUSD).Amount
+
+	return &types.QueryAutomationsAddressFundsResponse{
+		Balance: coins.String(),
+		Funds:   funds.String(),
+	}, nil
+}
+
+func (k Keeper) AutomationsFunds(ctx context.Context, _ *types.QueryAutomationsFundsRequest) (*types.QueryAutomationsFundsResponse, error) {
+	moduleAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolAutomationFunds)
+	poolAmount := k.BankKeeper.SpendableCoin(ctx, moduleAcc.GetAddress(), constants.KUSD).Amount
+
+	sum := math.ZeroInt()
+	iterator := k.AutomationFundsIterator(ctx)
+	for iterator.Valid() {
+		sum = sum.Add(iterator.GetNext().Funds)
+	}
+
+	return &types.QueryAutomationsFundsResponse{
+		Pool: poolAmount.String(),
+		Sum:  sum.String(),
+	}, nil
+}
+
+func (k Keeper) AutomationsStats(ctx context.Context, _ *types.QueryAutomationsStatsRequest) (*types.QueryAutomationsStatsResponse, error) {
+	var total int64 = 0
+	var active int64 = 0
+
+	iterator := k.AutomationIterator(ctx)
+	for iterator.Valid() {
+		automation := iterator.GetNext()
+
+		total++
+		if automation.Active {
+			active++
+		}
+	}
+
+	return &types.QueryAutomationsStatsResponse{
+		Total:  total,
+		Active: active,
+	}, nil
+}

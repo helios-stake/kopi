@@ -2,74 +2,45 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func (k msgServer) AddKCoin(goCtx context.Context, req *types.MsgAddKCoin) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDenom) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 
-		maxSupply, ok := math.NewIntFromString(req.MaxSupply)
-		if !ok {
-			return fmt.Errorf("invalid max supply value: %v", req.MaxSupply)
-		}
+		maxSupply, _ := math.NewIntFromString(req.MaxSupply)
+		maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
+		maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
+		factor, _ := math.LegacyNewDecFromStr(req.Factor)
+		minLiquidity, _ := math.NewIntFromString(req.MinLiquidity)
+		minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
 
-		maxBurnAmount, ok := math.NewIntFromString(req.MaxBurnAmount)
-		if !ok {
-			return fmt.Errorf("invalid max burn amount value: %v", req.MaxBurnAmount)
-		}
-
-		maxMintAmount, ok := math.NewIntFromString(req.MaxMintAmount)
-		if !ok {
-			return fmt.Errorf("invalid max mint amount value: %v", req.MaxMintAmount)
-		}
-
-		factor, err := math.LegacyNewDecFromStr(req.Factor)
-		if err != nil {
-			return err
-		}
-
-		minLiquidity, ok := math.NewIntFromString(req.MinLiquidity)
-		if !ok {
-			return fmt.Errorf("invalid min liquidity value: %v", req.MinLiquidity)
-		}
-
-		minOrderSize, ok := math.NewIntFromString(req.MinOrderSize)
-		if !ok {
-			return fmt.Errorf("invalid min order size: %v", req.MinOrderSize)
-		}
-
-		kCoin := types.KCoin{
-			Denom:         req.Denom,
+		params.KCoins = append(params.KCoins, &types.KCoin{
+			DexDenom:      req.Name,
 			References:    req.References,
 			MaxSupply:     maxSupply,
 			MaxMintAmount: maxMintAmount,
 			MaxBurnAmount: maxBurnAmount,
-		}
+		})
 
-		dexDenom := types.DexDenom{
-			Name:         req.Denom,
+		params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
+			Name:         req.Name,
 			Factor:       &factor,
 			MinLiquidity: minLiquidity,
 			MinOrderSize: minOrderSize,
-		}
+		})
 
-		params.KCoins = append(params.KCoins, &kCoin)
-		params.DexDenoms = append(params.DexDenoms, &dexDenom)
-
-		if err = k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -79,24 +50,19 @@ func (k msgServer) AddKCoin(goCtx context.Context, req *types.MsgAddKCoin) (*typ
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateKCoinSupply(goCtx context.Context, req *types.MsgUpdateKCoinSupply) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinUpdateSupplyLimit(ctx context.Context, req *types.MsgKCoinUpdateSupplyLimit) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		maxSupply, ok := math.NewIntFromString(req.MaxSupply)
-		if !ok {
-			return fmt.Errorf("invalid max supply value: %v", req.MaxSupply)
-		}
-
+		params := k.GetParams(innerCtx)
+		maxSupply, _ := math.NewIntFromString(req.MaxSupply)
 		kCoins := []*types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
-			if kCoin.Denom == req.Denom {
+			if kCoin.DexDenom == req.Denom {
 				kCoin.MaxSupply = maxSupply
 				found = true
 			}
@@ -110,7 +76,7 @@ func (k msgServer) UpdateKCoinSupply(goCtx context.Context, req *types.MsgUpdate
 
 		params.KCoins = kCoins
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -120,24 +86,19 @@ func (k msgServer) UpdateKCoinSupply(goCtx context.Context, req *types.MsgUpdate
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateKCoinMintAmount(goCtx context.Context, req *types.MsgUpdateKCoinMintAmount) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinUpdateMintAmount(ctx context.Context, req *types.MsgKCoinUpdateMintAmount) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		maxMintAmount, ok := math.NewIntFromString(req.MaxMintAmount)
-		if !ok {
-			return fmt.Errorf("invalid max mint amount value: %v", req.MaxMintAmount)
-		}
-
+		params := k.GetParams(innerCtx)
+		maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
 		kCoins := []*types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
-			if kCoin.Denom == req.Denom {
+			if kCoin.DexDenom == req.Denom {
 				kCoin.MaxMintAmount = maxMintAmount
 				found = true
 			}
@@ -151,7 +112,7 @@ func (k msgServer) UpdateKCoinMintAmount(goCtx context.Context, req *types.MsgUp
 
 		params.KCoins = kCoins
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -161,24 +122,19 @@ func (k msgServer) UpdateKCoinMintAmount(goCtx context.Context, req *types.MsgUp
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) UpdateKCoinBurnAmount(goCtx context.Context, req *types.MsgUpdateKCoinBurnAmount) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinUpdateBurnAmount(ctx context.Context, req *types.MsgKCoinUpdateBurnAmount) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
-
-		maxBurnAmount, ok := math.NewIntFromString(req.MaxBurnAmount)
-		if !ok {
-			return fmt.Errorf("invalid max burn amount value: %v", req.MaxBurnAmount)
-		}
-
+		params := k.GetParams(innerCtx)
+		maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
 		kCoins := []*types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
-			if kCoin.Denom == req.Denom {
+			if kCoin.DexDenom == req.Denom {
 				kCoin.MaxBurnAmount = maxBurnAmount
 				found = true
 			}
@@ -192,7 +148,7 @@ func (k msgServer) UpdateKCoinBurnAmount(goCtx context.Context, req *types.MsgUp
 
 		params.KCoins = kCoins
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -202,19 +158,19 @@ func (k msgServer) UpdateKCoinBurnAmount(goCtx context.Context, req *types.MsgUp
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) AddKCoinReferences(goCtx context.Context, req *types.MsgAddKCoinReferences) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinAddReferences(ctx context.Context, req *types.MsgKCoinAddReferences) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 
 		kCoins := []*types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
-			if kCoin.Denom == req.Denom {
+			if kCoin.DexDenom == req.Denom {
 				kCoin.References = append(kCoin.References, req.References...)
 				found = true
 			}
@@ -228,7 +184,7 @@ func (k msgServer) AddKCoinReferences(goCtx context.Context, req *types.MsgAddKC
 
 		params.KCoins = kCoins
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -238,19 +194,19 @@ func (k msgServer) AddKCoinReferences(goCtx context.Context, req *types.MsgAddKC
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func (k msgServer) RemoveKCoinReferences(goCtx context.Context, req *types.MsgRemoveKCoinReferences) (*types.MsgUpdateParamsResponse, error) {
-	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func (k msgServer) KCoinRemoveReferences(ctx context.Context, req *types.MsgKCoinRemoveReferences) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 
 		kCoins := []*types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
-			if kCoin.Denom == req.Denom {
+			if kCoin.DexDenom == req.Denom {
 				kCoin.References = filterReferences(kCoin.References, req.References)
 				found = true
 			}
@@ -264,7 +220,7 @@ func (k msgServer) RemoveKCoinReferences(goCtx context.Context, req *types.MsgRe
 
 		params.KCoins = kCoins
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 

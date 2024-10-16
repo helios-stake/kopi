@@ -27,9 +27,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type DexDenom struct {
 	Name         string                       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Factor       *cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=factor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"factor,omitempty"`
-	MinLiquidity cosmossdk_io_math.Int        `protobuf:"bytes,3,opt,name=min_liquidity,json=minLiquidity,proto3,customtype=cosmossdk.io/math.Int" json:"min_liquidity"`
-	MinOrderSize cosmossdk_io_math.Int        `protobuf:"bytes,4,opt,name=min_order_size,json=minOrderSize,proto3,customtype=cosmossdk.io/math.Int" json:"min_order_size"`
+	Exponent     uint64                       `protobuf:"varint,2,opt,name=exponent,proto3" json:"exponent,omitempty"`
+	Factor       *cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=factor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"factor,omitempty"`
+	MinLiquidity cosmossdk_io_math.Int        `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3,customtype=cosmossdk.io/math.Int" json:"min_liquidity"`
+	MinOrderSize cosmossdk_io_math.Int        `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3,customtype=cosmossdk.io/math.Int" json:"min_order_size"`
 }
 
 func (m *DexDenom) Reset()         { *m = DexDenom{} }
@@ -72,8 +73,15 @@ func (m *DexDenom) GetName() string {
 	return ""
 }
 
+func (m *DexDenom) GetExponent() uint64 {
+	if m != nil {
+		return m.Exponent
+	}
+	return 0
+}
+
 type KCoin struct {
-	Denom         string                `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	DexDenom      string                `protobuf:"bytes,1,opt,name=dex_denom,json=dexDenom,proto3" json:"dex_denom,omitempty"`
 	References    []string              `protobuf:"bytes,2,rep,name=references,proto3" json:"references,omitempty"`
 	MaxSupply     cosmossdk_io_math.Int `protobuf:"bytes,3,opt,name=max_supply,json=maxSupply,proto3,customtype=cosmossdk.io/math.Int" json:"max_supply"`
 	MaxMintAmount cosmossdk_io_math.Int `protobuf:"bytes,4,opt,name=max_mint_amount,json=maxMintAmount,proto3,customtype=cosmossdk.io/math.Int" json:"max_mint_amount"`
@@ -113,9 +121,9 @@ func (m *KCoin) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_KCoin proto.InternalMessageInfo
 
-func (m *KCoin) GetDenom() string {
+func (m *KCoin) GetDexDenom() string {
 	if m != nil {
-		return m.Denom
+		return m.DexDenom
 	}
 	return ""
 }
@@ -127,8 +135,74 @@ func (m *KCoin) GetReferences() []string {
 	return nil
 }
 
+type ArbitrageDenom struct {
+	DexDenom                  string                      `protobuf:"bytes,1,opt,name=dex_denom,json=dexDenom,proto3" json:"dex_denom,omitempty"`
+	KCoin                     string                      `protobuf:"bytes,2,opt,name=k_coin,json=kCoin,proto3" json:"k_coin,omitempty"`
+	CAsset                    string                      `protobuf:"bytes,3,opt,name=c_asset,json=cAsset,proto3" json:"c_asset,omitempty"`
+	BuyThreshold              cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=buy_threshold,json=buyThreshold,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"buy_threshold"`
+	SellThreshold             cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=sell_threshold,json=sellThreshold,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"sell_threshold"`
+	BuyTradeAmount            cosmossdk_io_math.Int       `protobuf:"bytes,6,opt,name=buy_trade_amount,json=buyTradeAmount,proto3,customtype=cosmossdk.io/math.Int" json:"buy_trade_amount"`
+	SellTradeAmount           cosmossdk_io_math.Int       `protobuf:"bytes,7,opt,name=sell_trade_amount,json=sellTradeAmount,proto3,customtype=cosmossdk.io/math.Int" json:"sell_trade_amount"`
+	RedemptionFee             cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=redemption_fee,json=redemptionFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"redemption_fee"`
+	RedemptionFeeReserveShare cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=redemption_fee_reserve_share,json=redemptionFeeReserveShare,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"redemption_fee_reserve_share"`
+}
+
+func (m *ArbitrageDenom) Reset()         { *m = ArbitrageDenom{} }
+func (m *ArbitrageDenom) String() string { return proto.CompactTextString(m) }
+func (*ArbitrageDenom) ProtoMessage()    {}
+func (*ArbitrageDenom) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6a3f835420dd58e1, []int{2}
+}
+func (m *ArbitrageDenom) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ArbitrageDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ArbitrageDenom.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ArbitrageDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArbitrageDenom.Merge(m, src)
+}
+func (m *ArbitrageDenom) XXX_Size() int {
+	return m.Size()
+}
+func (m *ArbitrageDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_ArbitrageDenom.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ArbitrageDenom proto.InternalMessageInfo
+
+func (m *ArbitrageDenom) GetDexDenom() string {
+	if m != nil {
+		return m.DexDenom
+	}
+	return ""
+}
+
+func (m *ArbitrageDenom) GetKCoin() string {
+	if m != nil {
+		return m.KCoin
+	}
+	return ""
+}
+
+func (m *ArbitrageDenom) GetCAsset() string {
+	if m != nil {
+		return m.CAsset
+	}
+	return ""
+}
+
 type CollateralDenom struct {
-	Denom      string                      `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	DexDenom   string                      `protobuf:"bytes,1,opt,name=dex_denom,json=dexDenom,proto3" json:"dex_denom,omitempty"`
 	Ltv        cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=ltv,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"ltv"`
 	MaxDeposit cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=max_deposit,json=maxDeposit,proto3,customtype=cosmossdk.io/math.Int" json:"max_deposit"`
 }
@@ -137,7 +211,7 @@ func (m *CollateralDenom) Reset()         { *m = CollateralDenom{} }
 func (m *CollateralDenom) String() string { return proto.CompactTextString(m) }
 func (*CollateralDenom) ProtoMessage()    {}
 func (*CollateralDenom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6a3f835420dd58e1, []int{2}
+	return fileDescriptor_6a3f835420dd58e1, []int{3}
 }
 func (m *CollateralDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -166,16 +240,16 @@ func (m *CollateralDenom) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CollateralDenom proto.InternalMessageInfo
 
-func (m *CollateralDenom) GetDenom() string {
+func (m *CollateralDenom) GetDexDenom() string {
 	if m != nil {
-		return m.Denom
+		return m.DexDenom
 	}
 	return ""
 }
 
 type CAsset struct {
-	Name            string                      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	BaseDenom       string                      `protobuf:"bytes,2,opt,name=base_denom,json=baseDenom,proto3" json:"base_denom,omitempty"`
+	DexDenom        string                      `protobuf:"bytes,1,opt,name=dex_denom,json=dexDenom,proto3" json:"dex_denom,omitempty"`
+	BaseDexDenom    string                      `protobuf:"bytes,2,opt,name=base_dex_denom,json=baseDexDenom,proto3" json:"base_dex_denom,omitempty"`
 	DexFeeShare     cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=dex_fee_share,json=dexFeeShare,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"dex_fee_share"`
 	BorrowLimit     cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=borrow_limit,json=borrowLimit,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_limit"`
 	MinimumLoanSize cosmossdk_io_math.Int       `protobuf:"bytes,5,opt,name=minimum_loan_size,json=minimumLoanSize,proto3,customtype=cosmossdk.io/math.Int" json:"minimum_loan_size"`
@@ -185,7 +259,7 @@ func (m *CAsset) Reset()         { *m = CAsset{} }
 func (m *CAsset) String() string { return proto.CompactTextString(m) }
 func (*CAsset) ProtoMessage()    {}
 func (*CAsset) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6a3f835420dd58e1, []int{3}
+	return fileDescriptor_6a3f835420dd58e1, []int{4}
 }
 func (m *CAsset) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -214,18 +288,62 @@ func (m *CAsset) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CAsset proto.InternalMessageInfo
 
-func (m *CAsset) GetName() string {
+func (m *CAsset) GetDexDenom() string {
 	if m != nil {
-		return m.Name
+		return m.DexDenom
 	}
 	return ""
 }
 
-func (m *CAsset) GetBaseDenom() string {
+func (m *CAsset) GetBaseDexDenom() string {
 	if m != nil {
-		return m.BaseDenom
+		return m.BaseDexDenom
 	}
 	return ""
+}
+
+type StrategyDenoms struct {
+	ArbitrageDenoms []*ArbitrageDenom `protobuf:"bytes,5,rep,name=arbitrage_denoms,json=arbitrageDenoms,proto3" json:"arbitrage_denoms,omitempty"`
+}
+
+func (m *StrategyDenoms) Reset()         { *m = StrategyDenoms{} }
+func (m *StrategyDenoms) String() string { return proto.CompactTextString(m) }
+func (*StrategyDenoms) ProtoMessage()    {}
+func (*StrategyDenoms) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6a3f835420dd58e1, []int{5}
+}
+func (m *StrategyDenoms) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *StrategyDenoms) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_StrategyDenoms.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *StrategyDenoms) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StrategyDenoms.Merge(m, src)
+}
+func (m *StrategyDenoms) XXX_Size() int {
+	return m.Size()
+}
+func (m *StrategyDenoms) XXX_DiscardUnknown() {
+	xxx_messageInfo_StrategyDenoms.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StrategyDenoms proto.InternalMessageInfo
+
+func (m *StrategyDenoms) GetArbitrageDenoms() []*ArbitrageDenom {
+	if m != nil {
+		return m.ArbitrageDenoms
+	}
+	return nil
 }
 
 // Params defines the parameters for the module.
@@ -234,12 +352,13 @@ type Params struct {
 	KCoins           []*KCoin           `protobuf:"bytes,2,rep,name=k_coins,json=kCoins,proto3" json:"k_coins,omitempty"`
 	CAssets          []*CAsset          `protobuf:"bytes,3,rep,name=c_assets,json=cAssets,proto3" json:"c_assets,omitempty"`
 	CollateralDenoms []*CollateralDenom `protobuf:"bytes,4,rep,name=collateral_denoms,json=collateralDenoms,proto3" json:"collateral_denoms,omitempty"`
+	StrategyDenoms   *StrategyDenoms    `protobuf:"bytes,5,opt,name=strategy_denoms,json=strategyDenoms,proto3" json:"strategy_denoms,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
 func (*Params) ProtoMessage() {}
 func (*Params) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6a3f835420dd58e1, []int{4}
+	return fileDescriptor_6a3f835420dd58e1, []int{6}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -296,60 +415,84 @@ func (m *Params) GetCollateralDenoms() []*CollateralDenom {
 	return nil
 }
 
+func (m *Params) GetStrategyDenoms() *StrategyDenoms {
+	if m != nil {
+		return m.StrategyDenoms
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*DexDenom)(nil), "kopi.denominations.DexDenom")
 	proto.RegisterType((*KCoin)(nil), "kopi.denominations.KCoin")
+	proto.RegisterType((*ArbitrageDenom)(nil), "kopi.denominations.ArbitrageDenom")
 	proto.RegisterType((*CollateralDenom)(nil), "kopi.denominations.CollateralDenom")
 	proto.RegisterType((*CAsset)(nil), "kopi.denominations.CAsset")
+	proto.RegisterType((*StrategyDenoms)(nil), "kopi.denominations.StrategyDenoms")
 	proto.RegisterType((*Params)(nil), "kopi.denominations.Params")
 }
 
 func init() { proto.RegisterFile("kopi/denominations/params.proto", fileDescriptor_6a3f835420dd58e1) }
 
 var fileDescriptor_6a3f835420dd58e1 = []byte{
-	// 658 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0xcf, 0x4f, 0x13, 0x41,
-	0x14, 0xc7, 0xbb, 0x6d, 0x29, 0xf4, 0x15, 0x44, 0x26, 0x98, 0x54, 0x94, 0xb6, 0x29, 0x97, 0x5e,
-	0xec, 0x1a, 0x0c, 0x17, 0x31, 0x26, 0xb4, 0x15, 0x83, 0xd6, 0x48, 0x96, 0x9b, 0x97, 0xcd, 0x74,
-	0x77, 0x28, 0x93, 0xee, 0xcc, 0xac, 0x3b, 0xb3, 0xba, 0xe5, 0x2f, 0xd0, 0x9b, 0x37, 0x3d, 0x19,
-	0xff, 0x1c, 0x8e, 0x1c, 0x0d, 0x87, 0xc6, 0x80, 0x7f, 0x88, 0x99, 0xd9, 0xd6, 0x80, 0x34, 0x71,
-	0x2f, 0xdd, 0xd7, 0xb7, 0xef, 0xf3, 0xdd, 0xf7, 0x6b, 0x06, 0xea, 0x23, 0x11, 0x52, 0xdb, 0x27,
-	0x5c, 0x30, 0xca, 0xb1, 0xa2, 0x82, 0x4b, 0x3b, 0xc4, 0x11, 0x66, 0xb2, 0x1d, 0x46, 0x42, 0x09,
-	0x84, 0x74, 0x40, 0xfb, 0x46, 0xc0, 0xc6, 0x1a, 0x66, 0x94, 0x0b, 0xdb, 0xfc, 0xa6, 0x61, 0x1b,
-	0xeb, 0x43, 0x31, 0x14, 0xc6, 0xb4, 0xb5, 0x95, 0x7a, 0x9b, 0xbf, 0x2d, 0x58, 0xea, 0x91, 0xa4,
-	0xa7, 0x69, 0x84, 0xa0, 0xc8, 0x31, 0x23, 0x55, 0xab, 0x61, 0xb5, 0xca, 0x8e, 0xb1, 0xd1, 0x2e,
-	0x94, 0x8e, 0xb1, 0xa7, 0x44, 0x54, 0xcd, 0x37, 0xac, 0xd6, 0x72, 0x67, 0xeb, 0x6c, 0x52, 0xb7,
-	0x2e, 0x26, 0xf5, 0x07, 0x9e, 0x90, 0x4c, 0x48, 0xe9, 0x8f, 0xda, 0x54, 0xd8, 0x0c, 0xab, 0x93,
-	0x76, 0x9f, 0x0c, 0xb1, 0x37, 0xee, 0x11, 0xcf, 0x99, 0x22, 0xa8, 0x03, 0x2b, 0x8c, 0x72, 0x37,
-	0xa0, 0xef, 0x63, 0xea, 0x53, 0x35, 0xae, 0x16, 0x8c, 0xc6, 0xe6, 0xd9, 0xa4, 0x9e, 0xbb, 0x98,
-	0xd4, 0xef, 0xdd, 0xd6, 0x38, 0xe0, 0xca, 0x59, 0x66, 0x94, 0xf7, 0x67, 0x08, 0xea, 0xc2, 0x1d,
-	0xad, 0x21, 0x22, 0x9f, 0x44, 0xae, 0xa4, 0xa7, 0xa4, 0x5a, 0xcc, 0x2a, 0xf2, 0x56, 0x33, 0x47,
-	0xf4, 0x94, 0x34, 0x3f, 0xe7, 0x61, 0xe1, 0x75, 0x57, 0x50, 0x8e, 0xd6, 0x61, 0xc1, 0xb4, 0x6a,
-	0x5a, 0x64, 0xfa, 0x07, 0xd5, 0x00, 0x22, 0x72, 0x4c, 0x22, 0xc2, 0x3d, 0x22, 0xab, 0xf9, 0x46,
-	0xa1, 0x55, 0x76, 0xae, 0x79, 0xd0, 0x33, 0x00, 0x86, 0x13, 0x57, 0xc6, 0x61, 0x18, 0x64, 0xac,
-	0xa2, 0xcc, 0x70, 0x72, 0x64, 0xe2, 0xd1, 0x0b, 0x58, 0xd5, 0x34, 0xa3, 0x5c, 0xb9, 0x98, 0x89,
-	0x98, 0xab, 0x6c, 0x35, 0xac, 0x30, 0x9c, 0xbc, 0xa1, 0x5c, 0xed, 0x19, 0x66, 0x26, 0x33, 0x88,
-	0x23, 0x3e, 0x93, 0x59, 0xc8, 0x2a, 0xd3, 0x89, 0x23, 0x9e, 0xca, 0x34, 0xbf, 0x5b, 0xb0, 0xda,
-	0x15, 0x41, 0x80, 0x15, 0x89, 0x70, 0x90, 0x4e, 0x7e, 0x7e, 0x57, 0x76, 0xa0, 0x10, 0xa8, 0x0f,
-	0xd7, 0x06, 0x9f, 0xfb, 0xdf, 0xe0, 0x75, 0x3c, 0x7a, 0x0e, 0x15, 0x9d, 0xa7, 0x4f, 0x42, 0x21,
-	0xa9, 0xca, 0xd6, 0x2d, 0xdd, 0xde, 0x5e, 0x0a, 0x34, 0xbf, 0xe6, 0xa1, 0xd4, 0xdd, 0x93, 0x92,
-	0xa8, 0xb9, 0x1b, 0xb9, 0x09, 0x30, 0xc0, 0x92, 0xb8, 0x69, 0xc2, 0x79, 0xf3, 0xa6, 0xac, 0x3d,
-	0x69, 0x29, 0x2f, 0x61, 0xc5, 0x27, 0x89, 0x7b, 0x4c, 0x88, 0x2b, 0x4f, 0x70, 0x44, 0xa6, 0xdf,
-	0xcf, 0x94, 0x7e, 0xc5, 0x27, 0xc9, 0x3e, 0x21, 0x47, 0x9a, 0x43, 0xfb, 0xb0, 0x3c, 0x10, 0x51,
-	0x24, 0x3e, 0xba, 0x01, 0x65, 0x74, 0x36, 0xb2, 0x6c, 0x3a, 0x29, 0xd8, 0xd7, 0x1c, 0x3a, 0x80,
-	0x35, 0x46, 0x39, 0x65, 0x31, 0x73, 0x03, 0x81, 0x79, 0xba, 0xc3, 0x99, 0x06, 0xb7, 0x3a, 0xe5,
-	0xfa, 0x02, 0x73, 0xb3, 0xc6, 0x9f, 0xf2, 0x50, 0x3a, 0x34, 0x67, 0x1f, 0xed, 0x02, 0xe8, 0x32,
-	0x4d, 0x13, 0x64, 0xd5, 0x6a, 0x14, 0x5a, 0x95, 0xed, 0x87, 0xed, 0xdb, 0x57, 0x41, 0x7b, 0x76,
-	0xba, 0x9d, 0xb2, 0x3f, 0xb5, 0x24, 0xda, 0x86, 0xc5, 0x91, 0xeb, 0x09, 0xca, 0xd3, 0x5d, 0xaf,
-	0x6c, 0xdf, 0x9f, 0x47, 0x9a, 0x03, 0xe3, 0x94, 0x46, 0xfa, 0x21, 0xd1, 0x0e, 0x2c, 0x79, 0x2e,
-	0xd6, 0x53, 0x91, 0xd5, 0x82, 0x81, 0x36, 0xe6, 0x41, 0xe9, 0xe0, 0x9c, 0x45, 0xcf, 0x3c, 0x25,
-	0x3a, 0x84, 0x35, 0xef, 0xef, 0xb2, 0xcd, 0xd2, 0x2d, 0x1a, 0x7e, 0x6b, 0x2e, 0x7f, 0x73, 0x33,
-	0x9d, 0xbb, 0xde, 0x4d, 0x87, 0x7c, 0x5a, 0xfc, 0xf6, 0xa3, 0x9e, 0xeb, 0xbc, 0x3a, 0xbb, 0xac,
-	0x59, 0xe7, 0x97, 0x35, 0xeb, 0xd7, 0x65, 0xcd, 0xfa, 0x72, 0x55, 0xcb, 0x9d, 0x5f, 0xd5, 0x72,
-	0x3f, 0xaf, 0x6a, 0xb9, 0x77, 0x8f, 0x87, 0x54, 0x9d, 0xc4, 0x83, 0xb6, 0x27, 0x98, 0xad, 0x3f,
-	0xf0, 0x88, 0x09, 0x4e, 0xc6, 0xc6, 0xb4, 0x93, 0x7f, 0x2e, 0x52, 0x35, 0x0e, 0x89, 0x1c, 0x94,
-	0xcc, 0x5d, 0xf8, 0xe4, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb5, 0x49, 0xfb, 0x4d, 0x6b, 0x05,
-	0x00, 0x00,
+	// 899 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x96, 0xcd, 0x6e, 0x1b, 0x37,
+	0x10, 0xc7, 0xbd, 0xfa, 0xb2, 0x35, 0xb6, 0x24, 0x9b, 0x68, 0xd0, 0x8d, 0x93, 0x4a, 0x82, 0xdc,
+	0x83, 0x2e, 0x95, 0x0a, 0x17, 0xb9, 0x34, 0x45, 0x01, 0x7f, 0xd4, 0x69, 0x1c, 0x07, 0x0d, 0xd6,
+	0x3d, 0xf5, 0xb2, 0xa0, 0x76, 0xc7, 0x12, 0xe1, 0x25, 0xa9, 0x92, 0x54, 0x2a, 0xe5, 0xd4, 0x47,
+	0xc8, 0xb1, 0xc7, 0x5e, 0x8a, 0x3e, 0x43, 0xdf, 0xc0, 0xc7, 0x5c, 0x0a, 0x14, 0x39, 0x18, 0x85,
+	0xfd, 0x22, 0x05, 0xb9, 0x5a, 0xdb, 0x6a, 0x5c, 0x77, 0x7d, 0x11, 0x48, 0x62, 0xfe, 0x3f, 0x0d,
+	0xff, 0x3b, 0x33, 0xbb, 0xd0, 0x3a, 0x95, 0x63, 0xd6, 0x8f, 0x51, 0x48, 0xce, 0x04, 0x35, 0x4c,
+	0x0a, 0xdd, 0x1f, 0x53, 0x45, 0xb9, 0xee, 0x8d, 0x95, 0x34, 0x92, 0x10, 0x1b, 0xd0, 0x5b, 0x08,
+	0xd8, 0xdc, 0xa0, 0x9c, 0x09, 0xd9, 0x77, 0xbf, 0x69, 0xd8, 0xe6, 0x47, 0x43, 0x39, 0x94, 0x6e,
+	0xd9, 0xb7, 0xab, 0xf4, 0xb4, 0xf3, 0x73, 0x01, 0x56, 0xf6, 0x71, 0xba, 0x6f, 0xd5, 0x84, 0x40,
+	0x49, 0x50, 0x8e, 0xbe, 0xd7, 0xf6, 0xba, 0xd5, 0xc0, 0xad, 0xc9, 0x26, 0xac, 0xe0, 0x74, 0x2c,
+	0x05, 0x0a, 0xe3, 0x17, 0xda, 0x5e, 0xb7, 0x14, 0x5c, 0xed, 0xc9, 0x53, 0xa8, 0x9c, 0xd0, 0xc8,
+	0x48, 0xe5, 0x17, 0xdb, 0x5e, 0x77, 0x6d, 0x77, 0xeb, 0xec, 0xbc, 0xe5, 0xbd, 0x3f, 0x6f, 0x3d,
+	0x8a, 0xa4, 0xe6, 0x52, 0xeb, 0xf8, 0xb4, 0xc7, 0x64, 0x9f, 0x53, 0x33, 0xea, 0x1d, 0xe1, 0x90,
+	0x46, 0xb3, 0x7d, 0x8c, 0x82, 0xb9, 0x84, 0xec, 0x42, 0x8d, 0x33, 0x11, 0x26, 0xec, 0xc7, 0x09,
+	0x8b, 0x99, 0x99, 0xf9, 0x25, 0xc7, 0xf8, 0xe4, 0xec, 0xbc, 0xb5, 0xf4, 0xfe, 0xbc, 0xf5, 0xe0,
+	0x43, 0xc6, 0x73, 0x61, 0x82, 0x35, 0xce, 0xc4, 0x51, 0x26, 0x21, 0x7b, 0x50, 0xb7, 0x0c, 0xa9,
+	0x62, 0x54, 0xa1, 0x66, 0x6f, 0xd0, 0x2f, 0xe7, 0x85, 0x7c, 0x67, 0x35, 0xc7, 0xec, 0x0d, 0x76,
+	0xde, 0x16, 0xa0, 0xfc, 0x62, 0x4f, 0x32, 0x41, 0x1e, 0x41, 0x35, 0xc6, 0x69, 0xe8, 0xac, 0x9c,
+	0x9b, 0xb0, 0x12, 0x67, 0xe6, 0x34, 0x01, 0x14, 0x9e, 0xa0, 0x42, 0x11, 0xa1, 0xf6, 0x0b, 0xed,
+	0x62, 0xb7, 0x1a, 0xdc, 0x38, 0x21, 0x5f, 0x01, 0x70, 0x3a, 0x0d, 0xf5, 0x64, 0x3c, 0x4e, 0x66,
+	0x73, 0x43, 0xfe, 0x27, 0x8f, 0x2a, 0xa7, 0xd3, 0x63, 0x17, 0x4f, 0xbe, 0x81, 0x86, 0x55, 0x73,
+	0x26, 0x4c, 0x48, 0xb9, 0x9c, 0x08, 0x93, 0xcf, 0x8f, 0x1a, 0xa7, 0xd3, 0x97, 0x4c, 0x98, 0x1d,
+	0xa7, 0xc9, 0x30, 0x83, 0x89, 0x12, 0x19, 0xa6, 0x9c, 0x17, 0xb3, 0x3b, 0x51, 0x22, 0xc5, 0x74,
+	0xfe, 0x28, 0x41, 0x7d, 0x47, 0x0d, 0x98, 0x51, 0x74, 0x88, 0xe9, 0xf5, 0xef, 0xf4, 0xe6, 0x01,
+	0x54, 0x4e, 0xc3, 0x48, 0x32, 0xe1, 0x4a, 0xa4, 0x1a, 0x94, 0x4f, 0x9d, 0x9f, 0x1f, 0xc3, 0x72,
+	0x14, 0x52, 0xad, 0xd1, 0x38, 0x3f, 0xaa, 0x41, 0x25, 0xda, 0xb1, 0x3b, 0xf2, 0x2d, 0xd4, 0x06,
+	0x93, 0x59, 0x68, 0x46, 0x0a, 0xf5, 0x48, 0x26, 0xf1, 0xfc, 0xae, 0x5b, 0xf3, 0x24, 0xef, 0xac,
+	0x9f, 0xb5, 0xc1, 0x64, 0xf6, 0x7d, 0x26, 0x24, 0x87, 0x50, 0xd7, 0x98, 0x24, 0x37, 0x50, 0xe5,
+	0xfc, 0xa8, 0x9a, 0x95, 0x5e, 0xb3, 0x9e, 0xc1, 0xba, 0xcb, 0x4a, 0xd1, 0x18, 0x33, 0xf7, 0x2a,
+	0x79, 0xdc, 0xab, 0xdb, 0x94, 0xac, 0x6a, 0xfe, 0x14, 0x9e, 0xc3, 0x46, 0x9a, 0xd4, 0x4d, 0xd2,
+	0x72, 0x1e, 0x52, 0xc3, 0x65, 0x74, 0x03, 0x75, 0x08, 0x75, 0x85, 0x31, 0xf2, 0xb1, 0xed, 0xeb,
+	0xf0, 0x04, 0xd1, 0x5f, 0xb9, 0xc7, 0xfd, 0xae, 0xa5, 0x07, 0x88, 0x24, 0x86, 0xc7, 0x8b, 0xac,
+	0x50, 0xa1, 0x46, 0xf5, 0x1a, 0x43, 0x3d, 0xa2, 0x0a, 0xfd, 0x6a, 0x7e, 0xf2, 0xc3, 0x05, 0x72,
+	0x90, 0x62, 0x8e, 0x2d, 0xa5, 0xf3, 0x9b, 0x07, 0x8d, 0x3d, 0x99, 0x24, 0xd4, 0xa0, 0xa2, 0x49,
+	0x8e, 0xe2, 0x79, 0x02, 0xc5, 0xc4, 0xbc, 0x76, 0x95, 0x93, 0xf3, 0xdf, 0x6d, 0x3c, 0xf9, 0x1a,
+	0x56, 0x6d, 0xa9, 0xc7, 0x38, 0x96, 0x9a, 0x99, 0x7c, 0x0d, 0x67, 0x3b, 0x74, 0x3f, 0x15, 0x74,
+	0x7e, 0x2f, 0x40, 0x65, 0x2f, 0x2d, 0xc7, 0x3b, 0xd3, 0xfb, 0x14, 0xea, 0x03, 0xaa, 0x31, 0xbc,
+	0x8e, 0x48, 0x6b, 0x7c, 0xcd, 0x9e, 0x5e, 0x8d, 0xce, 0x67, 0x50, 0xb3, 0x01, 0xd6, 0xd4, 0xd4,
+	0xcc, 0x62, 0xfe, 0xeb, 0xac, 0xc6, 0x38, 0x3d, 0xc0, 0xd4, 0x3e, 0x72, 0x00, 0x6b, 0x03, 0xa9,
+	0x94, 0xfc, 0x29, 0x4c, 0x18, 0x67, 0xe6, 0x3e, 0x9d, 0xb1, 0x9a, 0x0a, 0x8f, 0xac, 0xce, 0xd6,
+	0x20, 0x67, 0x82, 0xf1, 0x09, 0x0f, 0x13, 0x49, 0xc5, 0x3d, 0xa6, 0x63, 0x63, 0xae, 0x3b, 0x92,
+	0x54, 0xb8, 0x01, 0x19, 0x42, 0xfd, 0xd8, 0x28, 0x6a, 0x70, 0x38, 0x73, 0x97, 0xd5, 0xe4, 0x25,
+	0xac, 0xd3, 0x6c, 0x3c, 0xa4, 0xa6, 0x68, 0xbf, 0xdc, 0x2e, 0x76, 0x57, 0xb7, 0x3b, 0xbd, 0x0f,
+	0xdf, 0x46, 0xbd, 0xc5, 0x51, 0x12, 0x34, 0xe8, 0xc2, 0x5e, 0x77, 0xfe, 0x2c, 0x40, 0xe5, 0x95,
+	0x7b, 0xa5, 0x91, 0xa7, 0x00, 0x57, 0x46, 0x6b, 0xdf, 0x73, 0xcc, 0xc7, 0xb7, 0x31, 0x33, 0xe7,
+	0x83, 0x6a, 0xf6, 0xa4, 0x34, 0xd9, 0x86, 0xe5, 0x74, 0x0c, 0xa5, 0xf3, 0x79, 0x75, 0xfb, 0xe1,
+	0x6d, 0x4a, 0x37, 0xeb, 0x83, 0x8a, 0x1b, 0x51, 0x9a, 0x3c, 0x81, 0x95, 0xf9, 0x8c, 0xd2, 0x7e,
+	0xd1, 0x89, 0x36, 0x6f, 0x13, 0xa5, 0x95, 0x12, 0x2c, 0xa7, 0x03, 0x4c, 0x93, 0x57, 0xb0, 0x11,
+	0x5d, 0x15, 0x79, 0x96, 0x6e, 0xc9, 0xe9, 0xb7, 0x6e, 0xd5, 0x2f, 0x76, 0x44, 0xb0, 0x1e, 0x2d,
+	0x1e, 0x68, 0xf2, 0x02, 0x1a, 0x7a, 0xee, 0xf2, 0xb5, 0xa5, 0xde, 0x7f, 0x59, 0xba, 0xf8, 0x40,
+	0x82, 0xba, 0x5e, 0xd8, 0x7f, 0x59, 0xfa, 0xe5, 0xd7, 0xd6, 0xd2, 0xee, 0xe1, 0xd9, 0x45, 0xd3,
+	0x7b, 0x77, 0xd1, 0xf4, 0xfe, 0xbe, 0x68, 0x7a, 0x6f, 0x2f, 0x9b, 0x4b, 0xef, 0x2e, 0x9b, 0x4b,
+	0x7f, 0x5d, 0x36, 0x97, 0x7e, 0xf8, 0x7c, 0xc8, 0xcc, 0x68, 0x32, 0xe8, 0x45, 0x92, 0xf7, 0x2d,
+	0xfd, 0x33, 0x2e, 0x05, 0xce, 0xdc, 0xb2, 0x3f, 0xfd, 0xd7, 0xc7, 0x86, 0x99, 0x8d, 0x51, 0x0f,
+	0x2a, 0xee, 0x7b, 0xe1, 0x8b, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x7e, 0x46, 0x7b, 0xd5, 0x8f,
+	0x08, 0x00, 0x00,
 }
 
 func (m *DexDenom) Marshal() (dAtA []byte, err error) {
@@ -381,7 +524,7 @@ func (m *DexDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x2a
 	{
 		size := m.MinLiquidity.Size()
 		i -= size
@@ -391,7 +534,7 @@ func (m *DexDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x22
 	if m.Factor != nil {
 		{
 			size := m.Factor.Size()
@@ -402,7 +545,12 @@ func (m *DexDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintParams(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
+	}
+	if m.Exponent != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.Exponent))
+		i--
+		dAtA[i] = 0x10
 	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
@@ -473,10 +621,114 @@ func (m *KCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x12
 		}
 	}
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.Denom)))
+	if len(m.DexDenom) > 0 {
+		i -= len(m.DexDenom)
+		copy(dAtA[i:], m.DexDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.DexDenom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ArbitrageDenom) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ArbitrageDenom) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ArbitrageDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.RedemptionFeeReserveShare.Size()
+		i -= size
+		if _, err := m.RedemptionFeeReserveShare.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x4a
+	{
+		size := m.RedemptionFee.Size()
+		i -= size
+		if _, err := m.RedemptionFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x42
+	{
+		size := m.SellTradeAmount.Size()
+		i -= size
+		if _, err := m.SellTradeAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	{
+		size := m.BuyTradeAmount.Size()
+		i -= size
+		if _, err := m.BuyTradeAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.SellThreshold.Size()
+		i -= size
+		if _, err := m.SellThreshold.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.BuyThreshold.Size()
+		i -= size
+		if _, err := m.BuyThreshold.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if len(m.CAsset) > 0 {
+		i -= len(m.CAsset)
+		copy(dAtA[i:], m.CAsset)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.CAsset)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.KCoin) > 0 {
+		i -= len(m.KCoin)
+		copy(dAtA[i:], m.KCoin)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.KCoin)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DexDenom) > 0 {
+		i -= len(m.DexDenom)
+		copy(dAtA[i:], m.DexDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.DexDenom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -523,10 +775,10 @@ func (m *CollateralDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x12
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.Denom)))
+	if len(m.DexDenom) > 0 {
+		i -= len(m.DexDenom)
+		copy(dAtA[i:], m.DexDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.DexDenom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -583,19 +835,56 @@ func (m *CAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x1a
-	if len(m.BaseDenom) > 0 {
-		i -= len(m.BaseDenom)
-		copy(dAtA[i:], m.BaseDenom)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.BaseDenom)))
+	if len(m.BaseDexDenom) > 0 {
+		i -= len(m.BaseDexDenom)
+		copy(dAtA[i:], m.BaseDexDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.BaseDexDenom)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.Name)))
+	if len(m.DexDenom) > 0 {
+		i -= len(m.DexDenom)
+		copy(dAtA[i:], m.DexDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.DexDenom)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *StrategyDenoms) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *StrategyDenoms) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StrategyDenoms) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ArbitrageDenoms) > 0 {
+		for iNdEx := len(m.ArbitrageDenoms) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ArbitrageDenoms[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintParams(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -620,6 +909,18 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.StrategyDenoms != nil {
+		{
+			size, err := m.StrategyDenoms.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintParams(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.CollateralDenoms) > 0 {
 		for iNdEx := len(m.CollateralDenoms) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -700,6 +1001,9 @@ func (m *DexDenom) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
+	if m.Exponent != 0 {
+		n += 1 + sovParams(uint64(m.Exponent))
+	}
 	if m.Factor != nil {
 		l = m.Factor.Size()
 		n += 1 + l + sovParams(uint64(l))
@@ -717,7 +1021,7 @@ func (m *KCoin) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Denom)
+	l = len(m.DexDenom)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
@@ -736,13 +1040,46 @@ func (m *KCoin) Size() (n int) {
 	return n
 }
 
+func (m *ArbitrageDenom) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DexDenom)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.KCoin)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.CAsset)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = m.BuyThreshold.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.SellThreshold.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.BuyTradeAmount.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.SellTradeAmount.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.RedemptionFee.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.RedemptionFeeReserveShare.Size()
+	n += 1 + l + sovParams(uint64(l))
+	return n
+}
+
 func (m *CollateralDenom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Denom)
+	l = len(m.DexDenom)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
@@ -759,11 +1096,11 @@ func (m *CAsset) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Name)
+	l = len(m.DexDenom)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
-	l = len(m.BaseDenom)
+	l = len(m.BaseDexDenom)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
@@ -773,6 +1110,21 @@ func (m *CAsset) Size() (n int) {
 	n += 1 + l + sovParams(uint64(l))
 	l = m.MinimumLoanSize.Size()
 	n += 1 + l + sovParams(uint64(l))
+	return n
+}
+
+func (m *StrategyDenoms) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ArbitrageDenoms) > 0 {
+		for _, e := range m.ArbitrageDenoms {
+			l = e.Size()
+			n += 1 + l + sovParams(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -805,6 +1157,10 @@ func (m *Params) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovParams(uint64(l))
 		}
+	}
+	if m.StrategyDenoms != nil {
+		l = m.StrategyDenoms.Size()
+		n += 1 + l + sovParams(uint64(l))
 	}
 	return n
 }
@@ -877,6 +1233,25 @@ func (m *DexDenom) Unmarshal(dAtA []byte) error {
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exponent", wireType)
+			}
+			m.Exponent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Exponent |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Factor", wireType)
 			}
@@ -911,7 +1286,7 @@ func (m *DexDenom) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MinLiquidity", wireType)
 			}
@@ -944,7 +1319,7 @@ func (m *DexDenom) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
 			}
@@ -1029,7 +1404,7 @@ func (m *KCoin) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DexDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1057,7 +1432,7 @@ func (m *KCoin) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			m.DexDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1211,6 +1586,350 @@ func (m *KCoin) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *ArbitrageDenom) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ArbitrageDenom: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ArbitrageDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DexDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DexDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field KCoin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.KCoin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CAsset", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CAsset = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyThreshold", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.BuyThreshold.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellThreshold", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.SellThreshold.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyTradeAmount", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.BuyTradeAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellTradeAmount", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.SellTradeAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFee", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RedemptionFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFeeReserveShare", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RedemptionFeeReserveShare.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *CollateralDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1242,7 +1961,7 @@ func (m *CollateralDenom) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DexDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1270,7 +1989,7 @@ func (m *CollateralDenom) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			m.DexDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1390,7 +2109,7 @@ func (m *CAsset) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DexDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1418,11 +2137,11 @@ func (m *CAsset) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Name = string(dAtA[iNdEx:postIndex])
+			m.DexDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BaseDenom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseDexDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1450,7 +2169,7 @@ func (m *CAsset) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BaseDenom = string(dAtA[iNdEx:postIndex])
+			m.BaseDexDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -1548,6 +2267,90 @@ func (m *CAsset) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.MinimumLoanSize.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *StrategyDenoms) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: StrategyDenoms: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: StrategyDenoms: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ArbitrageDenoms", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ArbitrageDenoms = append(m.ArbitrageDenoms, &ArbitrageDenom{})
+			if err := m.ArbitrageDenoms[len(m.ArbitrageDenoms)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1734,6 +2537,42 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.CollateralDenoms = append(m.CollateralDenoms, &CollateralDenom{})
 			if err := m.CollateralDenoms[len(m.CollateralDenoms)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StrategyDenoms", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.StrategyDenoms == nil {
+				m.StrategyDenoms = &StrategyDenoms{}
+			}
+			if err := m.StrategyDenoms.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -2,16 +2,21 @@ package cache
 
 import (
 	"context"
-	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"sync"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+type NewCacheTxCallback func(sdk.Context) (sdk.Context, storetypes.CacheMultiStore)
 
 type transactionHandler struct {
 	muKey    sync.Mutex
 	muCommit sync.Mutex
 
-	caches Caches
+	caches             Caches
+	newCacheTxCallback NewCacheTxCallback
 
 	height     int64
 	count      int
@@ -201,24 +206,39 @@ func (c Caches) ClearTransactions() {
 	}
 }
 
-type TransactionFunction func(sdk.Context) error
+type TransactionFunction func(context.Context) error
 
 func Transact(goCtx context.Context, f TransactionFunction) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	return transact(ctx, f, nil)
+}
+
+func TransactWithNewMultiStore(goCtx context.Context, f TransactionFunction) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	return transact(ctx, f, ctx.MultiStore().CacheMultiStore())
+}
+
+func transact(ctx sdk.Context, f TransactionFunction, msCache storetypes.CacheMultiStore) error {
+	if msCache != nil {
+		ctx = ctx.WithMultiStore(msCache)
+	}
+
 	ctx = ctx.WithContext(NewCacheContext(ctx.Context(), ctx.BlockHeight(), true))
 	defer TransactionHandler.Clear(ctx)
 
-	err := f(ctx)
-
-	if err != nil {
+	if err := f(ctx); err != nil {
 		TransactionHandler.Rollback(ctx)
-		return errors.Wrap(err, "error in transaction function")
+		return fmt.Errorf("error in transaction function: %w", err)
 	} else {
 		if err = TransactionHandler.CommitToDB(ctx); err != nil {
-			return errors.Wrap(err, "could not commit to db")
+			return fmt.Errorf("could not commit to db: %w", err)
 		}
 
 		TransactionHandler.CommitToCache(ctx)
+
+		if msCache != nil {
+			msCache.Write()
+		}
 	}
 
 	return nil

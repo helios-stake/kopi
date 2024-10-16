@@ -1,0 +1,16 @@
+syntax = "proto3";
+package kopi.strategies;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/strategies/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "kopi/x/strategies/Params";
+  option (gogoproto.equal) = true;
+
+  uint64 automation_fee_condition = 1;
+  uint64 automation_fee_action = 2;
+}

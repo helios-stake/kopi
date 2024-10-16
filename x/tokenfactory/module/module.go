@@ -2,13 +2,12 @@ package tokenfactory
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+	"encoding/json"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -17,6 +16,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/kopi-money/kopi/cache"
 
 	// this line is used by starport scaffolding # 1
 
@@ -98,6 +98,8 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	denomKeeper   types.DenomKeeper
+	//dexKeeper     types.DexKeeper
 }
 
 func NewAppModule(
@@ -105,12 +107,16 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	denomKeeper types.DenomKeeper,
+	// dexKeeper types.DexKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		denomKeeper:    denomKeeper,
+		//dexKeeper:      dexKeeper,
 	}
 }
 
@@ -151,8 +157,11 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(_ context.Context) error {
-	return nil
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		am.keeper.HandleUnlockings(innerCtx, sdk.UnwrapSDKContext(innerCtx).BlockHeight())
+		return nil
+	})
 }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
@@ -182,6 +191,8 @@ type ModuleInputs struct {
 
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
+	DenomKeeper   types.DenomKeeper
+	//DexKeeper     types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -203,6 +214,8 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Logger,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.DenomKeeper,
+		//in.DexKeeper,
 		authority.String(),
 	)
 	m := NewAppModule(
@@ -210,6 +223,8 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		k,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.DenomKeeper,
+		//in.DexKeeper,
 	)
 
 	return ModuleOutputs{TokenfactoryKeeper: k, Module: m}

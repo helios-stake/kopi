@@ -1,0 +1,24 @@
+syntax = "proto3";
+package kopi.tokenfactory;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
+
+message LiquidityUnlocking {
+  uint64 index = 1;
+  string factory_denom_hash = 2;
+  string k_coin = 3;
+  string address = 4;
+  int64 created_at = 5;
+
+  bytes factory_denom_amount = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes k_coin_amount = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

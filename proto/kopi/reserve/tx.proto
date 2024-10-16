@@ -1,0 +1,27 @@
+syntax = "proto3";
+package kopi.reserve;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "kopi/reserve/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/reserve/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc UpdateKCoinBurnShare        (MsgUpdateKCoinBurnShare) returns (Void);
+}
+
+message MsgUpdateKCoinBurnShare {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/reserve/MsgUpdateKCoinBurnShare";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string kcoin_burn_share = 2;
+}
+
+message Void {}

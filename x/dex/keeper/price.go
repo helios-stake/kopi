@@ -2,19 +2,20 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/errors"
+	"fmt"
+
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
 // CalculatePrice returns the price of a given currency pair. The price is expressed how much "FROM" you need to give
 // get one unit of "TO". I.e., the lower the returned value, the more valuable "FROM" is (or the less valuable "TO" is).
-func (k Keeper) CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error) {
+func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving string) (math.LegacyDec, error) {
 	price := math.LegacyOneDec()
 
-	if denomFrom != utils.BaseCurrency {
-		ratio, err := k.GetRatio(ctx, denomFrom)
+	if denomGiving != constants.BaseCurrency {
+		ratio, err := k.GetRatio(ctx, denomGiving)
 		if err != nil {
 			return price, err
 		}
@@ -22,8 +23,8 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomFrom, denomTo string) (
 		price = price.Quo(ratio.Ratio)
 	}
 
-	if denomTo != utils.BaseCurrency {
-		ratio, err := k.GetRatio(ctx, denomTo)
+	if denomReceiving != constants.BaseCurrency {
+		ratio, err := k.GetRatio(ctx, denomReceiving)
 		if err != nil {
 			return price, err
 		}
@@ -40,23 +41,37 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomFrom, denomTo string) (
 }
 
 func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error) {
-	price := math.LegacyZeroDec()
-	for _, usd := range k.DenomKeeper.ReferenceDenoms(ctx, "ukusd") {
-		p, err := k.CalculatePrice(ctx, denom, usd)
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("could not get highest usd reference: %w", err)
+	}
+
+	return k.CalculatePrice(ctx, denom, referenceDenom)
+}
+
+func (k Keeper) GetHighestUSDReference(ctx context.Context) (string, error) {
+	var (
+		ratio math.LegacyDec
+		denom string
+	)
+
+	for _, usd := range k.DenomKeeper.ReferenceDenoms(ctx, constants.KUSD) {
+		r, err := k.GetRatio(ctx, usd)
 		if err != nil {
-			return price, errors.Wrap(err, "could not calculate price")
+			return "", err
 		}
 
-		if price.IsZero() || p.GT(price) {
-			price = p
+		if ratio.IsNil() || ratio.GT(r.Ratio) {
+			ratio = r.Ratio
+			denom = usd
 		}
 	}
 
-	return price, nil
+	return denom, nil
 }
 
 func (k Keeper) GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error) {
-	return k.GetValueIn(ctx, denom, utils.BaseCurrency, amount)
+	return k.GetValueIn(ctx, denom, constants.BaseCurrency, amount)
 }
 
 func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error) {
@@ -69,7 +84,8 @@ func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Leg
 		return math.LegacyDec{}, err
 	}
 
-	return amount.Quo(price), nil
+	value := amount.Quo(price)
+	return k.DenomKeeper.ConvertToExponent(ctx, denom, value, 6)
 }
 
 func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error) {

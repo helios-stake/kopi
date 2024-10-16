@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
-	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
 	"github.com/kopi-money/kopi/x/mm/types"
@@ -18,12 +18,12 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 
 	userLoanSum, _, err := k.getUserLoansSumUSD(ctx, req.Address)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get user loan sum")
+		return nil, fmt.Errorf("could not get user loan sum: %w", err)
 	}
 
 	_, collateralUserSum, err := k.getCollateralUserSumUSD(ctx, req.Address)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get user loan sum")
+		return nil, fmt.Errorf("could not get user loan sum: %w", err)
 	}
 
 	creditLineUsage := math.LegacyZeroDec()
@@ -31,5 +31,25 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 		creditLineUsage = userLoanSum.Quo(collateralUserSum)
 	}
 
-	return &types.GetCreditLineUsageResponse{Usage: creditLineUsage.String()}, nil
+	return &types.GetCreditLineUsageResponse{
+		Usage: creditLineUsage.String(),
+	}, nil
+}
+
+func (k Keeper) CalculateCreditLineUsage(ctx context.Context, address string) (math.LegacyDec, error) {
+	_, collateralUserSum, err := k.getCollateralUserSumUSD(ctx, address)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
+	}
+
+	if collateralUserSum.IsZero() {
+		return math.LegacyZeroDec(), nil
+	}
+
+	userLoanSum, _, err := k.getUserLoansSumUSD(ctx, address)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
+	}
+
+	return userLoanSum.Quo(collateralUserSum), nil
 }

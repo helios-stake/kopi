@@ -430,6 +430,8 @@ message DepositUserStats {
   string redeeming_usd = 11;
 
   string interest_rate = 12;
+
+  bool has_redemption_request = 13;
 }
 
 message GetDepositUserStatsResponse {
@@ -496,10 +498,5 @@ message FullDenomBalance {
 }
 
 message QueryFullBalanceResponse {
-  string sum = 1;
-  string sum_wallet = 2;
-  string sum_liquidity = 3;
-  string sum_orders = 4;
-  string sum_collateral = 5;
   repeated FullDenomBalance denoms = 6;
 }

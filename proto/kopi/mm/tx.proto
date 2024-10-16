@@ -27,7 +27,7 @@ service Msg {
 
   rpc UpdateCollateralDiscount       (MsgUpdateCollateralDiscount) returns (Void);
   rpc UpdateInterestRateParameters   (MsgUpdateInterestRateParameters) returns (Void);
-  rpc UpdateRedemptionFee            (MsgUpdateRedemptionFee) returns (Void);
+  rpc UpdateRedemptionFees           (MsgUpdateRedemptionFees) returns (Void);
   rpc UpdateProtocolShare            (MsgUpdateProtocolShare) returns (Void);
 }
 
@@ -39,12 +39,13 @@ message MsgUpdateProtocolShare {
   string protocol_share = 2;
 }
 
-message MsgUpdateRedemptionFee {
+message MsgUpdateRedemptionFees {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "kopi/x/mm/MsgUpdateRedemptionFee";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string min_redemption_fee = 2;
+  string max_redemption_fee = 3;
 }
 
 message MsgUpdateInterestRateParameters {

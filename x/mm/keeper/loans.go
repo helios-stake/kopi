@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/collections"
-	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	"github.com/kopi-money/kopi/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
@@ -14,15 +14,15 @@ import (
 func (k Keeper) GetGenesisLoans(ctx context.Context) (denomLoans []types.Loans) {
 	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
 		var loans []*types.Loan
-		iterator := k.LoanIterator(ctx, denom.BaseDenom)
+		iterator := k.LoanIterator(ctx, denom.BaseDexDenom)
 		for iterator.Valid() {
 			loan := iterator.GetNext()
 			loans = append(loans, &loan)
 		}
 
-		loanSum := k.GetLoanSumWithDefault(ctx, denom.BaseDenom)
+		loanSum := k.GetLoanSumWithDefault(ctx, denom.BaseDexDenom)
 		denomLoans = append(denomLoans, types.Loans{
-			Denom:     denom.BaseDenom,
+			Denom:     denom.BaseDexDenom,
 			Loans:     loans,
 			WeightSum: loanSum.WeightSum,
 			LoanSum:   loanSum.LoanSum,
@@ -78,7 +78,7 @@ func (k Keeper) LoadLoan(ctx context.Context, denom, address string) (types.Loan
 
 func (k Keeper) LoanIterator(ctx context.Context, denom string) cache.Iterator[string, types.Loan] {
 	rng := collections.NewPrefixedPairRange[string, string](denom)
-	return k.loans.Iterator(ctx, rng, denom, nil)
+	return k.loans.Iterator(ctx, rng, denom)
 }
 
 func (k Keeper) GetLoanValue(ctx context.Context, denom, address string) math.LegacyDec {
@@ -102,7 +102,7 @@ func (k Keeper) getLoanValue(loanSum types.LoanSum, loan types.Loan) math.Legacy
 
 func (k Keeper) GetLoansNum(ctx context.Context) (num int) {
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		num += int(k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).NumLoans)
+		num += int(k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).NumLoans)
 	}
 
 	return
@@ -110,7 +110,7 @@ func (k Keeper) GetLoansNum(ctx context.Context) (num int) {
 
 func (k Keeper) GetLoansNumForAddress(ctx context.Context, address string) (num int) {
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		if _, found := k.loans.Get(ctx, cAsset.BaseDenom, address); found {
+		if _, found := k.loans.Get(ctx, cAsset.BaseDexDenom, address); found {
 			num++
 		}
 	}
@@ -126,9 +126,9 @@ type CAssetLoan struct {
 
 func (k Keeper) getUserLoans(ctx context.Context, address string) (loans []CAssetLoan) {
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		loan, found := k.loans.Get(ctx, cAsset.BaseDenom, address)
+		loan, found := k.loans.Get(ctx, cAsset.BaseDexDenom, address)
 		if found {
-			loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom)
+			loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom)
 			loans = append(loans, CAssetLoan{
 				Loan:   loan,
 				cAsset: cAsset,
@@ -153,7 +153,7 @@ func (k Keeper) getBorrowers(ctx context.Context) []string {
 	borrowersMap := make(map[string]struct{})
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		iterator := k.LoanIterator(ctx, cAsset.BaseDenom)
+		iterator := k.LoanIterator(ctx, cAsset.BaseDexDenom)
 		for iterator.Valid() {
 			loan := iterator.GetNext()
 			if _, seen := borrowersMap[loan.Address]; !seen {
@@ -166,29 +166,29 @@ func (k Keeper) getBorrowers(ctx context.Context) []string {
 	return borrowers
 }
 
-func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.LegacyDec, error) {
-	borrowable, err := k.calculateBorrowableAmount(ctx, address, denom)
+func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.Int, error) {
+	borrowable, err := k.CalculateBorrowableAmount(ctx, address, denom)
 	if err != nil {
-		return math.LegacyDec{}, errors.Wrap(err, "could not calculate borrowable amount")
+		return math.Int{}, fmt.Errorf("could not calculate borrowable amount: %w", err)
 	}
 
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
 	vault := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 	available := vault.AmountOf(denom)
 
-	return math.LegacyMinDec(available.ToLegacyDec(), borrowable), nil
+	return math.MinInt(available, borrowable.TruncateInt()), nil
 }
 
-func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset *denomtypes.CAsset, amount math.LegacyDec) bool {
+func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset *denomtypes.CAsset, amount math.Int) bool {
 	if cAsset.BorrowLimit.IsZero() {
 		return false
 	}
 
-	borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).LoanSum
-	deposited := k.calculateCAssetValue(ctx, cAsset)
+	borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
+	deposited := k.CalculateCAssetValue(ctx, cAsset)
 
 	borrowLimit := deposited.Mul(cAsset.BorrowLimit)
-	return borrowLimit.LT(borrowed.Add(amount))
+	return borrowLimit.LT(borrowed.Add(amount.ToLegacyDec()))
 }
 
 func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChange math.LegacyDec) (uint64, bool) {
@@ -243,8 +243,4 @@ func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math
 	}
 
 	return additionalWeight
-}
-
-func compareLoans(l1, l2 types.Loan) bool {
-	return l1.Weight.Equal(l2.Weight) && l1.Index == l2.Index && l1.Address == l2.Address
 }

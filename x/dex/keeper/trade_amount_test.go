@@ -1,14 +1,16 @@
 package keeper_test
 
 import (
+	"context"
+	"testing"
+
 	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"testing"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
-	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/stretchr/testify/require"
 )
@@ -16,40 +18,52 @@ import (
 func TestTradeAmount1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, utils.BaseCurrency, 500_000)
-	require.NoError(t, err)
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 500_000))
+
+	maximumTradable := k.CalculateMaximumTradableAmount(k.NewOrdersCaches(ctx), constants.KUSD, constants.BaseCurrency)
+	require.Nil(t, maximumTradable)
+}
+
+func TestTradeAmount2(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 500_000))
 
 	offer := math.NewInt(10_000)
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Bob)
 	tradeCtx := types.TradeContext{
-		CoinSource:       keepertest.Bob,
-		CoinTarget:       keepertest.Bob,
-		GivenAmount:      offer,
-		TradeDenomStart:  "ukusd",
-		TradeDenomEnd:    utils.BaseCurrency,
-		TradeCalculation: keeper.FlatPrice{},
-		AllowIncomplete:  false,
-		TradeBalances:    keeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeAmount:         offer,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		MinimumTradeAmount:  &offer,
+		TradeBalances:       keeper.NewTradeBalances(),
+		Fee:                 math.LegacyZeroDec(),
 	}
 
-	var amountReceived math.Int
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	var (
+		tradeResult types.TradeResult
+		err         error
+	)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		_, _, amountReceived, _, _, err = k.ExecuteTrade(tradeCtx)
+		tradeResult, err = k.ExecuteSell(tradeCtx)
 		return err
 	}))
 
 	tradeAmount1 := k.GetTradeAmount(ctx, acc.String())
-	require.Equal(t, tradeAmount1, amountReceived.ToLegacyDec())
+	require.Equal(t, tradeAmount1, tradeResult.AmountReceived.ToLegacyDec())
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
-		_, _, amountReceived, _, _, err = k.ExecuteTrade(tradeCtx)
+		tradeResult, err = k.ExecuteSell(tradeCtx)
 		return err
 	}))
 
-	_ = cache.Transact(ctx, func(innerCtx sdk.Context) error {
+	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
 		k.TradeAmountDecay(innerCtx)
 		return nil
 	})

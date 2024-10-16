@@ -2,10 +2,11 @@ package cache
 
 import (
 	"context"
+	"testing"
+
 	"cosmossdk.io/collections"
 	"github.com/kopi-money/kopi/cache/cachetest"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func createNestedMapCache() (context.Context, *NestedMapCache[string, string, uint64]) {
@@ -31,7 +32,7 @@ func TestNestedMap0(t *testing.T) {
 
 	nestedMapCache.Set(ctx, "a", "a", 0)
 
-	iterator := nestedMapCache.Iterator(ctx, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(ctx, nil, "a")
 	require.Equal(t, 1, len(iterator.GetAll()))
 }
 
@@ -43,7 +44,7 @@ func TestNestedMap1(t *testing.T) {
 	nestedMapCache.Set(ctx, "a", "a", 0)
 	nestedMapCache.Remove(ctx, "a", "a")
 
-	iterator := nestedMapCache.Iterator(ctx, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(ctx, nil, "a")
 	require.Equal(t, 0, len(iterator.GetAll()))
 }
 
@@ -56,7 +57,7 @@ func TestNestedMap2(t *testing.T) {
 	nestedMapCache.Set(ctx, "a", "b", 0)
 	nestedMapCache.Remove(ctx, "a", "a")
 
-	iterator := nestedMapCache.Iterator(ctx, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(ctx, nil, "a")
 	require.Equal(t, 1, len(iterator.GetAll()))
 }
 
@@ -68,7 +69,7 @@ func TestNestedMap3(t *testing.T) {
 	nestedMapCache.Set(ctx, "a", "a", 0)
 	nestedMapCache.Set(ctx, "a", "a", 1)
 
-	iterator := nestedMapCache.Iterator(ctx, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(ctx, nil, "a")
 
 	values := iterator.GetAll()
 	require.Equal(t, 1, len(values))
@@ -84,7 +85,7 @@ func TestNestedMap4(t *testing.T) {
 	nestedMapCache.Remove(ctx, "a", "a")
 	nestedMapCache.Set(ctx, "a", "a", 1)
 
-	iterator := nestedMapCache.Iterator(ctx, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(ctx, nil, "a")
 
 	values := iterator.GetAll()
 	require.Equal(t, 1, len(values))
@@ -103,7 +104,7 @@ func TestNestedMap5(t *testing.T) {
 	tx2 := NewCacheContext(ctx, 1, true)
 	nestedMapCache.Remove(tx2, "a", "a")
 
-	iterator := nestedMapCache.Iterator(tx2, nil, "a", nil)
+	iterator := nestedMapCache.Iterator(tx2, nil, "a")
 	values := iterator.GetAll()
 	require.Equal(t, 0, len(values))
 }

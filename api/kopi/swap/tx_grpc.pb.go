@@ -19,13 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateStakingShare_FullMethodName = "/kopi.swap.Msg/UpdateStakingShare"
+	Msg_UpdateBurnThreshold_FullMethodName = "/kopi.swap.Msg/UpdateBurnThreshold"
+	Msg_UpdateMintThreshold_FullMethodName = "/kopi.swap.Msg/UpdateMintThreshold"
+	Msg_UpdateStakingShare_FullMethodName  = "/kopi.swap.Msg/UpdateStakingShare"
 )
 
 // MsgClient is the client API for Msg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
+	UpdateBurnThreshold(ctx context.Context, in *MsgUpdateBurnThreshold, opts ...grpc.CallOption) (*Void, error)
+	UpdateMintThreshold(ctx context.Context, in *MsgUpdateMintThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateStakingShare(ctx context.Context, in *MsgUpdateStakingShare, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -35,6 +39,24 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
+}
+
+func (c *msgClient) UpdateBurnThreshold(ctx context.Context, in *MsgUpdateBurnThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateBurnThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMintThreshold(ctx context.Context, in *MsgUpdateMintThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateMintThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgClient) UpdateStakingShare(ctx context.Context, in *MsgUpdateStakingShare, opts ...grpc.CallOption) (*Void, error) {
@@ -50,6 +72,8 @@ func (c *msgClient) UpdateStakingShare(ctx context.Context, in *MsgUpdateStaking
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
+	UpdateBurnThreshold(context.Context, *MsgUpdateBurnThreshold) (*Void, error)
+	UpdateMintThreshold(context.Context, *MsgUpdateMintThreshold) (*Void, error)
 	UpdateStakingShare(context.Context, *MsgUpdateStakingShare) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -58,6 +82,12 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (UnimplementedMsgServer) UpdateBurnThreshold(context.Context, *MsgUpdateBurnThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBurnThreshold not implemented")
+}
+func (UnimplementedMsgServer) UpdateMintThreshold(context.Context, *MsgUpdateMintThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMintThreshold not implemented")
+}
 func (UnimplementedMsgServer) UpdateStakingShare(context.Context, *MsgUpdateStakingShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStakingShare not implemented")
 }
@@ -72,6 +102,42 @@ type UnsafeMsgServer interface {
 
 func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
+}
+
+func _Msg_UpdateBurnThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBurnThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateBurnThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateBurnThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateBurnThreshold(ctx, req.(*MsgUpdateBurnThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMintThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMintThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMintThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateMintThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMintThreshold(ctx, req.(*MsgUpdateMintThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_UpdateStakingShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -99,6 +165,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "kopi.swap.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UpdateBurnThreshold",
+			Handler:    _Msg_UpdateBurnThreshold_Handler,
+		},
+		{
+			MethodName: "UpdateMintThreshold",
+			Handler:    _Msg_UpdateMintThreshold_Handler,
+		},
 		{
 			MethodName: "UpdateStakingShare",
 			Handler:    _Msg_UpdateStakingShare_Handler,

@@ -67,26 +67,27 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-type MsgAddDEXDenom struct {
+type MsgDexAddDenom struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Factor       string `protobuf:"bytes,3,opt,name=factor,proto3" json:"factor,omitempty"`
 	MinLiquidity string `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
 	MinOrderSize string `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
+	Exponent     uint64 `protobuf:"varint,6,opt,name=exponent,proto3" json:"exponent,omitempty"`
 }
 
-func (m *MsgAddDEXDenom) Reset()         { *m = MsgAddDEXDenom{} }
-func (m *MsgAddDEXDenom) String() string { return proto.CompactTextString(m) }
-func (*MsgAddDEXDenom) ProtoMessage()    {}
-func (*MsgAddDEXDenom) Descriptor() ([]byte, []int) {
+func (m *MsgDexAddDenom) Reset()         { *m = MsgDexAddDenom{} }
+func (m *MsgDexAddDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgDexAddDenom) ProtoMessage()    {}
+func (*MsgDexAddDenom) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{1}
 }
-func (m *MsgAddDEXDenom) XXX_Unmarshal(b []byte) error {
+func (m *MsgDexAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddDEXDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDexAddDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddDEXDenom.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDexAddDenom.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -96,71 +97,78 @@ func (m *MsgAddDEXDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *MsgAddDEXDenom) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddDEXDenom.Merge(m, src)
+func (m *MsgDexAddDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDexAddDenom.Merge(m, src)
 }
-func (m *MsgAddDEXDenom) XXX_Size() int {
+func (m *MsgDexAddDenom) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddDEXDenom) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddDEXDenom.DiscardUnknown(m)
+func (m *MsgDexAddDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDexAddDenom.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddDEXDenom proto.InternalMessageInfo
+var xxx_messageInfo_MsgDexAddDenom proto.InternalMessageInfo
 
-func (m *MsgAddDEXDenom) GetAuthority() string {
+func (m *MsgDexAddDenom) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddDEXDenom) GetName() string {
+func (m *MsgDexAddDenom) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgAddDEXDenom) GetFactor() string {
+func (m *MsgDexAddDenom) GetFactor() string {
 	if m != nil {
 		return m.Factor
 	}
 	return ""
 }
 
-func (m *MsgAddDEXDenom) GetMinLiquidity() string {
+func (m *MsgDexAddDenom) GetMinLiquidity() string {
 	if m != nil {
 		return m.MinLiquidity
 	}
 	return ""
 }
 
-func (m *MsgAddDEXDenom) GetMinOrderSize() string {
+func (m *MsgDexAddDenom) GetMinOrderSize() string {
 	if m != nil {
 		return m.MinOrderSize
 	}
 	return ""
 }
 
-type MsgUpdateDEXDenomMinimumLiquidity struct {
+func (m *MsgDexAddDenom) GetExponent() uint64 {
+	if m != nil {
+		return m.Exponent
+	}
+	return 0
+}
+
+type MsgDexUpdateMinimumLiquidity struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	MinLiquidity string `protobuf:"bytes,3,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) Reset()         { *m = MsgUpdateDEXDenomMinimumLiquidity{} }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateDEXDenomMinimumLiquidity) ProtoMessage()    {}
-func (*MsgUpdateDEXDenomMinimumLiquidity) Descriptor() ([]byte, []int) {
+func (m *MsgDexUpdateMinimumLiquidity) Reset()         { *m = MsgDexUpdateMinimumLiquidity{} }
+func (m *MsgDexUpdateMinimumLiquidity) String() string { return proto.CompactTextString(m) }
+func (*MsgDexUpdateMinimumLiquidity) ProtoMessage()    {}
+func (*MsgDexUpdateMinimumLiquidity) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{2}
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Unmarshal(b []byte) error {
+func (m *MsgDexUpdateMinimumLiquidity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDexUpdateMinimumLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDexUpdateMinimumLiquidity.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -170,57 +178,57 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.Merge(m, src)
+func (m *MsgDexUpdateMinimumLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDexUpdateMinimumLiquidity.Merge(m, src)
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Size() int {
+func (m *MsgDexUpdateMinimumLiquidity) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.DiscardUnknown(m)
+func (m *MsgDexUpdateMinimumLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDexUpdateMinimumLiquidity.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity proto.InternalMessageInfo
+var xxx_messageInfo_MsgDexUpdateMinimumLiquidity proto.InternalMessageInfo
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) GetAuthority() string {
+func (m *MsgDexUpdateMinimumLiquidity) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) GetName() string {
+func (m *MsgDexUpdateMinimumLiquidity) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) GetMinLiquidity() string {
+func (m *MsgDexUpdateMinimumLiquidity) GetMinLiquidity() string {
 	if m != nil {
 		return m.MinLiquidity
 	}
 	return ""
 }
 
-type MsgUpdateDEXDenomMinimumOrderSize struct {
+type MsgDexUpdateMinimumOrderSize struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	MinOrderSize string `protobuf:"bytes,3,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) Reset()         { *m = MsgUpdateDEXDenomMinimumOrderSize{} }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateDEXDenomMinimumOrderSize) ProtoMessage()    {}
-func (*MsgUpdateDEXDenomMinimumOrderSize) Descriptor() ([]byte, []int) {
+func (m *MsgDexUpdateMinimumOrderSize) Reset()         { *m = MsgDexUpdateMinimumOrderSize{} }
+func (m *MsgDexUpdateMinimumOrderSize) String() string { return proto.CompactTextString(m) }
+func (*MsgDexUpdateMinimumOrderSize) ProtoMessage()    {}
+func (*MsgDexUpdateMinimumOrderSize) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{3}
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Unmarshal(b []byte) error {
+func (m *MsgDexUpdateMinimumOrderSize) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDexUpdateMinimumOrderSize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDexUpdateMinimumOrderSize.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -230,42 +238,42 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.Merge(m, src)
+func (m *MsgDexUpdateMinimumOrderSize) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDexUpdateMinimumOrderSize.Merge(m, src)
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Size() int {
+func (m *MsgDexUpdateMinimumOrderSize) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.DiscardUnknown(m)
+func (m *MsgDexUpdateMinimumOrderSize) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDexUpdateMinimumOrderSize.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize proto.InternalMessageInfo
+var xxx_messageInfo_MsgDexUpdateMinimumOrderSize proto.InternalMessageInfo
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) GetAuthority() string {
+func (m *MsgDexUpdateMinimumOrderSize) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) GetName() string {
+func (m *MsgDexUpdateMinimumOrderSize) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) GetMinOrderSize() string {
+func (m *MsgDexUpdateMinimumOrderSize) GetMinOrderSize() string {
 	if m != nil {
 		return m.MinOrderSize
 	}
 	return ""
 }
 
-type MsgAddKCoin struct {
+type MsgKCoinAddDenom struct {
 	Authority     string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	Denom         string   `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Name          string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	References    []string `protobuf:"bytes,3,rep,name=references,proto3" json:"references,omitempty"`
 	MaxSupply     string   `protobuf:"bytes,4,opt,name=max_supply,json=maxSupply,proto3" json:"max_supply,omitempty"`
 	MaxMintAmount string   `protobuf:"bytes,5,opt,name=max_mint_amount,json=maxMintAmount,proto3" json:"max_mint_amount,omitempty"`
@@ -275,18 +283,18 @@ type MsgAddKCoin struct {
 	MinOrderSize  string   `protobuf:"bytes,9,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
 }
 
-func (m *MsgAddKCoin) Reset()         { *m = MsgAddKCoin{} }
-func (m *MsgAddKCoin) String() string { return proto.CompactTextString(m) }
-func (*MsgAddKCoin) ProtoMessage()    {}
-func (*MsgAddKCoin) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinAddDenom) Reset()         { *m = MsgKCoinAddDenom{} }
+func (m *MsgKCoinAddDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinAddDenom) ProtoMessage()    {}
+func (*MsgKCoinAddDenom) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{4}
 }
-func (m *MsgAddKCoin) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddKCoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinAddDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddKCoin.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinAddDenom.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -296,99 +304,99 @@ func (m *MsgAddKCoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *MsgAddKCoin) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddKCoin.Merge(m, src)
+func (m *MsgKCoinAddDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinAddDenom.Merge(m, src)
 }
-func (m *MsgAddKCoin) XXX_Size() int {
+func (m *MsgKCoinAddDenom) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddKCoin) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddKCoin.DiscardUnknown(m)
+func (m *MsgKCoinAddDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinAddDenom.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddKCoin proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinAddDenom proto.InternalMessageInfo
 
-func (m *MsgAddKCoin) GetAuthority() string {
+func (m *MsgKCoinAddDenom) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetDenom() string {
+func (m *MsgKCoinAddDenom) GetName() string {
 	if m != nil {
-		return m.Denom
+		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetReferences() []string {
+func (m *MsgKCoinAddDenom) GetReferences() []string {
 	if m != nil {
 		return m.References
 	}
 	return nil
 }
 
-func (m *MsgAddKCoin) GetMaxSupply() string {
+func (m *MsgKCoinAddDenom) GetMaxSupply() string {
 	if m != nil {
 		return m.MaxSupply
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetMaxMintAmount() string {
+func (m *MsgKCoinAddDenom) GetMaxMintAmount() string {
 	if m != nil {
 		return m.MaxMintAmount
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetMaxBurnAmount() string {
+func (m *MsgKCoinAddDenom) GetMaxBurnAmount() string {
 	if m != nil {
 		return m.MaxBurnAmount
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetFactor() string {
+func (m *MsgKCoinAddDenom) GetFactor() string {
 	if m != nil {
 		return m.Factor
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetMinLiquidity() string {
+func (m *MsgKCoinAddDenom) GetMinLiquidity() string {
 	if m != nil {
 		return m.MinLiquidity
 	}
 	return ""
 }
 
-func (m *MsgAddKCoin) GetMinOrderSize() string {
+func (m *MsgKCoinAddDenom) GetMinOrderSize() string {
 	if m != nil {
 		return m.MinOrderSize
 	}
 	return ""
 }
 
-type MsgUpdateKCoinSupply struct {
+type MsgKCoinUpdateSupplyLimit struct {
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	MaxSupply string `protobuf:"bytes,3,opt,name=max_supply,json=maxSupply,proto3" json:"max_supply,omitempty"`
 }
 
-func (m *MsgUpdateKCoinSupply) Reset()         { *m = MsgUpdateKCoinSupply{} }
-func (m *MsgUpdateKCoinSupply) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateKCoinSupply) ProtoMessage()    {}
-func (*MsgUpdateKCoinSupply) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinUpdateSupplyLimit) Reset()         { *m = MsgKCoinUpdateSupplyLimit{} }
+func (m *MsgKCoinUpdateSupplyLimit) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinUpdateSupplyLimit) ProtoMessage()    {}
+func (*MsgKCoinUpdateSupplyLimit) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{5}
 }
-func (m *MsgUpdateKCoinSupply) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinUpdateSupplyLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateKCoinSupply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinUpdateSupplyLimit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateKCoinSupply.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinUpdateSupplyLimit.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -398,57 +406,57 @@ func (m *MsgUpdateKCoinSupply) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateKCoinSupply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateKCoinSupply.Merge(m, src)
+func (m *MsgKCoinUpdateSupplyLimit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinUpdateSupplyLimit.Merge(m, src)
 }
-func (m *MsgUpdateKCoinSupply) XXX_Size() int {
+func (m *MsgKCoinUpdateSupplyLimit) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateKCoinSupply) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateKCoinSupply.DiscardUnknown(m)
+func (m *MsgKCoinUpdateSupplyLimit) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinUpdateSupplyLimit.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateKCoinSupply proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinUpdateSupplyLimit proto.InternalMessageInfo
 
-func (m *MsgUpdateKCoinSupply) GetAuthority() string {
+func (m *MsgKCoinUpdateSupplyLimit) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinSupply) GetDenom() string {
+func (m *MsgKCoinUpdateSupplyLimit) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinSupply) GetMaxSupply() string {
+func (m *MsgKCoinUpdateSupplyLimit) GetMaxSupply() string {
 	if m != nil {
 		return m.MaxSupply
 	}
 	return ""
 }
 
-type MsgUpdateKCoinBurnAmount struct {
+type MsgKCoinUpdateBurnAmount struct {
 	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom         string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	MaxBurnAmount string `protobuf:"bytes,3,opt,name=max_burn_amount,json=maxBurnAmount,proto3" json:"max_burn_amount,omitempty"`
 }
 
-func (m *MsgUpdateKCoinBurnAmount) Reset()         { *m = MsgUpdateKCoinBurnAmount{} }
-func (m *MsgUpdateKCoinBurnAmount) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateKCoinBurnAmount) ProtoMessage()    {}
-func (*MsgUpdateKCoinBurnAmount) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinUpdateBurnAmount) Reset()         { *m = MsgKCoinUpdateBurnAmount{} }
+func (m *MsgKCoinUpdateBurnAmount) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinUpdateBurnAmount) ProtoMessage()    {}
+func (*MsgKCoinUpdateBurnAmount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{6}
 }
-func (m *MsgUpdateKCoinBurnAmount) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinUpdateBurnAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateKCoinBurnAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinUpdateBurnAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateKCoinBurnAmount.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinUpdateBurnAmount.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -458,57 +466,57 @@ func (m *MsgUpdateKCoinBurnAmount) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateKCoinBurnAmount) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateKCoinBurnAmount.Merge(m, src)
+func (m *MsgKCoinUpdateBurnAmount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinUpdateBurnAmount.Merge(m, src)
 }
-func (m *MsgUpdateKCoinBurnAmount) XXX_Size() int {
+func (m *MsgKCoinUpdateBurnAmount) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateKCoinBurnAmount) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateKCoinBurnAmount.DiscardUnknown(m)
+func (m *MsgKCoinUpdateBurnAmount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinUpdateBurnAmount.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateKCoinBurnAmount proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinUpdateBurnAmount proto.InternalMessageInfo
 
-func (m *MsgUpdateKCoinBurnAmount) GetAuthority() string {
+func (m *MsgKCoinUpdateBurnAmount) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinBurnAmount) GetDenom() string {
+func (m *MsgKCoinUpdateBurnAmount) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinBurnAmount) GetMaxBurnAmount() string {
+func (m *MsgKCoinUpdateBurnAmount) GetMaxBurnAmount() string {
 	if m != nil {
 		return m.MaxBurnAmount
 	}
 	return ""
 }
 
-type MsgUpdateKCoinMintAmount struct {
+type MsgKCoinUpdateMintAmount struct {
 	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom         string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	MaxMintAmount string `protobuf:"bytes,3,opt,name=max_mint_amount,json=maxMintAmount,proto3" json:"max_mint_amount,omitempty"`
 }
 
-func (m *MsgUpdateKCoinMintAmount) Reset()         { *m = MsgUpdateKCoinMintAmount{} }
-func (m *MsgUpdateKCoinMintAmount) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateKCoinMintAmount) ProtoMessage()    {}
-func (*MsgUpdateKCoinMintAmount) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinUpdateMintAmount) Reset()         { *m = MsgKCoinUpdateMintAmount{} }
+func (m *MsgKCoinUpdateMintAmount) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinUpdateMintAmount) ProtoMessage()    {}
+func (*MsgKCoinUpdateMintAmount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{7}
 }
-func (m *MsgUpdateKCoinMintAmount) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinUpdateMintAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateKCoinMintAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinUpdateMintAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateKCoinMintAmount.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinUpdateMintAmount.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -518,57 +526,57 @@ func (m *MsgUpdateKCoinMintAmount) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateKCoinMintAmount) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateKCoinMintAmount.Merge(m, src)
+func (m *MsgKCoinUpdateMintAmount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinUpdateMintAmount.Merge(m, src)
 }
-func (m *MsgUpdateKCoinMintAmount) XXX_Size() int {
+func (m *MsgKCoinUpdateMintAmount) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateKCoinMintAmount) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateKCoinMintAmount.DiscardUnknown(m)
+func (m *MsgKCoinUpdateMintAmount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinUpdateMintAmount.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateKCoinMintAmount proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinUpdateMintAmount proto.InternalMessageInfo
 
-func (m *MsgUpdateKCoinMintAmount) GetAuthority() string {
+func (m *MsgKCoinUpdateMintAmount) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinMintAmount) GetDenom() string {
+func (m *MsgKCoinUpdateMintAmount) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgUpdateKCoinMintAmount) GetMaxMintAmount() string {
+func (m *MsgKCoinUpdateMintAmount) GetMaxMintAmount() string {
 	if m != nil {
 		return m.MaxMintAmount
 	}
 	return ""
 }
 
-type MsgAddKCoinReferences struct {
+type MsgKCoinAddReferences struct {
 	Authority  string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom      string   `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	References []string `protobuf:"bytes,3,rep,name=references,proto3" json:"references,omitempty"`
 }
 
-func (m *MsgAddKCoinReferences) Reset()         { *m = MsgAddKCoinReferences{} }
-func (m *MsgAddKCoinReferences) String() string { return proto.CompactTextString(m) }
-func (*MsgAddKCoinReferences) ProtoMessage()    {}
-func (*MsgAddKCoinReferences) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinAddReferences) Reset()         { *m = MsgKCoinAddReferences{} }
+func (m *MsgKCoinAddReferences) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinAddReferences) ProtoMessage()    {}
+func (*MsgKCoinAddReferences) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{8}
 }
-func (m *MsgAddKCoinReferences) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinAddReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddKCoinReferences) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinAddReferences) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddKCoinReferences.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinAddReferences.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -578,57 +586,57 @@ func (m *MsgAddKCoinReferences) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgAddKCoinReferences) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddKCoinReferences.Merge(m, src)
+func (m *MsgKCoinAddReferences) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinAddReferences.Merge(m, src)
 }
-func (m *MsgAddKCoinReferences) XXX_Size() int {
+func (m *MsgKCoinAddReferences) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddKCoinReferences) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddKCoinReferences.DiscardUnknown(m)
+func (m *MsgKCoinAddReferences) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinAddReferences.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddKCoinReferences proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinAddReferences proto.InternalMessageInfo
 
-func (m *MsgAddKCoinReferences) GetAuthority() string {
+func (m *MsgKCoinAddReferences) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddKCoinReferences) GetDenom() string {
+func (m *MsgKCoinAddReferences) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgAddKCoinReferences) GetReferences() []string {
+func (m *MsgKCoinAddReferences) GetReferences() []string {
 	if m != nil {
 		return m.References
 	}
 	return nil
 }
 
-type MsgRemoveKCoinReferences struct {
+type MsgKCoinRemoveReferences struct {
 	Authority  string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom      string   `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	References []string `protobuf:"bytes,3,rep,name=references,proto3" json:"references,omitempty"`
 }
 
-func (m *MsgRemoveKCoinReferences) Reset()         { *m = MsgRemoveKCoinReferences{} }
-func (m *MsgRemoveKCoinReferences) String() string { return proto.CompactTextString(m) }
-func (*MsgRemoveKCoinReferences) ProtoMessage()    {}
-func (*MsgRemoveKCoinReferences) Descriptor() ([]byte, []int) {
+func (m *MsgKCoinRemoveReferences) Reset()         { *m = MsgKCoinRemoveReferences{} }
+func (m *MsgKCoinRemoveReferences) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinRemoveReferences) ProtoMessage()    {}
+func (*MsgKCoinRemoveReferences) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{9}
 }
-func (m *MsgRemoveKCoinReferences) XXX_Unmarshal(b []byte) error {
+func (m *MsgKCoinRemoveReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRemoveKCoinReferences) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgKCoinRemoveReferences) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRemoveKCoinReferences.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgKCoinRemoveReferences.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -638,58 +646,58 @@ func (m *MsgRemoveKCoinReferences) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgRemoveKCoinReferences) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRemoveKCoinReferences.Merge(m, src)
+func (m *MsgKCoinRemoveReferences) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinRemoveReferences.Merge(m, src)
 }
-func (m *MsgRemoveKCoinReferences) XXX_Size() int {
+func (m *MsgKCoinRemoveReferences) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRemoveKCoinReferences) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRemoveKCoinReferences.DiscardUnknown(m)
+func (m *MsgKCoinRemoveReferences) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinRemoveReferences.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRemoveKCoinReferences proto.InternalMessageInfo
+var xxx_messageInfo_MsgKCoinRemoveReferences proto.InternalMessageInfo
 
-func (m *MsgRemoveKCoinReferences) GetAuthority() string {
+func (m *MsgKCoinRemoveReferences) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgRemoveKCoinReferences) GetDenom() string {
+func (m *MsgKCoinRemoveReferences) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgRemoveKCoinReferences) GetReferences() []string {
+func (m *MsgKCoinRemoveReferences) GetReferences() []string {
 	if m != nil {
 		return m.References
 	}
 	return nil
 }
 
-type MsgAddCollateralDenom struct {
+type MsgCollateralAddDenom struct {
 	Authority  string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom      string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	Ltv        string `protobuf:"bytes,3,opt,name=ltv,proto3" json:"ltv,omitempty"`
 	MaxDeposit string `protobuf:"bytes,4,opt,name=max_deposit,json=maxDeposit,proto3" json:"max_deposit,omitempty"`
 }
 
-func (m *MsgAddCollateralDenom) Reset()         { *m = MsgAddCollateralDenom{} }
-func (m *MsgAddCollateralDenom) String() string { return proto.CompactTextString(m) }
-func (*MsgAddCollateralDenom) ProtoMessage()    {}
-func (*MsgAddCollateralDenom) Descriptor() ([]byte, []int) {
+func (m *MsgCollateralAddDenom) Reset()         { *m = MsgCollateralAddDenom{} }
+func (m *MsgCollateralAddDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgCollateralAddDenom) ProtoMessage()    {}
+func (*MsgCollateralAddDenom) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{10}
 }
-func (m *MsgAddCollateralDenom) XXX_Unmarshal(b []byte) error {
+func (m *MsgCollateralAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddCollateralDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCollateralAddDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddCollateralDenom.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCollateralAddDenom.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -699,64 +707,64 @@ func (m *MsgAddCollateralDenom) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgAddCollateralDenom) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddCollateralDenom.Merge(m, src)
+func (m *MsgCollateralAddDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCollateralAddDenom.Merge(m, src)
 }
-func (m *MsgAddCollateralDenom) XXX_Size() int {
+func (m *MsgCollateralAddDenom) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddCollateralDenom) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddCollateralDenom.DiscardUnknown(m)
+func (m *MsgCollateralAddDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCollateralAddDenom.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddCollateralDenom proto.InternalMessageInfo
+var xxx_messageInfo_MsgCollateralAddDenom proto.InternalMessageInfo
 
-func (m *MsgAddCollateralDenom) GetAuthority() string {
+func (m *MsgCollateralAddDenom) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddCollateralDenom) GetDenom() string {
+func (m *MsgCollateralAddDenom) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgAddCollateralDenom) GetLtv() string {
+func (m *MsgCollateralAddDenom) GetLtv() string {
 	if m != nil {
 		return m.Ltv
 	}
 	return ""
 }
 
-func (m *MsgAddCollateralDenom) GetMaxDeposit() string {
+func (m *MsgCollateralAddDenom) GetMaxDeposit() string {
 	if m != nil {
 		return m.MaxDeposit
 	}
 	return ""
 }
 
-type MsgUpdateCollateralDenomLTV struct {
+type MsgCollateralUpdateLTV struct {
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	Ltv       string `protobuf:"bytes,3,opt,name=ltv,proto3" json:"ltv,omitempty"`
 }
 
-func (m *MsgUpdateCollateralDenomLTV) Reset()         { *m = MsgUpdateCollateralDenomLTV{} }
-func (m *MsgUpdateCollateralDenomLTV) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateCollateralDenomLTV) ProtoMessage()    {}
-func (*MsgUpdateCollateralDenomLTV) Descriptor() ([]byte, []int) {
+func (m *MsgCollateralUpdateLTV) Reset()         { *m = MsgCollateralUpdateLTV{} }
+func (m *MsgCollateralUpdateLTV) String() string { return proto.CompactTextString(m) }
+func (*MsgCollateralUpdateLTV) ProtoMessage()    {}
+func (*MsgCollateralUpdateLTV) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{11}
 }
-func (m *MsgUpdateCollateralDenomLTV) XXX_Unmarshal(b []byte) error {
+func (m *MsgCollateralUpdateLTV) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateCollateralDenomLTV) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCollateralUpdateLTV) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateCollateralDenomLTV.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCollateralUpdateLTV.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -766,57 +774,57 @@ func (m *MsgUpdateCollateralDenomLTV) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateCollateralDenomLTV) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateCollateralDenomLTV.Merge(m, src)
+func (m *MsgCollateralUpdateLTV) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCollateralUpdateLTV.Merge(m, src)
 }
-func (m *MsgUpdateCollateralDenomLTV) XXX_Size() int {
+func (m *MsgCollateralUpdateLTV) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateCollateralDenomLTV) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateCollateralDenomLTV.DiscardUnknown(m)
+func (m *MsgCollateralUpdateLTV) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCollateralUpdateLTV.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateCollateralDenomLTV proto.InternalMessageInfo
+var xxx_messageInfo_MsgCollateralUpdateLTV proto.InternalMessageInfo
 
-func (m *MsgUpdateCollateralDenomLTV) GetAuthority() string {
+func (m *MsgCollateralUpdateLTV) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateCollateralDenomLTV) GetDenom() string {
+func (m *MsgCollateralUpdateLTV) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgUpdateCollateralDenomLTV) GetLtv() string {
+func (m *MsgCollateralUpdateLTV) GetLtv() string {
 	if m != nil {
 		return m.Ltv
 	}
 	return ""
 }
 
-type MsgUpdateCollateralDenomMaxDeposit struct {
+type MsgCollateralUpdateDepositLimit struct {
 	Authority  string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom      string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	MaxDeposit string `protobuf:"bytes,3,opt,name=max_deposit,json=maxDeposit,proto3" json:"max_deposit,omitempty"`
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) Reset()         { *m = MsgUpdateCollateralDenomMaxDeposit{} }
-func (m *MsgUpdateCollateralDenomMaxDeposit) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateCollateralDenomMaxDeposit) ProtoMessage()    {}
-func (*MsgUpdateCollateralDenomMaxDeposit) Descriptor() ([]byte, []int) {
+func (m *MsgCollateralUpdateDepositLimit) Reset()         { *m = MsgCollateralUpdateDepositLimit{} }
+func (m *MsgCollateralUpdateDepositLimit) String() string { return proto.CompactTextString(m) }
+func (*MsgCollateralUpdateDepositLimit) ProtoMessage()    {}
+func (*MsgCollateralUpdateDepositLimit) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{12}
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Unmarshal(b []byte) error {
+func (m *MsgCollateralUpdateDepositLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCollateralUpdateDepositLimit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateCollateralDenomMaxDeposit.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCollateralUpdateDepositLimit.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -826,40 +834,40 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Marshal(b []byte, deterministic
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateCollateralDenomMaxDeposit.Merge(m, src)
+func (m *MsgCollateralUpdateDepositLimit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCollateralUpdateDepositLimit.Merge(m, src)
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Size() int {
+func (m *MsgCollateralUpdateDepositLimit) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateCollateralDenomMaxDeposit.DiscardUnknown(m)
+func (m *MsgCollateralUpdateDepositLimit) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCollateralUpdateDepositLimit.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateCollateralDenomMaxDeposit proto.InternalMessageInfo
+var xxx_messageInfo_MsgCollateralUpdateDepositLimit proto.InternalMessageInfo
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) GetAuthority() string {
+func (m *MsgCollateralUpdateDepositLimit) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) GetDenom() string {
+func (m *MsgCollateralUpdateDepositLimit) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) GetMaxDeposit() string {
+func (m *MsgCollateralUpdateDepositLimit) GetMaxDeposit() string {
 	if m != nil {
 		return m.MaxDeposit
 	}
 	return ""
 }
 
-type MsgAddCAsset struct {
+type MsgCAssetAddDenom struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	BaseDenom    string `protobuf:"bytes,3,opt,name=base_denom,json=baseDenom,proto3" json:"base_denom,omitempty"`
@@ -868,20 +876,21 @@ type MsgAddCAsset struct {
 	MinLiquidity string `protobuf:"bytes,6,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
 	MinOrderSize string `protobuf:"bytes,7,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
 	BorrowLimit  string `protobuf:"bytes,8,opt,name=borrow_limit,json=borrowLimit,proto3" json:"borrow_limit,omitempty"`
+	MinLoanSize  string `protobuf:"bytes,9,opt,name=min_loan_size,json=minLoanSize,proto3" json:"min_loan_size,omitempty"`
 }
 
-func (m *MsgAddCAsset) Reset()         { *m = MsgAddCAsset{} }
-func (m *MsgAddCAsset) String() string { return proto.CompactTextString(m) }
-func (*MsgAddCAsset) ProtoMessage()    {}
-func (*MsgAddCAsset) Descriptor() ([]byte, []int) {
+func (m *MsgCAssetAddDenom) Reset()         { *m = MsgCAssetAddDenom{} }
+func (m *MsgCAssetAddDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgCAssetAddDenom) ProtoMessage()    {}
+func (*MsgCAssetAddDenom) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{13}
 }
-func (m *MsgAddCAsset) XXX_Unmarshal(b []byte) error {
+func (m *MsgCAssetAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddCAsset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCAssetAddDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddCAsset.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCAssetAddDenom.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -891,92 +900,99 @@ func (m *MsgAddCAsset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *MsgAddCAsset) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddCAsset.Merge(m, src)
+func (m *MsgCAssetAddDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCAssetAddDenom.Merge(m, src)
 }
-func (m *MsgAddCAsset) XXX_Size() int {
+func (m *MsgCAssetAddDenom) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddCAsset) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddCAsset.DiscardUnknown(m)
+func (m *MsgCAssetAddDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCAssetAddDenom.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddCAsset proto.InternalMessageInfo
+var xxx_messageInfo_MsgCAssetAddDenom proto.InternalMessageInfo
 
-func (m *MsgAddCAsset) GetAuthority() string {
+func (m *MsgCAssetAddDenom) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetName() string {
+func (m *MsgCAssetAddDenom) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetBaseDenom() string {
+func (m *MsgCAssetAddDenom) GetBaseDenom() string {
 	if m != nil {
 		return m.BaseDenom
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetDexFeeShare() string {
+func (m *MsgCAssetAddDenom) GetDexFeeShare() string {
 	if m != nil {
 		return m.DexFeeShare
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetFactor() string {
+func (m *MsgCAssetAddDenom) GetFactor() string {
 	if m != nil {
 		return m.Factor
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetMinLiquidity() string {
+func (m *MsgCAssetAddDenom) GetMinLiquidity() string {
 	if m != nil {
 		return m.MinLiquidity
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetMinOrderSize() string {
+func (m *MsgCAssetAddDenom) GetMinOrderSize() string {
 	if m != nil {
 		return m.MinOrderSize
 	}
 	return ""
 }
 
-func (m *MsgAddCAsset) GetBorrowLimit() string {
+func (m *MsgCAssetAddDenom) GetBorrowLimit() string {
 	if m != nil {
 		return m.BorrowLimit
 	}
 	return ""
 }
 
-type MsgUpdateCAssetDexFeeShare struct {
+func (m *MsgCAssetAddDenom) GetMinLoanSize() string {
+	if m != nil {
+		return m.MinLoanSize
+	}
+	return ""
+}
+
+type MsgCAssetUpdateDexFeeShare struct {
 	Authority   string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	DexFeeShare string `protobuf:"bytes,3,opt,name=dex_fee_share,json=dexFeeShare,proto3" json:"dex_fee_share,omitempty"`
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) Reset()         { *m = MsgUpdateCAssetDexFeeShare{} }
-func (m *MsgUpdateCAssetDexFeeShare) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateCAssetDexFeeShare) ProtoMessage()    {}
-func (*MsgUpdateCAssetDexFeeShare) Descriptor() ([]byte, []int) {
+func (m *MsgCAssetUpdateDexFeeShare) Reset()         { *m = MsgCAssetUpdateDexFeeShare{} }
+func (m *MsgCAssetUpdateDexFeeShare) String() string { return proto.CompactTextString(m) }
+func (*MsgCAssetUpdateDexFeeShare) ProtoMessage()    {}
+func (*MsgCAssetUpdateDexFeeShare) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{14}
 }
-func (m *MsgUpdateCAssetDexFeeShare) XXX_Unmarshal(b []byte) error {
+func (m *MsgCAssetUpdateDexFeeShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateCAssetDexFeeShare) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCAssetUpdateDexFeeShare) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateCAssetDexFeeShare.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCAssetUpdateDexFeeShare.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -986,57 +1002,57 @@ func (m *MsgUpdateCAssetDexFeeShare) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateCAssetDexFeeShare) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateCAssetDexFeeShare.Merge(m, src)
+func (m *MsgCAssetUpdateDexFeeShare) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCAssetUpdateDexFeeShare.Merge(m, src)
 }
-func (m *MsgUpdateCAssetDexFeeShare) XXX_Size() int {
+func (m *MsgCAssetUpdateDexFeeShare) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateCAssetDexFeeShare) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateCAssetDexFeeShare.DiscardUnknown(m)
+func (m *MsgCAssetUpdateDexFeeShare) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCAssetUpdateDexFeeShare.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateCAssetDexFeeShare proto.InternalMessageInfo
+var xxx_messageInfo_MsgCAssetUpdateDexFeeShare proto.InternalMessageInfo
 
-func (m *MsgUpdateCAssetDexFeeShare) GetAuthority() string {
+func (m *MsgCAssetUpdateDexFeeShare) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) GetName() string {
+func (m *MsgCAssetUpdateDexFeeShare) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) GetDexFeeShare() string {
+func (m *MsgCAssetUpdateDexFeeShare) GetDexFeeShare() string {
 	if m != nil {
 		return m.DexFeeShare
 	}
 	return ""
 }
 
-type MsgUpdateCAssetBorrowLimit struct {
+type MsgCAssetUpdateBorrowLimit struct {
 	Authority   string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	BorrowLimit string `protobuf:"bytes,3,opt,name=borrow_limit,json=borrowLimit,proto3" json:"borrow_limit,omitempty"`
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) Reset()         { *m = MsgUpdateCAssetBorrowLimit{} }
-func (m *MsgUpdateCAssetBorrowLimit) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateCAssetBorrowLimit) ProtoMessage()    {}
-func (*MsgUpdateCAssetBorrowLimit) Descriptor() ([]byte, []int) {
+func (m *MsgCAssetUpdateBorrowLimit) Reset()         { *m = MsgCAssetUpdateBorrowLimit{} }
+func (m *MsgCAssetUpdateBorrowLimit) String() string { return proto.CompactTextString(m) }
+func (*MsgCAssetUpdateBorrowLimit) ProtoMessage()    {}
+func (*MsgCAssetUpdateBorrowLimit) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{15}
 }
-func (m *MsgUpdateCAssetBorrowLimit) XXX_Unmarshal(b []byte) error {
+func (m *MsgCAssetUpdateBorrowLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateCAssetBorrowLimit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCAssetUpdateBorrowLimit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateCAssetBorrowLimit.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCAssetUpdateBorrowLimit.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1046,57 +1062,57 @@ func (m *MsgUpdateCAssetBorrowLimit) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateCAssetBorrowLimit) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateCAssetBorrowLimit.Merge(m, src)
+func (m *MsgCAssetUpdateBorrowLimit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCAssetUpdateBorrowLimit.Merge(m, src)
 }
-func (m *MsgUpdateCAssetBorrowLimit) XXX_Size() int {
+func (m *MsgCAssetUpdateBorrowLimit) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateCAssetBorrowLimit) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateCAssetBorrowLimit.DiscardUnknown(m)
+func (m *MsgCAssetUpdateBorrowLimit) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCAssetUpdateBorrowLimit.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateCAssetBorrowLimit proto.InternalMessageInfo
+var xxx_messageInfo_MsgCAssetUpdateBorrowLimit proto.InternalMessageInfo
 
-func (m *MsgUpdateCAssetBorrowLimit) GetAuthority() string {
+func (m *MsgCAssetUpdateBorrowLimit) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) GetName() string {
+func (m *MsgCAssetUpdateBorrowLimit) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) GetBorrowLimit() string {
+func (m *MsgCAssetUpdateBorrowLimit) GetBorrowLimit() string {
 	if m != nil {
 		return m.BorrowLimit
 	}
 	return ""
 }
 
-type MsgUpdateCAssetMinimumLoanSize struct {
+type MsgCAssetUpdateMinimumLoanSize struct {
 	Authority       string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name            string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	MinimumLoanSize string `protobuf:"bytes,3,opt,name=minimum_loan_size,json=minimumLoanSize,proto3" json:"minimum_loan_size,omitempty"`
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) Reset()         { *m = MsgUpdateCAssetMinimumLoanSize{} }
-func (m *MsgUpdateCAssetMinimumLoanSize) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateCAssetMinimumLoanSize) ProtoMessage()    {}
-func (*MsgUpdateCAssetMinimumLoanSize) Descriptor() ([]byte, []int) {
+func (m *MsgCAssetUpdateMinimumLoanSize) Reset()         { *m = MsgCAssetUpdateMinimumLoanSize{} }
+func (m *MsgCAssetUpdateMinimumLoanSize) String() string { return proto.CompactTextString(m) }
+func (*MsgCAssetUpdateMinimumLoanSize) ProtoMessage()    {}
+func (*MsgCAssetUpdateMinimumLoanSize) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{16}
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Unmarshal(b []byte) error {
+func (m *MsgCAssetUpdateMinimumLoanSize) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCAssetUpdateMinimumLoanSize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateCAssetMinimumLoanSize.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCAssetUpdateMinimumLoanSize.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1106,137 +1122,676 @@ func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateCAssetMinimumLoanSize.Merge(m, src)
+func (m *MsgCAssetUpdateMinimumLoanSize) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCAssetUpdateMinimumLoanSize.Merge(m, src)
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Size() int {
+func (m *MsgCAssetUpdateMinimumLoanSize) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateCAssetMinimumLoanSize.DiscardUnknown(m)
+func (m *MsgCAssetUpdateMinimumLoanSize) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCAssetUpdateMinimumLoanSize.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateCAssetMinimumLoanSize proto.InternalMessageInfo
+var xxx_messageInfo_MsgCAssetUpdateMinimumLoanSize proto.InternalMessageInfo
 
-func (m *MsgUpdateCAssetMinimumLoanSize) GetAuthority() string {
+func (m *MsgCAssetUpdateMinimumLoanSize) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) GetName() string {
+func (m *MsgCAssetUpdateMinimumLoanSize) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) GetMinimumLoanSize() string {
+func (m *MsgCAssetUpdateMinimumLoanSize) GetMinimumLoanSize() string {
 	if m != nil {
 		return m.MinimumLoanSize
 	}
 	return ""
 }
 
+type MsgAddArbitrageDenom struct {
+	Authority                 string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name                      string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Factor                    string `protobuf:"bytes,3,opt,name=factor,proto3" json:"factor,omitempty"`
+	MinLiquidity              string `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
+	MinOrderSize              string `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
+	Kcoin                     string `protobuf:"bytes,6,opt,name=kcoin,proto3" json:"kcoin,omitempty"`
+	CAsset                    string `protobuf:"bytes,7,opt,name=c_asset,json=cAsset,proto3" json:"c_asset,omitempty"`
+	BuyThreshold              string `protobuf:"bytes,8,opt,name=buy_threshold,json=buyThreshold,proto3" json:"buy_threshold,omitempty"`
+	BuyTradeAmount            string `protobuf:"bytes,10,opt,name=buy_trade_amount,json=buyTradeAmount,proto3" json:"buy_trade_amount,omitempty"`
+	SellThreshold             string `protobuf:"bytes,9,opt,name=sell_threshold,json=sellThreshold,proto3" json:"sell_threshold,omitempty"`
+	SellTradeAmount           string `protobuf:"bytes,11,opt,name=sell_trade_amount,json=sellTradeAmount,proto3" json:"sell_trade_amount,omitempty"`
+	RedemptionFee             string `protobuf:"bytes,12,opt,name=redemption_fee,json=redemptionFee,proto3" json:"redemption_fee,omitempty"`
+	RedemptionFeeReserveShare string `protobuf:"bytes,13,opt,name=redemption_fee_reserve_share,json=redemptionFeeReserveShare,proto3" json:"redemption_fee_reserve_share,omitempty"`
+}
+
+func (m *MsgAddArbitrageDenom) Reset()         { *m = MsgAddArbitrageDenom{} }
+func (m *MsgAddArbitrageDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgAddArbitrageDenom) ProtoMessage()    {}
+func (*MsgAddArbitrageDenom) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{17}
+}
+func (m *MsgAddArbitrageDenom) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddArbitrageDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddArbitrageDenom.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddArbitrageDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddArbitrageDenom.Merge(m, src)
+}
+func (m *MsgAddArbitrageDenom) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddArbitrageDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddArbitrageDenom.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddArbitrageDenom proto.InternalMessageInfo
+
+func (m *MsgAddArbitrageDenom) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetFactor() string {
+	if m != nil {
+		return m.Factor
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetMinLiquidity() string {
+	if m != nil {
+		return m.MinLiquidity
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetMinOrderSize() string {
+	if m != nil {
+		return m.MinOrderSize
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetKcoin() string {
+	if m != nil {
+		return m.Kcoin
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetCAsset() string {
+	if m != nil {
+		return m.CAsset
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetBuyThreshold() string {
+	if m != nil {
+		return m.BuyThreshold
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetBuyTradeAmount() string {
+	if m != nil {
+		return m.BuyTradeAmount
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetSellThreshold() string {
+	if m != nil {
+		return m.SellThreshold
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetSellTradeAmount() string {
+	if m != nil {
+		return m.SellTradeAmount
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetRedemptionFee() string {
+	if m != nil {
+		return m.RedemptionFee
+	}
+	return ""
+}
+
+func (m *MsgAddArbitrageDenom) GetRedemptionFeeReserveShare() string {
+	if m != nil {
+		return m.RedemptionFeeReserveShare
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateBuyThreshold struct {
+	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	BuyThreshold string `protobuf:"bytes,3,opt,name=buy_threshold,json=buyThreshold,proto3" json:"buy_threshold,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) Reset()         { *m = MsgArbitrageUpdateBuyThreshold{} }
+func (m *MsgArbitrageUpdateBuyThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgArbitrageUpdateBuyThreshold) ProtoMessage()    {}
+func (*MsgArbitrageUpdateBuyThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{18}
+}
+func (m *MsgArbitrageUpdateBuyThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateBuyThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateBuyThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateBuyThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateBuyThreshold.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateBuyThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateBuyThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateBuyThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateBuyThreshold proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateBuyThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) GetBuyThreshold() string {
+	if m != nil {
+		return m.BuyThreshold
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateSellThreshold struct {
+	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	SellThreshold string `protobuf:"bytes,3,opt,name=sell_threshold,json=sellThreshold,proto3" json:"sell_threshold,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) Reset()         { *m = MsgArbitrageUpdateSellThreshold{} }
+func (m *MsgArbitrageUpdateSellThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgArbitrageUpdateSellThreshold) ProtoMessage()    {}
+func (*MsgArbitrageUpdateSellThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{19}
+}
+func (m *MsgArbitrageUpdateSellThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateSellThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateSellThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateSellThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateSellThreshold.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateSellThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateSellThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateSellThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateSellThreshold proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateSellThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) GetSellThreshold() string {
+	if m != nil {
+		return m.SellThreshold
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateBuyAmount struct {
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name      string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	BuyAmount string `protobuf:"bytes,3,opt,name=buy_amount,json=buyAmount,proto3" json:"buy_amount,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) Reset()         { *m = MsgArbitrageUpdateBuyAmount{} }
+func (m *MsgArbitrageUpdateBuyAmount) String() string { return proto.CompactTextString(m) }
+func (*MsgArbitrageUpdateBuyAmount) ProtoMessage()    {}
+func (*MsgArbitrageUpdateBuyAmount) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{20}
+}
+func (m *MsgArbitrageUpdateBuyAmount) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateBuyAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateBuyAmount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateBuyAmount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateBuyAmount.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateBuyAmount) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateBuyAmount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateBuyAmount.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateBuyAmount proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateBuyAmount) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) GetBuyAmount() string {
+	if m != nil {
+		return m.BuyAmount
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateSellAmount struct {
+	Authority  string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name       string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	SellAmount string `protobuf:"bytes,3,opt,name=sell_amount,json=sellAmount,proto3" json:"sell_amount,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateSellAmount) Reset()         { *m = MsgArbitrageUpdateSellAmount{} }
+func (m *MsgArbitrageUpdateSellAmount) String() string { return proto.CompactTextString(m) }
+func (*MsgArbitrageUpdateSellAmount) ProtoMessage()    {}
+func (*MsgArbitrageUpdateSellAmount) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{21}
+}
+func (m *MsgArbitrageUpdateSellAmount) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateSellAmount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateSellAmount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateSellAmount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateSellAmount.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateSellAmount) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateSellAmount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateSellAmount.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateSellAmount proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateSellAmount) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateSellAmount) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateSellAmount) GetSellAmount() string {
+	if m != nil {
+		return m.SellAmount
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateRedemptionFee struct {
+	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	RedemptionFee string `protobuf:"bytes,3,opt,name=redemption_fee,json=redemptionFee,proto3" json:"redemption_fee,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) Reset()         { *m = MsgArbitrageUpdateRedemptionFee{} }
+func (m *MsgArbitrageUpdateRedemptionFee) String() string { return proto.CompactTextString(m) }
+func (*MsgArbitrageUpdateRedemptionFee) ProtoMessage()    {}
+func (*MsgArbitrageUpdateRedemptionFee) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{22}
+}
+func (m *MsgArbitrageUpdateRedemptionFee) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateRedemptionFee) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateRedemptionFee.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateRedemptionFee) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateRedemptionFee.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateRedemptionFee) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateRedemptionFee) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateRedemptionFee.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateRedemptionFee proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateRedemptionFee) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) GetRedemptionFee() string {
+	if m != nil {
+		return m.RedemptionFee
+	}
+	return ""
+}
+
+type MsgArbitrageUpdateRedemptionFeeReserveShare struct {
+	Authority                 string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name                      string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	RedemptionFeeReserveShare string `protobuf:"bytes,3,opt,name=redemption_fee_reserve_share,json=redemptionFeeReserveShare,proto3" json:"redemption_fee_reserve_share,omitempty"`
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) Reset() {
+	*m = MsgArbitrageUpdateRedemptionFeeReserveShare{}
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) String() string {
+	return proto.CompactTextString(m)
+}
+func (*MsgArbitrageUpdateRedemptionFeeReserveShare) ProtoMessage() {}
+func (*MsgArbitrageUpdateRedemptionFeeReserveShare) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{23}
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgArbitrageUpdateRedemptionFeeReserveShare.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgArbitrageUpdateRedemptionFeeReserveShare.Merge(m, src)
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgArbitrageUpdateRedemptionFeeReserveShare.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgArbitrageUpdateRedemptionFeeReserveShare proto.InternalMessageInfo
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) GetRedemptionFeeReserveShare() string {
+	if m != nil {
+		return m.RedemptionFeeReserveShare
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "kopi.denominations.MsgUpdateParamsResponse")
-	proto.RegisterType((*MsgAddDEXDenom)(nil), "kopi.denominations.MsgAddDEXDenom")
-	proto.RegisterType((*MsgUpdateDEXDenomMinimumLiquidity)(nil), "kopi.denominations.MsgUpdateDEXDenomMinimumLiquidity")
-	proto.RegisterType((*MsgUpdateDEXDenomMinimumOrderSize)(nil), "kopi.denominations.MsgUpdateDEXDenomMinimumOrderSize")
-	proto.RegisterType((*MsgAddKCoin)(nil), "kopi.denominations.MsgAddKCoin")
-	proto.RegisterType((*MsgUpdateKCoinSupply)(nil), "kopi.denominations.MsgUpdateKCoinSupply")
-	proto.RegisterType((*MsgUpdateKCoinBurnAmount)(nil), "kopi.denominations.MsgUpdateKCoinBurnAmount")
-	proto.RegisterType((*MsgUpdateKCoinMintAmount)(nil), "kopi.denominations.MsgUpdateKCoinMintAmount")
-	proto.RegisterType((*MsgAddKCoinReferences)(nil), "kopi.denominations.MsgAddKCoinReferences")
-	proto.RegisterType((*MsgRemoveKCoinReferences)(nil), "kopi.denominations.MsgRemoveKCoinReferences")
-	proto.RegisterType((*MsgAddCollateralDenom)(nil), "kopi.denominations.MsgAddCollateralDenom")
-	proto.RegisterType((*MsgUpdateCollateralDenomLTV)(nil), "kopi.denominations.MsgUpdateCollateralDenomLTV")
-	proto.RegisterType((*MsgUpdateCollateralDenomMaxDeposit)(nil), "kopi.denominations.MsgUpdateCollateralDenomMaxDeposit")
-	proto.RegisterType((*MsgAddCAsset)(nil), "kopi.denominations.MsgAddCAsset")
-	proto.RegisterType((*MsgUpdateCAssetDexFeeShare)(nil), "kopi.denominations.MsgUpdateCAssetDexFeeShare")
-	proto.RegisterType((*MsgUpdateCAssetBorrowLimit)(nil), "kopi.denominations.MsgUpdateCAssetBorrowLimit")
-	proto.RegisterType((*MsgUpdateCAssetMinimumLoanSize)(nil), "kopi.denominations.MsgUpdateCAssetMinimumLoanSize")
+	proto.RegisterType((*MsgDexAddDenom)(nil), "kopi.denominations.MsgDexAddDenom")
+	proto.RegisterType((*MsgDexUpdateMinimumLiquidity)(nil), "kopi.denominations.MsgDexUpdateMinimumLiquidity")
+	proto.RegisterType((*MsgDexUpdateMinimumOrderSize)(nil), "kopi.denominations.MsgDexUpdateMinimumOrderSize")
+	proto.RegisterType((*MsgKCoinAddDenom)(nil), "kopi.denominations.MsgKCoinAddDenom")
+	proto.RegisterType((*MsgKCoinUpdateSupplyLimit)(nil), "kopi.denominations.MsgKCoinUpdateSupplyLimit")
+	proto.RegisterType((*MsgKCoinUpdateBurnAmount)(nil), "kopi.denominations.MsgKCoinUpdateBurnAmount")
+	proto.RegisterType((*MsgKCoinUpdateMintAmount)(nil), "kopi.denominations.MsgKCoinUpdateMintAmount")
+	proto.RegisterType((*MsgKCoinAddReferences)(nil), "kopi.denominations.MsgKCoinAddReferences")
+	proto.RegisterType((*MsgKCoinRemoveReferences)(nil), "kopi.denominations.MsgKCoinRemoveReferences")
+	proto.RegisterType((*MsgCollateralAddDenom)(nil), "kopi.denominations.MsgCollateralAddDenom")
+	proto.RegisterType((*MsgCollateralUpdateLTV)(nil), "kopi.denominations.MsgCollateralUpdateLTV")
+	proto.RegisterType((*MsgCollateralUpdateDepositLimit)(nil), "kopi.denominations.MsgCollateralUpdateDepositLimit")
+	proto.RegisterType((*MsgCAssetAddDenom)(nil), "kopi.denominations.MsgCAssetAddDenom")
+	proto.RegisterType((*MsgCAssetUpdateDexFeeShare)(nil), "kopi.denominations.MsgCAssetUpdateDexFeeShare")
+	proto.RegisterType((*MsgCAssetUpdateBorrowLimit)(nil), "kopi.denominations.MsgCAssetUpdateBorrowLimit")
+	proto.RegisterType((*MsgCAssetUpdateMinimumLoanSize)(nil), "kopi.denominations.MsgCAssetUpdateMinimumLoanSize")
+	proto.RegisterType((*MsgAddArbitrageDenom)(nil), "kopi.denominations.MsgAddArbitrageDenom")
+	proto.RegisterType((*MsgArbitrageUpdateBuyThreshold)(nil), "kopi.denominations.MsgArbitrageUpdateBuyThreshold")
+	proto.RegisterType((*MsgArbitrageUpdateSellThreshold)(nil), "kopi.denominations.MsgArbitrageUpdateSellThreshold")
+	proto.RegisterType((*MsgArbitrageUpdateBuyAmount)(nil), "kopi.denominations.MsgArbitrageUpdateBuyAmount")
+	proto.RegisterType((*MsgArbitrageUpdateSellAmount)(nil), "kopi.denominations.MsgArbitrageUpdateSellAmount")
+	proto.RegisterType((*MsgArbitrageUpdateRedemptionFee)(nil), "kopi.denominations.MsgArbitrageUpdateRedemptionFee")
+	proto.RegisterType((*MsgArbitrageUpdateRedemptionFeeReserveShare)(nil), "kopi.denominations.MsgArbitrageUpdateRedemptionFeeReserveShare")
 }
 
 func init() { proto.RegisterFile("kopi/denominations/tx.proto", fileDescriptor_6ba97ecacef12ed2) }
 
 var fileDescriptor_6ba97ecacef12ed2 = []byte{
-	// 1179 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0x4f, 0x6f, 0x1b, 0x45,
-	0x14, 0xef, 0x76, 0x9b, 0xb4, 0x7e, 0xf9, 0x53, 0xb2, 0x4a, 0x89, 0x9b, 0xa8, 0x4e, 0xb2, 0x45,
-	0x28, 0x35, 0xc4, 0x2e, 0x0d, 0x04, 0xc9, 0x02, 0x89, 0x38, 0xa1, 0x12, 0x25, 0x16, 0xc8, 0x01,
-	0x54, 0xf5, 0xc0, 0x6a, 0x9d, 0x9d, 0x38, 0x03, 0x9e, 0x19, 0xb3, 0xb3, 0x0e, 0x4e, 0x0f, 0x08,
-	0x55, 0x88, 0x03, 0x27, 0x3e, 0x4a, 0x0e, 0x7c, 0x01, 0x10, 0x12, 0x88, 0x0b, 0x51, 0x2f, 0xc0,
-	0x89, 0x2a, 0x39, 0xe4, 0x23, 0x70, 0x45, 0xfb, 0xc7, 0xbb, 0xeb, 0x9d, 0xf5, 0xda, 0x9b, 0x6c,
-	0xe1, 0x92, 0xec, 0xbe, 0xf7, 0x66, 0xde, 0xef, 0xf7, 0xfe, 0xec, 0xbc, 0x31, 0x2c, 0x7c, 0xce,
-	0xda, 0xb8, 0x6c, 0x20, 0xca, 0x08, 0xa6, 0xba, 0x85, 0x19, 0xe5, 0x65, 0xab, 0x5b, 0x6a, 0x9b,
-	0xcc, 0x62, 0x8a, 0x62, 0x2b, 0x4b, 0x7d, 0xca, 0xf9, 0x19, 0x9d, 0x60, 0xca, 0xca, 0xce, 0x5f,
-	0xd7, 0x6c, 0x7e, 0x6e, 0x97, 0x71, 0xc2, 0x78, 0x99, 0xf0, 0x66, 0xf9, 0xe0, 0x35, 0xfb, 0x9f,
-	0xa7, 0xb8, 0xe9, 0x2a, 0x34, 0xe7, 0xad, 0xec, 0xbe, 0x78, 0xaa, 0xd9, 0x26, 0x6b, 0x32, 0x57,
-	0x6e, 0x3f, 0x79, 0xd2, 0xc5, 0x18, 0x34, 0x6d, 0xdd, 0xd4, 0x89, 0xb7, 0x4c, 0xbd, 0x09, 0x73,
-	0x35, 0xde, 0xfc, 0xb8, 0x6d, 0xe8, 0x16, 0xfa, 0xd0, 0x51, 0xd4, 0x11, 0x6f, 0x33, 0xca, 0x91,
-	0xfa, 0x8f, 0x04, 0xd3, 0x35, 0xde, 0xdc, 0x30, 0x8c, 0xad, 0x77, 0x1f, 0x6e, 0xd9, 0x5b, 0x28,
-	0xeb, 0x90, 0xd3, 0x3b, 0xd6, 0x3e, 0x33, 0xb1, 0x75, 0x98, 0x97, 0x96, 0xa4, 0x95, 0x5c, 0x35,
-	0xff, 0xf4, 0x87, 0xd5, 0x59, 0x0f, 0xc9, 0x86, 0x61, 0x98, 0x88, 0xf3, 0x1d, 0xcb, 0xc4, 0xb4,
-	0x59, 0x0f, 0x4c, 0x15, 0x05, 0xae, 0x50, 0x9d, 0xa0, 0xfc, 0x65, 0x7b, 0x49, 0xdd, 0x79, 0x56,
-	0x5e, 0x84, 0xf1, 0x3d, 0x7d, 0xd7, 0x62, 0x66, 0x5e, 0x76, 0xa4, 0xde, 0x9b, 0x72, 0x1b, 0xa6,
-	0x08, 0xa6, 0x5a, 0x0b, 0x7f, 0xd1, 0xc1, 0x86, 0xed, 0xe7, 0x8a, 0xa3, 0x9e, 0x24, 0x98, 0x6e,
-	0xf7, 0x64, 0xca, 0x4b, 0x30, 0x6d, 0x1b, 0x31, 0xd3, 0x40, 0xa6, 0xc6, 0xf1, 0x63, 0x94, 0x1f,
-	0xf3, 0xad, 0x3e, 0xb0, 0x85, 0x3b, 0xf8, 0x31, 0xaa, 0xac, 0x3f, 0x39, 0x3b, 0x2a, 0x06, 0x30,
-	0xbe, 0x3b, 0x3b, 0x2a, 0xde, 0x76, 0x02, 0xd2, 0x8d, 0x84, 0xa4, 0x9f, 0xa6, 0xfa, 0xb7, 0x04,
-	0xcb, 0x7e, 0x54, 0x7a, 0xd2, 0x1a, 0xa6, 0x98, 0x74, 0x48, 0x80, 0x21, 0xcb, 0x60, 0x08, 0xa4,
-	0x65, 0x91, 0x74, 0xe5, 0x3d, 0x91, 0xce, 0xfa, 0x20, 0x3a, 0xc9, 0xd8, 0xd5, 0x67, 0x09, 0x0c,
-	0xfd, 0xf8, 0x65, 0xca, 0x50, 0xcc, 0x98, 0x1c, 0x93, 0xb1, 0x0b, 0x53, 0xf4, 0xb7, 0x52, 0x9f,
-	0xc8, 0x30, 0xe1, 0xe6, 0xf5, 0xfd, 0x4d, 0x86, 0xe9, 0xb9, 0xc9, 0xcc, 0xc2, 0x98, 0xe3, 0xda,
-	0x63, 0xe3, 0xbe, 0x28, 0x05, 0x00, 0x13, 0xed, 0x21, 0x13, 0xd1, 0x5d, 0xc4, 0xf3, 0xf2, 0x92,
-	0xbc, 0x92, 0xab, 0x87, 0x24, 0xca, 0x2d, 0x00, 0xa2, 0x77, 0x35, 0xde, 0x69, 0xb7, 0x5b, 0xbd,
-	0x12, 0xce, 0x11, 0xbd, 0xbb, 0xe3, 0x08, 0x94, 0x97, 0xe1, 0xba, 0xad, 0x26, 0x98, 0x5a, 0x9a,
-	0x4e, 0x58, 0x87, 0x5a, 0x5e, 0x01, 0x4f, 0x11, 0xbd, 0x5b, 0xc3, 0xd4, 0xda, 0x70, 0x84, 0x3d,
-	0xbb, 0x46, 0xc7, 0xa4, 0x3d, 0xbb, 0x71, 0xdf, 0xae, 0xda, 0x31, 0xa9, 0x67, 0x17, 0x34, 0xd3,
-	0xd5, 0xe4, 0x66, 0xba, 0x36, 0x52, 0x33, 0xe5, 0x62, 0x52, 0xb3, 0x26, 0xa6, 0x66, 0x29, 0xa1,
-	0x99, 0x9c, 0xa0, 0xab, 0x3f, 0x4a, 0x30, 0xeb, 0xa7, 0xca, 0x11, 0x79, 0x01, 0xc8, 0x36, 0x1b,
-	0xfd, 0xd1, 0x96, 0x23, 0xd1, 0xae, 0xbc, 0x25, 0x42, 0xbf, 0x93, 0x5c, 0x55, 0x21, 0xa8, 0xea,
-	0x53, 0x09, 0xf2, 0xfd, 0x8a, 0x50, 0xe0, 0xb3, 0xe5, 0x11, 0x93, 0x6e, 0x39, 0x26, 0xdd, 0x95,
-	0x77, 0x44, 0x42, 0xab, 0x23, 0x10, 0x0a, 0x76, 0x88, 0x21, 0x15, 0xaa, 0xba, 0xe7, 0x42, 0x2a,
-	0x5c, 0xeb, 0x72, 0x4c, 0xad, 0x9f, 0x97, 0x54, 0xb0, 0x83, 0xfa, 0xb3, 0x04, 0x37, 0x42, 0xd5,
-	0x57, 0x0f, 0xda, 0xf1, 0x3f, 0x6d, 0xfe, 0xca, 0xdb, 0x22, 0x93, 0xe2, 0xb0, 0x56, 0x09, 0xc0,
-	0xaa, 0xbf, 0xb9, 0xb9, 0xa9, 0x23, 0xc2, 0x0e, 0xd0, 0xff, 0xcb, 0x24, 0x4d, 0x4e, 0x62, 0xf1,
-	0xaa, 0x7f, 0xf8, 0x39, 0xd9, 0x64, 0xad, 0x96, 0x6e, 0x21, 0x53, 0x6f, 0x5d, 0x6c, 0x98, 0x88,
-	0x67, 0xf2, 0x02, 0xc8, 0x2d, 0xeb, 0xc0, 0xab, 0x2c, 0xfb, 0x51, 0x59, 0x84, 0x09, 0xbb, 0xee,
-	0x0c, 0xd4, 0x66, 0x1c, 0x5b, 0xde, 0x37, 0xd8, 0xfe, 0x4e, 0x6c, 0xb9, 0x92, 0xb4, 0x69, 0x8a,
-	0xe0, 0x57, 0x7f, 0x92, 0x60, 0xc1, 0x2f, 0xc5, 0x88, 0x72, 0xfb, 0xa3, 0x4f, 0x9e, 0x37, 0xbf,
-	0xca, 0xa6, 0x08, 0xff, 0x6e, 0x72, 0xbf, 0x88, 0x20, 0xed, 0x51, 0x47, 0x1d, 0xa4, 0xaf, 0xf9,
-	0xa1, 0xca, 0x98, 0x4b, 0x24, 0x33, 0xb2, 0x90, 0x99, 0x07, 0x22, 0xb5, 0x37, 0x53, 0x51, 0x0b,
-	0xa0, 0xab, 0x7f, 0x5d, 0x86, 0x49, 0x2f, 0x81, 0x1b, 0x9c, 0x23, 0x2b, 0xd3, 0xa9, 0xe6, 0x16,
-	0x40, 0x43, 0xe7, 0x48, 0x73, 0x49, 0x7a, 0x07, 0x8f, 0x2d, 0x71, 0x4b, 0x5c, 0x85, 0x29, 0x03,
-	0x75, 0xb5, 0x3d, 0x84, 0x34, 0xbe, 0xaf, 0x9b, 0xc8, 0x2b, 0xc2, 0x09, 0x03, 0x75, 0xef, 0x23,
-	0xb4, 0x63, 0x8b, 0x42, 0x47, 0xf7, 0x58, 0xf2, 0xd1, 0x3d, 0x3e, 0xd2, 0xd1, 0x7d, 0x55, 0x3c,
-	0xba, 0x95, 0x65, 0x98, 0x6c, 0x30, 0xd3, 0x64, 0x5f, 0x6a, 0x2d, 0x4c, 0xb0, 0xe5, 0x0d, 0x01,
-	0x13, 0xae, 0x6c, 0xdb, 0x16, 0x55, 0x5e, 0x17, 0x23, 0xbe, 0x9c, 0xd4, 0x0b, 0x4e, 0x28, 0xd5,
-	0x63, 0x09, 0xe6, 0x83, 0x14, 0x38, 0xb2, 0xad, 0x10, 0xb5, 0x2c, 0x23, 0x2d, 0x84, 0x52, 0x16,
-	0x42, 0x59, 0xa9, 0x8a, 0x24, 0xca, 0x43, 0xca, 0x26, 0x8a, 0x59, 0xfd, 0x5d, 0xa4, 0x54, 0x0d,
-	0xe2, 0x94, 0x29, 0xa5, 0x68, 0x5a, 0x64, 0x31, 0x2d, 0xe7, 0x65, 0x14, 0x82, 0x6c, 0xcf, 0xfa,
-	0x85, 0x88, 0xba, 0x77, 0x1f, 0x60, 0x3a, 0xcd, 0x7c, 0xd0, 0x2f, 0xc2, 0x0c, 0x71, 0xb7, 0xd7,
-	0x5a, 0x4c, 0xa7, 0xe1, 0x59, 0xff, 0x3a, 0xe9, 0xf7, 0x5b, 0xb9, 0x2f, 0xd2, 0x5b, 0x1b, 0x85,
-	0x5e, 0x04, 0xff, 0xbd, 0x5f, 0xa6, 0x41, 0xae, 0xf1, 0xa6, 0xf2, 0x29, 0x4c, 0x84, 0xaf, 0xab,
-	0x6a, 0x49, 0xbc, 0x6f, 0x97, 0xfa, 0xef, 0x7a, 0xf3, 0xaf, 0x0c, 0xb0, 0x89, 0xbb, 0x12, 0x2b,
-	0xdf, 0x48, 0x50, 0x18, 0x72, 0x2b, 0x7c, 0x23, 0x71, 0xbf, 0x41, 0xcb, 0x32, 0x82, 0x11, 0xb4,
-	0x7c, 0x2a, 0x18, 0xfe, 0xb2, 0x74, 0x30, 0x1e, 0xc2, 0x35, 0xff, 0x76, 0xb5, 0x38, 0x38, 0xd4,
-	0x8e, 0x41, 0xba, 0x9d, 0x3f, 0x83, 0x19, 0xf1, 0xca, 0xb0, 0x92, 0xb8, 0x43, 0xc8, 0x32, 0x9d,
-	0x2f, 0x13, 0x6e, 0xc4, 0x4f, 0xc1, 0xaf, 0x0e, 0xf7, 0x17, 0x58, 0x5f, 0xc4, 0x67, 0xe8, 0x3a,
-	0x31, 0x82, 0xcf, 0xc0, 0x3a, 0x9d, 0xcf, 0x16, 0x28, 0x31, 0x83, 0xf1, 0x9d, 0x21, 0x79, 0x0b,
-	0x4c, 0x53, 0x33, 0x8c, 0x9f, 0x5f, 0x07, 0x31, 0x8c, 0xb5, 0x3e, 0x0f, 0xc3, 0xe8, 0x98, 0x99,
-	0xc0, 0x30, 0x62, 0x9a, 0xce, 0x5b, 0x17, 0xf2, 0x03, 0x47, 0xbf, 0x72, 0xe2, 0x46, 0xe2, 0x82,
-	0x74, 0x9e, 0xbf, 0x95, 0x60, 0x71, 0xe8, 0xc0, 0x96, 0x06, 0x41, 0xb0, 0x2e, 0x1d, 0x90, 0x47,
-	0x90, 0x0b, 0xc6, 0xaa, 0xa5, 0x84, 0x38, 0x3b, 0x16, 0xe9, 0xf6, 0x3e, 0x80, 0xb9, 0x41, 0x63,
-	0x45, 0x29, 0x99, 0x5b, 0xd4, 0xfe, 0x42, 0x7e, 0xc3, 0x67, 0xff, 0x28, 0x7e, 0x43, 0xf6, 0xe9,
-	0xfc, 0x7e, 0x05, 0x0b, 0x49, 0x27, 0xf4, 0xbd, 0x11, 0x7c, 0x47, 0xd6, 0xa4, 0xf2, 0x3f, 0x3f,
-	0xf6, 0xf5, 0xd9, 0x51, 0x51, 0xaa, 0x3e, 0xf8, 0xf5, 0xa4, 0x20, 0x1d, 0x9f, 0x14, 0xa4, 0x67,
-	0x27, 0x05, 0xe9, 0xfb, 0xd3, 0xc2, 0xa5, 0xe3, 0xd3, 0xc2, 0xa5, 0x3f, 0x4f, 0x0b, 0x97, 0x1e,
-	0xdd, 0x6d, 0x62, 0x6b, 0xbf, 0xd3, 0x28, 0xed, 0x32, 0xe2, 0x8c, 0x20, 0xab, 0x84, 0x51, 0x74,
-	0x18, 0x3f, 0x8d, 0x58, 0x87, 0x6d, 0xc4, 0x1b, 0xe3, 0xce, 0x4f, 0xcc, 0x6b, 0xff, 0x06, 0x00,
-	0x00, 0xff, 0xff, 0xca, 0x85, 0xd3, 0xd0, 0x13, 0x17, 0x00, 0x00,
+	// 1619 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x5a, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xee, 0x76, 0x93, 0xb4, 0x79, 0x6e, 0xd2, 0x66, 0x49, 0x1b, 0x27, 0x6d, 0x9d, 0xb2, 0xfd,
+	0xa1, 0xd4, 0x25, 0x76, 0xda, 0xa0, 0x0a, 0x2c, 0xa0, 0x75, 0x1a, 0x15, 0x09, 0x6a, 0x81, 0x9c,
+	0xc2, 0x81, 0x03, 0xd6, 0xda, 0x3b, 0x75, 0x96, 0x7a, 0x77, 0xcc, 0xce, 0x3a, 0x38, 0x39, 0xa0,
+	0x8a, 0x0b, 0x52, 0x2f, 0x20, 0x71, 0xe1, 0xcf, 0xe8, 0x81, 0x03, 0x07, 0x4e, 0x88, 0x03, 0x02,
+	0x21, 0x4a, 0x25, 0x7e, 0x1d, 0x90, 0xaa, 0xf6, 0x90, 0x7f, 0x03, 0xcd, 0xce, 0xae, 0x77, 0xd7,
+	0xb3, 0xbb, 0xde, 0xb5, 0x1d, 0x21, 0x2e, 0xad, 0xf7, 0xcd, 0x9b, 0xf9, 0xde, 0xf7, 0xbe, 0xb7,
+	0xb3, 0x33, 0x4f, 0x81, 0xd3, 0xf7, 0x71, 0x5b, 0x2b, 0xaa, 0xc8, 0xc0, 0xba, 0x66, 0x28, 0x96,
+	0x86, 0x0d, 0x52, 0xb4, 0xba, 0x85, 0xb6, 0x89, 0x2d, 0x2c, 0x49, 0x74, 0xb0, 0x10, 0x18, 0x5c,
+	0x9a, 0x53, 0x74, 0xcd, 0xc0, 0x45, 0xfb, 0x5f, 0xe6, 0xb6, 0xb4, 0xd0, 0xc0, 0x44, 0xc7, 0xa4,
+	0xa8, 0x93, 0x66, 0x71, 0xe7, 0x2a, 0xfd, 0xcf, 0x19, 0x58, 0x64, 0x03, 0x35, 0xfb, 0xa9, 0xc8,
+	0x1e, 0x9c, 0xa1, 0xf9, 0x26, 0x6e, 0x62, 0x66, 0xa7, 0xbf, 0x1c, 0xeb, 0x72, 0x48, 0x34, 0x6d,
+	0xc5, 0x54, 0x74, 0x67, 0x9a, 0xbc, 0x08, 0x0b, 0x15, 0xd2, 0x7c, 0xaf, 0xad, 0x2a, 0x16, 0x7a,
+	0xd7, 0x1e, 0xa8, 0x22, 0xd2, 0xc6, 0x06, 0x41, 0xf2, 0x57, 0x87, 0x61, 0xb6, 0x42, 0x9a, 0x9b,
+	0xa8, 0x5b, 0x56, 0xd5, 0x4d, 0xba, 0x84, 0x74, 0x1d, 0xa6, 0x95, 0x8e, 0xb5, 0x8d, 0x4d, 0xcd,
+	0xda, 0xcd, 0x0a, 0xe7, 0x84, 0x95, 0xe9, 0x8d, 0xec, 0x93, 0x6f, 0x56, 0xe7, 0x9d, 0x48, 0xca,
+	0xaa, 0x6a, 0x22, 0x42, 0xb6, 0x2c, 0x53, 0x33, 0x9a, 0x55, 0xcf, 0x55, 0x92, 0x60, 0xc2, 0x50,
+	0x74, 0x94, 0x3d, 0x4c, 0xa7, 0x54, 0xed, 0xdf, 0xd2, 0x29, 0x98, 0xba, 0xa7, 0x34, 0x2c, 0x6c,
+	0x66, 0x45, 0xdb, 0xea, 0x3c, 0x49, 0xe7, 0x61, 0x46, 0xd7, 0x8c, 0x5a, 0x4b, 0xfb, 0xb8, 0xa3,
+	0xa9, 0x14, 0x67, 0xc2, 0x1e, 0x3e, 0xa6, 0x6b, 0xc6, 0x1d, 0xd7, 0x26, 0x5d, 0x80, 0x59, 0xea,
+	0x84, 0x4d, 0x15, 0x99, 0x35, 0xa2, 0xed, 0xa1, 0xec, 0x64, 0xcf, 0xeb, 0x1d, 0x6a, 0xdc, 0xd2,
+	0xf6, 0x90, 0xb4, 0x04, 0x47, 0x51, 0xb7, 0x8d, 0x0d, 0x64, 0x58, 0xd9, 0xa9, 0x73, 0xc2, 0xca,
+	0x44, 0xb5, 0xf7, 0x5c, 0xba, 0xfe, 0xd9, 0xfe, 0xa3, 0xbc, 0x17, 0xe2, 0xc3, 0xfd, 0x47, 0xf9,
+	0xf3, 0x76, 0xb2, 0xba, 0x7d, 0xe9, 0x0a, 0xa6, 0x40, 0xfe, 0x5d, 0x80, 0x33, 0xcc, 0xc4, 0x92,
+	0x56, 0xd1, 0x0c, 0x4d, 0xef, 0xe8, 0x5e, 0x68, 0xe3, 0xcc, 0x11, 0x97, 0x0b, 0x91, 0xcf, 0x45,
+	0x69, 0x93, 0x67, 0x72, 0x35, 0x86, 0x49, 0x78, 0xd8, 0xf2, 0x1f, 0xe1, 0xbc, 0xbc, 0x64, 0x8e,
+	0x93, 0x17, 0x2f, 0x9f, 0xc8, 0xcb, 0x37, 0x12, 0xb1, 0xde, 0x2a, 0xf2, 0x43, 0x11, 0x4e, 0x54,
+	0x48, 0xf3, 0xed, 0x5b, 0x58, 0x33, 0x0e, 0xa4, 0x90, 0x73, 0x00, 0x26, 0xba, 0x87, 0x4c, 0x64,
+	0x34, 0x10, 0xc9, 0x8a, 0xe7, 0xc4, 0x95, 0xe9, 0xaa, 0xcf, 0x22, 0x9d, 0x05, 0xd0, 0x95, 0x6e,
+	0x8d, 0x74, 0xda, 0xed, 0x96, 0x5b, 0xcd, 0xd3, 0xba, 0xd2, 0xdd, 0xb2, 0x0d, 0xd2, 0x25, 0x38,
+	0x4e, 0x87, 0x75, 0xcd, 0xb0, 0x6a, 0x8a, 0x8e, 0x3b, 0x86, 0xe5, 0xd4, 0xf2, 0x8c, 0xae, 0x74,
+	0x2b, 0x9a, 0x61, 0x95, 0x6d, 0xa3, 0xeb, 0x57, 0xef, 0x98, 0x86, 0xeb, 0x37, 0xd5, 0xf3, 0xdb,
+	0xe8, 0x98, 0x86, 0xe3, 0xe7, 0xbd, 0x57, 0x47, 0xe2, 0xdf, 0xab, 0xa3, 0x89, 0xde, 0xab, 0xe9,
+	0x10, 0x61, 0x5e, 0xe1, 0x85, 0xb9, 0x18, 0x25, 0x4c, 0x20, 0xef, 0xf2, 0xcf, 0x02, 0x2c, 0xba,
+	0x46, 0xa6, 0x17, 0xcb, 0xc2, 0x1d, 0x4d, 0xd7, 0xac, 0xa1, 0x55, 0x99, 0x87, 0x49, 0x1b, 0xd7,
+	0x91, 0x85, 0x3d, 0xf4, 0xe5, 0x5d, 0xec, 0xcb, 0x7b, 0xa9, 0xcc, 0x93, 0x28, 0xc4, 0x92, 0xe0,
+	0xe2, 0x95, 0x9f, 0x08, 0x90, 0x0d, 0x8e, 0xfa, 0x74, 0x18, 0x2f, 0x99, 0x10, 0xf5, 0xc5, 0x10,
+	0xf5, 0x4b, 0x37, 0x79, 0x56, 0xab, 0x09, 0x58, 0x79, 0x2b, 0x84, 0x90, 0xf2, 0x15, 0xe1, 0x81,
+	0x90, 0xf2, 0x97, 0xbe, 0x18, 0x52, 0xfa, 0xc3, 0x92, 0xf2, 0x56, 0x90, 0x7f, 0x10, 0xe0, 0xa4,
+	0xaf, 0x18, 0xab, 0xde, 0xdb, 0x39, 0x5e, 0x46, 0x03, 0xf6, 0x82, 0xd2, 0xeb, 0x3c, 0x93, 0xfc,
+	0xa0, 0x37, 0xc7, 0x0b, 0x56, 0xfe, 0xc9, 0xa7, 0x4d, 0x15, 0xe9, 0x78, 0x07, 0xfd, 0x67, 0x4c,
+	0x52, 0x6b, 0xd2, 0x1f, 0xaf, 0xfc, 0x27, 0xd3, 0xe4, 0x16, 0x6e, 0xb5, 0x14, 0x0b, 0x99, 0x4a,
+	0x6b, 0xe4, 0xdd, 0x39, 0x9c, 0xc9, 0x09, 0x10, 0x5b, 0xd6, 0x8e, 0x53, 0x59, 0xf4, 0xa7, 0xb4,
+	0x0c, 0x19, 0x5a, 0x77, 0x2a, 0x6a, 0x63, 0xa2, 0x59, 0xce, 0x96, 0x4c, 0x37, 0x8b, 0x4d, 0x66,
+	0x49, 0x25, 0x13, 0x1f, 0xbf, 0xfc, 0xad, 0x00, 0xa7, 0x02, 0x23, 0xac, 0x1e, 0xef, 0xdc, 0x7d,
+	0xff, 0xa0, 0xa9, 0x95, 0xde, 0xe0, 0x23, 0xbf, 0x32, 0x38, 0xf2, 0x5e, 0x7c, 0xf2, 0xdf, 0x02,
+	0x2c, 0x87, 0x0c, 0x39, 0x89, 0x39, 0x88, 0x6d, 0xba, 0x4f, 0x0c, 0x91, 0x13, 0xe3, 0x4d, 0x9e,
+	0xd2, 0xcb, 0x49, 0x29, 0xf9, 0xe3, 0x96, 0x3f, 0x17, 0x61, 0x8e, 0xfa, 0x94, 0x09, 0x41, 0xd6,
+	0x81, 0x1c, 0x05, 0xce, 0x02, 0xd4, 0x15, 0x82, 0x6a, 0x8c, 0xa6, 0xf3, 0xc9, 0xa1, 0x16, 0x06,
+	0x25, 0xc3, 0x8c, 0x8a, 0xba, 0xb5, 0x7b, 0x08, 0xd5, 0xc8, 0xb6, 0x62, 0x22, 0xa7, 0xf2, 0x32,
+	0x2a, 0xea, 0xde, 0x46, 0x68, 0x8b, 0x9a, 0x7c, 0x9f, 0xef, 0xc9, 0xf8, 0xcf, 0xf7, 0x54, 0xa2,
+	0xcf, 0xf7, 0x91, 0x90, 0x63, 0xf1, 0x8b, 0x70, 0xac, 0x8e, 0x4d, 0x13, 0x7f, 0x52, 0x6b, 0xd1,
+	0xbc, 0x38, 0x07, 0x81, 0x0c, 0xb3, 0x31, 0x89, 0x65, 0x07, 0x0d, 0x2b, 0x86, 0xff, 0x18, 0x90,
+	0xa1, 0x68, 0x58, 0x31, 0xec, 0x53, 0xc0, 0xab, 0xbc, 0x2e, 0x97, 0x22, 0x75, 0x09, 0xe4, 0x5c,
+	0x7e, 0x2c, 0xc0, 0x52, 0xcf, 0xea, 0x2a, 0xe5, 0xe5, 0x60, 0x9c, 0x92, 0x70, 0x39, 0x17, 0xb9,
+	0x9c, 0x97, 0x36, 0x78, 0x26, 0xc5, 0x78, 0x26, 0x5c, 0xcc, 0xf2, 0xaf, 0x3c, 0xa5, 0x0d, 0x5f,
+	0x42, 0xc7, 0x49, 0xa9, 0x5f, 0x3f, 0x91, 0xd3, 0x6f, 0x68, 0x46, 0xbe, 0x90, 0xe5, 0xa7, 0x02,
+	0xe4, 0xfa, 0x86, 0xdd, 0x5b, 0x83, 0x53, 0x02, 0x63, 0x65, 0x95, 0x87, 0x39, 0x9d, 0x2d, 0xef,
+	0x2b, 0x3b, 0x46, 0xed, 0xb8, 0x1e, 0xc4, 0x2d, 0xdd, 0xe6, 0xe9, 0xad, 0x27, 0xa1, 0xd7, 0x17,
+	0xbf, 0xfc, 0xdd, 0x04, 0xcc, 0x57, 0x48, 0xb3, 0xac, 0xaa, 0x65, 0xb3, 0xae, 0x59, 0xa6, 0xd2,
+	0x44, 0xff, 0xcb, 0x8b, 0xee, 0x3c, 0x4c, 0xde, 0x6f, 0x60, 0xcd, 0x70, 0x36, 0x05, 0xf6, 0x20,
+	0x2d, 0xc0, 0x91, 0x46, 0x4d, 0xa1, 0xec, 0xdd, 0xab, 0x40, 0xc3, 0xce, 0x05, 0x45, 0xae, 0x77,
+	0x76, 0x6b, 0xd6, 0xb6, 0x89, 0xc8, 0x36, 0x6e, 0xa9, 0xee, 0x55, 0xa0, 0xde, 0xd9, 0xbd, 0xeb,
+	0xda, 0xa4, 0x15, 0x38, 0x61, 0x3b, 0x99, 0x8a, 0x8a, 0xdc, 0xd3, 0x19, 0xd8, 0x7e, 0xb3, 0xd4,
+	0x8f, 0x9a, 0x9d, 0x43, 0xe1, 0x45, 0x98, 0x25, 0xa8, 0xd5, 0xf2, 0xad, 0xc7, 0x76, 0x8b, 0x19,
+	0x6a, 0xf5, 0x16, 0xcc, 0xc3, 0x1c, 0x73, 0xf3, 0xaf, 0x98, 0x61, 0x02, 0xdb, 0x9e, 0xc1, 0x25,
+	0x4d, 0xa4, 0x22, 0xbd, 0x4d, 0x65, 0xa4, 0x2f, 0x6f, 0xf6, 0x18, 0x5b, 0xd2, 0xb3, 0xde, 0x46,
+	0x48, 0xba, 0x01, 0x67, 0x82, 0x6e, 0x35, 0x13, 0x11, 0x64, 0xee, 0xb8, 0xef, 0xfa, 0x8c, 0x3d,
+	0x69, 0x31, 0x30, 0xa9, 0xca, 0x3c, 0xd8, 0x9b, 0xff, 0x1a, 0x5f, 0x48, 0x97, 0xa3, 0x0a, 0x89,
+	0xab, 0x12, 0xfa, 0xb1, 0xa4, 0x6f, 0x48, 0xcf, 0xea, 0x9e, 0xa5, 0x7d, 0x59, 0x1c, 0x73, 0x37,
+	0x20, 0x28, 0x9b, 0xc8, 0xcb, 0x96, 0xea, 0xd5, 0x88, 0x09, 0x5c, 0xfe, 0x87, 0x1d, 0x04, 0xfa,
+	0x5c, 0xb6, 0x02, 0x8a, 0x8e, 0x93, 0x1c, 0x5f, 0x44, 0x62, 0x48, 0x11, 0xa5, 0x3a, 0x0c, 0xc4,
+	0xc5, 0x2e, 0xff, 0x22, 0xc0, 0xe9, 0xd0, 0x14, 0x8c, 0x78, 0xd3, 0x89, 0x3a, 0x16, 0x74, 0x76,
+	0x83, 0x57, 0x9c, 0xe9, 0xba, 0x0b, 0x55, 0xba, 0xc5, 0x73, 0x5a, 0x4b, 0x2e, 0x99, 0x73, 0xc3,
+	0xf9, 0x8d, 0xf5, 0x6f, 0x42, 0x38, 0x1f, 0x00, 0xa1, 0x65, 0xc8, 0xd8, 0x62, 0x05, 0x18, 0x01,
+	0xe9, 0x81, 0xa5, 0x6a, 0xdd, 0x44, 0x86, 0x1c, 0x51, 0x83, 0xd5, 0xc0, 0x16, 0x30, 0xe6, 0x1a,
+	0xec, 0xdb, 0x75, 0xc4, 0x90, 0x5d, 0x67, 0x94, 0x1a, 0x0c, 0xc4, 0x2e, 0x7f, 0x71, 0x18, 0xae,
+	0x0c, 0xf0, 0xf1, 0xef, 0x56, 0x63, 0xe5, 0x3a, 0x68, 0xeb, 0x14, 0x07, 0x6d, 0x9d, 0x5b, 0x7c,
+	0x16, 0x6e, 0x0e, 0x93, 0x05, 0xff, 0xa2, 0xd7, 0xbe, 0x3f, 0x09, 0x62, 0x85, 0x34, 0xa5, 0x0f,
+	0x21, 0xe3, 0xef, 0x3b, 0xcb, 0x05, 0xbe, 0x71, 0x5e, 0x08, 0x36, 0x66, 0x97, 0xae, 0x44, 0xf8,
+	0x84, 0xf5, 0xb6, 0xa5, 0x3d, 0x58, 0x8c, 0xee, 0xe0, 0xae, 0x45, 0xa3, 0x85, 0xcf, 0x18, 0x19,
+	0xdb, 0xfb, 0x92, 0x27, 0xc5, 0xee, 0xcd, 0x48, 0x87, 0x5d, 0x87, 0x99, 0x60, 0x23, 0xf4, 0x42,
+	0xc4, 0xec, 0x80, 0x57, 0x3a, 0x0c, 0x0b, 0x4e, 0x45, 0xf4, 0xf7, 0x56, 0xe3, 0xc0, 0x38, 0xf7,
+	0x74, 0xa8, 0x26, 0x9c, 0x0c, 0x6f, 0x59, 0xbd, 0x34, 0x18, 0xd4, 0xf3, 0x1e, 0x05, 0xd3, 0xd7,
+	0xfb, 0x4b, 0x80, 0xe9, 0x79, 0xa7, 0xc3, 0x6c, 0x81, 0x14, 0xd2, 0xc5, 0xba, 0x3c, 0x40, 0x46,
+	0xcf, 0x75, 0x38, 0x86, 0x5c, 0xb3, 0x29, 0x96, 0x61, 0xbf, 0x77, 0x6a, 0x86, 0x21, 0x3d, 0xa1,
+	0x28, 0x86, 0xbc, 0x6b, 0x3a, 0x34, 0x03, 0x5e, 0x08, 0xeb, 0xd3, 0xe4, 0x07, 0xc2, 0xf5, 0x7c,
+	0xd3, 0xe1, 0x3d, 0x10, 0xe0, 0x4c, 0x6c, 0x77, 0x65, 0x3d, 0x21, 0xb2, 0x7f, 0x52, 0xba, 0x10,
+	0x54, 0x98, 0xed, 0xeb, 0x81, 0x5c, 0x8c, 0xc2, 0x0c, 0xb8, 0xa5, 0x43, 0xd9, 0x81, 0x85, 0xa8,
+	0xfb, 0x7d, 0x21, 0x16, 0x8e, 0xf3, 0x1f, 0x09, 0xd7, 0x7f, 0x09, 0x4f, 0x82, 0xeb, 0xf3, 0x4f,
+	0x87, 0xfb, 0x29, 0x9c, 0x8e, 0xbb, 0x2a, 0x5f, 0x4b, 0x80, 0xdd, 0x37, 0x27, 0x1d, 0xfe, 0x47,
+	0x30, 0xd7, 0xfb, 0xcc, 0xf6, 0x84, 0x5d, 0x89, 0x58, 0x81, 0xbb, 0xcb, 0xa4, 0xe6, 0x1a, 0x77,
+	0xe9, 0x89, 0xe2, 0x1a, 0x33, 0x27, 0xfd, 0x4b, 0x14, 0x7b, 0x33, 0x59, 0x4f, 0x16, 0x41, 0x60,
+	0x52, 0xba, 0x10, 0xba, 0x90, 0x8d, 0xbc, 0x3b, 0x14, 0x13, 0xf3, 0x1f, 0xe6, 0x0b, 0xb0, 0x07,
+	0x8b, 0xd1, 0xa7, 0xfc, 0xb5, 0xe4, 0xc4, 0x87, 0xc1, 0x0e, 0x49, 0x7c, 0xf0, 0x38, 0x9e, 0x30,
+	0xf1, 0x81, 0x49, 0xe9, 0x42, 0xf8, 0x5a, 0x80, 0x95, 0xc4, 0x27, 0xe6, 0x1b, 0x43, 0x84, 0xe3,
+	0x5f, 0x20, 0x55, 0x68, 0x4b, 0x93, 0x0f, 0xf6, 0x1f, 0xe5, 0x85, 0x8d, 0xb7, 0x7e, 0x7c, 0x96,
+	0x13, 0x1e, 0x3f, 0xcb, 0x09, 0x4f, 0x9f, 0xe5, 0x84, 0x2f, 0x9f, 0xe7, 0x0e, 0x3d, 0x7e, 0x9e,
+	0x3b, 0xf4, 0xd7, 0xf3, 0xdc, 0xa1, 0x0f, 0xd6, 0x9a, 0x9a, 0xb5, 0xdd, 0xa9, 0x17, 0x1a, 0x58,
+	0xb7, 0xdb, 0x71, 0xab, 0x3a, 0x36, 0xd0, 0x6e, 0x78, 0x67, 0xce, 0xda, 0x6d, 0x23, 0x52, 0x9f,
+	0xb2, 0xff, 0x4c, 0x63, 0xfd, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x33, 0x7e, 0x56, 0xc4, 0x57,
+	0x22, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1251,22 +1806,29 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinBurnAmount(ctx context.Context, in *MsgUpdateKCoinBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddKCoinReferences(ctx context.Context, in *MsgAddKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	RemoveKCoinReferences(ctx context.Context, in *MsgRemoveKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddCollateralDenom(ctx context.Context, in *MsgAddCollateralDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomLTV(ctx context.Context, in *MsgUpdateCollateralDenomLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomMaxDeposit(ctx context.Context, in *MsgUpdateCollateralDenomMaxDeposit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateBurnAmount(ctx context.Context, in *MsgKCoinUpdateBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinAddReferences(ctx context.Context, in *MsgKCoinAddReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralAddDenom(ctx context.Context, in *MsgCollateralAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateBorrowLimit(ctx context.Context, in *MsgCAssetUpdateBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateMinimumLoanSize(ctx context.Context, in *MsgCAssetUpdateMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageAddDenom(ctx context.Context, in *MsgAddArbitrageDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyThreshold(ctx context.Context, in *MsgArbitrageUpdateBuyThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellThreshold(ctx context.Context, in *MsgArbitrageUpdateSellThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyAmount(ctx context.Context, in *MsgArbitrageUpdateBuyAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellAmount(ctx context.Context, in *MsgArbitrageUpdateSellAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFee(ctx context.Context, in *MsgArbitrageUpdateRedemptionFee, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, in *MsgArbitrageUpdateRedemptionFeeReserveShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
 type msgClient struct {
@@ -1277,144 +1839,207 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/AddDEXDenom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexAddDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumLiquidity", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumOrderSize", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/AddKCoin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinAddDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateKCoinSupply", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinUpdateSupplyLimit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateKCoinMintAmount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinUpdateMintAmount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinBurnAmount(ctx context.Context, in *MsgUpdateKCoinBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateBurnAmount(ctx context.Context, in *MsgKCoinUpdateBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateKCoinBurnAmount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinUpdateBurnAmount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddKCoinReferences(ctx context.Context, in *MsgAddKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinAddReferences(ctx context.Context, in *MsgKCoinAddReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/AddKCoinReferences", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinAddReferences", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) RemoveKCoinReferences(ctx context.Context, in *MsgRemoveKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/RemoveKCoinReferences", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinRemoveReferences", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddCollateralDenom(ctx context.Context, in *MsgAddCollateralDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralAddDenom(ctx context.Context, in *MsgCollateralAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/AddCollateralDenom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CollateralAddDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCollateralDenomLTV(ctx context.Context, in *MsgUpdateCollateralDenomLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateCollateralDenomLTV", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CollateralUpdateLTV", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCollateralDenomMaxDeposit(ctx context.Context, in *MsgUpdateCollateralDenomMaxDeposit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateCollateralDenomMaxDeposit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CollateralUpdateDepositLimit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/AddCAsset", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CAssetAddDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateCAssetDexFeeShare", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CAssetUpdateDexFeeShare", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateBorrowLimit(ctx context.Context, in *MsgCAssetUpdateBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateCAssetBorrowLimit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CAssetUpdateBorrowLimit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateMinimumLoanSize(ctx context.Context, in *MsgCAssetUpdateMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateCAssetMinimumLoanSize", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/CAssetUpdateMinimumLoanSize", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageAddDenom(ctx context.Context, in *MsgAddArbitrageDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageAddDenom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateBuyThreshold(ctx context.Context, in *MsgArbitrageUpdateBuyThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateBuyThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateSellThreshold(ctx context.Context, in *MsgArbitrageUpdateSellThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateSellThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateBuyAmount(ctx context.Context, in *MsgArbitrageUpdateBuyAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateBuyAmount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateSellAmount(ctx context.Context, in *MsgArbitrageUpdateSellAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateSellAmount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateRedemptionFee(ctx context.Context, in *MsgArbitrageUpdateRedemptionFee, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFee", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, in *MsgArbitrageUpdateRedemptionFeeReserveShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFeeReserveShare", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1423,365 +2048,519 @@ func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpda
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error)
-	AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinSupply(context.Context, *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinMintAmount(context.Context, *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinBurnAmount(context.Context, *MsgUpdateKCoinBurnAmount) (*MsgUpdateParamsResponse, error)
-	AddKCoinReferences(context.Context, *MsgAddKCoinReferences) (*MsgUpdateParamsResponse, error)
-	RemoveKCoinReferences(context.Context, *MsgRemoveKCoinReferences) (*MsgUpdateParamsResponse, error)
-	AddCollateralDenom(context.Context, *MsgAddCollateralDenom) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomLTV(context.Context, *MsgUpdateCollateralDenomLTV) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomMaxDeposit(context.Context, *MsgUpdateCollateralDenomMaxDeposit) (*MsgUpdateParamsResponse, error)
-	AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetMinimumLoanSize(context.Context, *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error)
+	DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error)
+	KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateSupplyLimit(context.Context, *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateMintAmount(context.Context, *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateBurnAmount(context.Context, *MsgKCoinUpdateBurnAmount) (*MsgUpdateParamsResponse, error)
+	KCoinAddReferences(context.Context, *MsgKCoinAddReferences) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveReferences(context.Context, *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error)
+	CollateralAddDenom(context.Context, *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateLTV(context.Context, *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateDepositLimit(context.Context, *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error)
+	CAssetAddDenom(context.Context, *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateDexFeeShare(context.Context, *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateBorrowLimit(context.Context, *MsgCAssetUpdateBorrowLimit) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateMinimumLoanSize(context.Context, *MsgCAssetUpdateMinimumLoanSize) (*MsgUpdateParamsResponse, error)
+	ArbitrageAddDenom(context.Context, *MsgAddArbitrageDenom) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyThreshold(context.Context, *MsgArbitrageUpdateBuyThreshold) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellThreshold(context.Context, *MsgArbitrageUpdateSellThreshold) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyAmount(context.Context, *MsgArbitrageUpdateBuyAmount) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellAmount(context.Context, *MsgArbitrageUpdateSellAmount) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFee(context.Context, *MsgArbitrageUpdateRedemptionFee) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFeeReserveShare(context.Context, *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) AddDEXDenom(ctx context.Context, req *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddDEXDenom not implemented")
+func (*UnimplementedMsgServer) DexAddDenom(ctx context.Context, req *MsgDexAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexAddDenom not implemented")
 }
-func (*UnimplementedMsgServer) UpdateDEXDenomMinimumLiquidity(ctx context.Context, req *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumLiquidity not implemented")
+func (*UnimplementedMsgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumLiquidity not implemented")
 }
-func (*UnimplementedMsgServer) UpdateDEXDenomMinimumOrderSize(ctx context.Context, req *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumOrderSize not implemented")
+func (*UnimplementedMsgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumOrderSize not implemented")
 }
-func (*UnimplementedMsgServer) AddKCoin(ctx context.Context, req *MsgAddKCoin) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKCoin not implemented")
+func (*UnimplementedMsgServer) KCoinAddDenom(ctx context.Context, req *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddDenom not implemented")
 }
-func (*UnimplementedMsgServer) UpdateKCoinSupply(ctx context.Context, req *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinSupply not implemented")
+func (*UnimplementedMsgServer) KCoinUpdateSupplyLimit(ctx context.Context, req *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateSupplyLimit not implemented")
 }
-func (*UnimplementedMsgServer) UpdateKCoinMintAmount(ctx context.Context, req *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinMintAmount not implemented")
+func (*UnimplementedMsgServer) KCoinUpdateMintAmount(ctx context.Context, req *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateMintAmount not implemented")
 }
-func (*UnimplementedMsgServer) UpdateKCoinBurnAmount(ctx context.Context, req *MsgUpdateKCoinBurnAmount) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinBurnAmount not implemented")
+func (*UnimplementedMsgServer) KCoinUpdateBurnAmount(ctx context.Context, req *MsgKCoinUpdateBurnAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateBurnAmount not implemented")
 }
-func (*UnimplementedMsgServer) AddKCoinReferences(ctx context.Context, req *MsgAddKCoinReferences) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKCoinReferences not implemented")
+func (*UnimplementedMsgServer) KCoinAddReferences(ctx context.Context, req *MsgKCoinAddReferences) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddReferences not implemented")
 }
-func (*UnimplementedMsgServer) RemoveKCoinReferences(ctx context.Context, req *MsgRemoveKCoinReferences) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveKCoinReferences not implemented")
+func (*UnimplementedMsgServer) KCoinRemoveReferences(ctx context.Context, req *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinRemoveReferences not implemented")
 }
-func (*UnimplementedMsgServer) AddCollateralDenom(ctx context.Context, req *MsgAddCollateralDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddCollateralDenom not implemented")
+func (*UnimplementedMsgServer) CollateralAddDenom(ctx context.Context, req *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralAddDenom not implemented")
 }
-func (*UnimplementedMsgServer) UpdateCollateralDenomLTV(ctx context.Context, req *MsgUpdateCollateralDenomLTV) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollateralDenomLTV not implemented")
+func (*UnimplementedMsgServer) CollateralUpdateLTV(ctx context.Context, req *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralUpdateLTV not implemented")
 }
-func (*UnimplementedMsgServer) UpdateCollateralDenomMaxDeposit(ctx context.Context, req *MsgUpdateCollateralDenomMaxDeposit) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollateralDenomMaxDeposit not implemented")
+func (*UnimplementedMsgServer) CollateralUpdateDepositLimit(ctx context.Context, req *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralUpdateDepositLimit not implemented")
 }
-func (*UnimplementedMsgServer) AddCAsset(ctx context.Context, req *MsgAddCAsset) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddCAsset not implemented")
+func (*UnimplementedMsgServer) CAssetAddDenom(ctx context.Context, req *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetAddDenom not implemented")
 }
-func (*UnimplementedMsgServer) UpdateCAssetDexFeeShare(ctx context.Context, req *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetDexFeeShare not implemented")
+func (*UnimplementedMsgServer) CAssetUpdateDexFeeShare(ctx context.Context, req *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateDexFeeShare not implemented")
 }
-func (*UnimplementedMsgServer) UpdateCAssetBorrowLimit(ctx context.Context, req *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetBorrowLimit not implemented")
+func (*UnimplementedMsgServer) CAssetUpdateBorrowLimit(ctx context.Context, req *MsgCAssetUpdateBorrowLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateBorrowLimit not implemented")
 }
-func (*UnimplementedMsgServer) UpdateCAssetMinimumLoanSize(ctx context.Context, req *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetMinimumLoanSize not implemented")
+func (*UnimplementedMsgServer) CAssetUpdateMinimumLoanSize(ctx context.Context, req *MsgCAssetUpdateMinimumLoanSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateMinimumLoanSize not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageAddDenom(ctx context.Context, req *MsgAddArbitrageDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageAddDenom not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateBuyThreshold(ctx context.Context, req *MsgArbitrageUpdateBuyThreshold) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateBuyThreshold not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateSellThreshold(ctx context.Context, req *MsgArbitrageUpdateSellThreshold) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateSellThreshold not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateBuyAmount(ctx context.Context, req *MsgArbitrageUpdateBuyAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateBuyAmount not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateSellAmount(ctx context.Context, req *MsgArbitrageUpdateSellAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateSellAmount not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateRedemptionFee(ctx context.Context, req *MsgArbitrageUpdateRedemptionFee) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateRedemptionFee not implemented")
+}
+func (*UnimplementedMsgServer) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, req *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateRedemptionFeeReserveShare not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_AddDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddDEXDenom)
+func _Msg_DexAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddDEXDenom(ctx, in)
+		return srv.(MsgServer).DexAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/AddDEXDenom",
+		FullMethod: "/kopi.denominations.Msg/DexAddDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddDEXDenom(ctx, req.(*MsgAddDEXDenom))
+		return srv.(MsgServer).DexAddDenom(ctx, req.(*MsgDexAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenomMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenomMinimumLiquidity)
+func _Msg_DexUpdateMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumLiquidity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, in)
+		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity",
+		FullMethod: "/kopi.denominations.Msg/DexUpdateMinimumLiquidity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, req.(*MsgUpdateDEXDenomMinimumLiquidity))
+		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, req.(*MsgDexUpdateMinimumLiquidity))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenomMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenomMinimumOrderSize)
+func _Msg_DexUpdateMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumOrderSize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, in)
+		return srv.(MsgServer).DexUpdateMinimumOrderSize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize",
+		FullMethod: "/kopi.denominations.Msg/DexUpdateMinimumOrderSize",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, req.(*MsgUpdateDEXDenomMinimumOrderSize))
+		return srv.(MsgServer).DexUpdateMinimumOrderSize(ctx, req.(*MsgDexUpdateMinimumOrderSize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddKCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddKCoin)
+func _Msg_KCoinAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddKCoin(ctx, in)
+		return srv.(MsgServer).KCoinAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/AddKCoin",
+		FullMethod: "/kopi.denominations.Msg/KCoinAddDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddKCoin(ctx, req.(*MsgAddKCoin))
+		return srv.(MsgServer).KCoinAddDenom(ctx, req.(*MsgKCoinAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinSupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinSupply)
+func _Msg_KCoinUpdateSupplyLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateSupplyLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinSupply(ctx, in)
+		return srv.(MsgServer).KCoinUpdateSupplyLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateKCoinSupply",
+		FullMethod: "/kopi.denominations.Msg/KCoinUpdateSupplyLimit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinSupply(ctx, req.(*MsgUpdateKCoinSupply))
+		return srv.(MsgServer).KCoinUpdateSupplyLimit(ctx, req.(*MsgKCoinUpdateSupplyLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinMintAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinMintAmount)
+func _Msg_KCoinUpdateMintAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateMintAmount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinMintAmount(ctx, in)
+		return srv.(MsgServer).KCoinUpdateMintAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateKCoinMintAmount",
+		FullMethod: "/kopi.denominations.Msg/KCoinUpdateMintAmount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinMintAmount(ctx, req.(*MsgUpdateKCoinMintAmount))
+		return srv.(MsgServer).KCoinUpdateMintAmount(ctx, req.(*MsgKCoinUpdateMintAmount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinBurnAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinBurnAmount)
+func _Msg_KCoinUpdateBurnAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateBurnAmount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinBurnAmount(ctx, in)
+		return srv.(MsgServer).KCoinUpdateBurnAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateKCoinBurnAmount",
+		FullMethod: "/kopi.denominations.Msg/KCoinUpdateBurnAmount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinBurnAmount(ctx, req.(*MsgUpdateKCoinBurnAmount))
+		return srv.(MsgServer).KCoinUpdateBurnAmount(ctx, req.(*MsgKCoinUpdateBurnAmount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddKCoinReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddKCoinReferences)
+func _Msg_KCoinAddReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinAddReferences)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddKCoinReferences(ctx, in)
+		return srv.(MsgServer).KCoinAddReferences(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/AddKCoinReferences",
+		FullMethod: "/kopi.denominations.Msg/KCoinAddReferences",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddKCoinReferences(ctx, req.(*MsgAddKCoinReferences))
+		return srv.(MsgServer).KCoinAddReferences(ctx, req.(*MsgKCoinAddReferences))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RemoveKCoinReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveKCoinReferences)
+func _Msg_KCoinRemoveReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinRemoveReferences)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RemoveKCoinReferences(ctx, in)
+		return srv.(MsgServer).KCoinRemoveReferences(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/RemoveKCoinReferences",
+		FullMethod: "/kopi.denominations.Msg/KCoinRemoveReferences",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveKCoinReferences(ctx, req.(*MsgRemoveKCoinReferences))
+		return srv.(MsgServer).KCoinRemoveReferences(ctx, req.(*MsgKCoinRemoveReferences))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddCollateralDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddCollateralDenom)
+func _Msg_CollateralAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddCollateralDenom(ctx, in)
+		return srv.(MsgServer).CollateralAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/AddCollateralDenom",
+		FullMethod: "/kopi.denominations.Msg/CollateralAddDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddCollateralDenom(ctx, req.(*MsgAddCollateralDenom))
+		return srv.(MsgServer).CollateralAddDenom(ctx, req.(*MsgCollateralAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCollateralDenomLTV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCollateralDenomLTV)
+func _Msg_CollateralUpdateLTV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralUpdateLTV)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCollateralDenomLTV(ctx, in)
+		return srv.(MsgServer).CollateralUpdateLTV(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateCollateralDenomLTV",
+		FullMethod: "/kopi.denominations.Msg/CollateralUpdateLTV",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCollateralDenomLTV(ctx, req.(*MsgUpdateCollateralDenomLTV))
+		return srv.(MsgServer).CollateralUpdateLTV(ctx, req.(*MsgCollateralUpdateLTV))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCollateralDenomMaxDeposit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCollateralDenomMaxDeposit)
+func _Msg_CollateralUpdateDepositLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralUpdateDepositLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCollateralDenomMaxDeposit(ctx, in)
+		return srv.(MsgServer).CollateralUpdateDepositLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateCollateralDenomMaxDeposit",
+		FullMethod: "/kopi.denominations.Msg/CollateralUpdateDepositLimit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCollateralDenomMaxDeposit(ctx, req.(*MsgUpdateCollateralDenomMaxDeposit))
+		return srv.(MsgServer).CollateralUpdateDepositLimit(ctx, req.(*MsgCollateralUpdateDepositLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddCAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddCAsset)
+func _Msg_CAssetAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddCAsset(ctx, in)
+		return srv.(MsgServer).CAssetAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/AddCAsset",
+		FullMethod: "/kopi.denominations.Msg/CAssetAddDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddCAsset(ctx, req.(*MsgAddCAsset))
+		return srv.(MsgServer).CAssetAddDenom(ctx, req.(*MsgCAssetAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetDexFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetDexFeeShare)
+func _Msg_CAssetUpdateDexFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateDexFeeShare)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetDexFeeShare(ctx, in)
+		return srv.(MsgServer).CAssetUpdateDexFeeShare(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateCAssetDexFeeShare",
+		FullMethod: "/kopi.denominations.Msg/CAssetUpdateDexFeeShare",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetDexFeeShare(ctx, req.(*MsgUpdateCAssetDexFeeShare))
+		return srv.(MsgServer).CAssetUpdateDexFeeShare(ctx, req.(*MsgCAssetUpdateDexFeeShare))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetBorrowLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetBorrowLimit)
+func _Msg_CAssetUpdateBorrowLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateBorrowLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, in)
+		return srv.(MsgServer).CAssetUpdateBorrowLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateCAssetBorrowLimit",
+		FullMethod: "/kopi.denominations.Msg/CAssetUpdateBorrowLimit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, req.(*MsgUpdateCAssetBorrowLimit))
+		return srv.(MsgServer).CAssetUpdateBorrowLimit(ctx, req.(*MsgCAssetUpdateBorrowLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetMinimumLoanSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetMinimumLoanSize)
+func _Msg_CAssetUpdateMinimumLoanSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateMinimumLoanSize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, in)
+		return srv.(MsgServer).CAssetUpdateMinimumLoanSize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateCAssetMinimumLoanSize",
+		FullMethod: "/kopi.denominations.Msg/CAssetUpdateMinimumLoanSize",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, req.(*MsgUpdateCAssetMinimumLoanSize))
+		return srv.(MsgServer).CAssetUpdateMinimumLoanSize(ctx, req.(*MsgCAssetUpdateMinimumLoanSize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddArbitrageDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageAddDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageAddDenom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageAddDenom(ctx, req.(*MsgAddArbitrageDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateBuyThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateBuyThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateBuyThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateBuyThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateBuyThreshold(ctx, req.(*MsgArbitrageUpdateBuyThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateSellThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateSellThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateSellThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateSellThreshold(ctx, req.(*MsgArbitrageUpdateSellThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateBuyAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateBuyAmount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateBuyAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateBuyAmount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateBuyAmount(ctx, req.(*MsgArbitrageUpdateBuyAmount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateSellAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateSellAmount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateSellAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateSellAmount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateSellAmount(ctx, req.(*MsgArbitrageUpdateSellAmount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateRedemptionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateRedemptionFee)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFee(ctx, req.(*MsgArbitrageUpdateRedemptionFee))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateRedemptionFeeReserveShare)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFeeReserveShare(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFeeReserveShare",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFeeReserveShare(ctx, req.(*MsgArbitrageUpdateRedemptionFeeReserveShare))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1791,68 +2570,96 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddDEXDenom",
-			Handler:    _Msg_AddDEXDenom_Handler,
+			MethodName: "DexAddDenom",
+			Handler:    _Msg_DexAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenomMinimumLiquidity",
-			Handler:    _Msg_UpdateDEXDenomMinimumLiquidity_Handler,
+			MethodName: "DexUpdateMinimumLiquidity",
+			Handler:    _Msg_DexUpdateMinimumLiquidity_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenomMinimumOrderSize",
-			Handler:    _Msg_UpdateDEXDenomMinimumOrderSize_Handler,
+			MethodName: "DexUpdateMinimumOrderSize",
+			Handler:    _Msg_DexUpdateMinimumOrderSize_Handler,
 		},
 		{
-			MethodName: "AddKCoin",
-			Handler:    _Msg_AddKCoin_Handler,
+			MethodName: "KCoinAddDenom",
+			Handler:    _Msg_KCoinAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinSupply",
-			Handler:    _Msg_UpdateKCoinSupply_Handler,
+			MethodName: "KCoinUpdateSupplyLimit",
+			Handler:    _Msg_KCoinUpdateSupplyLimit_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinMintAmount",
-			Handler:    _Msg_UpdateKCoinMintAmount_Handler,
+			MethodName: "KCoinUpdateMintAmount",
+			Handler:    _Msg_KCoinUpdateMintAmount_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinBurnAmount",
-			Handler:    _Msg_UpdateKCoinBurnAmount_Handler,
+			MethodName: "KCoinUpdateBurnAmount",
+			Handler:    _Msg_KCoinUpdateBurnAmount_Handler,
 		},
 		{
-			MethodName: "AddKCoinReferences",
-			Handler:    _Msg_AddKCoinReferences_Handler,
+			MethodName: "KCoinAddReferences",
+			Handler:    _Msg_KCoinAddReferences_Handler,
 		},
 		{
-			MethodName: "RemoveKCoinReferences",
-			Handler:    _Msg_RemoveKCoinReferences_Handler,
+			MethodName: "KCoinRemoveReferences",
+			Handler:    _Msg_KCoinRemoveReferences_Handler,
 		},
 		{
-			MethodName: "AddCollateralDenom",
-			Handler:    _Msg_AddCollateralDenom_Handler,
+			MethodName: "CollateralAddDenom",
+			Handler:    _Msg_CollateralAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateCollateralDenomLTV",
-			Handler:    _Msg_UpdateCollateralDenomLTV_Handler,
+			MethodName: "CollateralUpdateLTV",
+			Handler:    _Msg_CollateralUpdateLTV_Handler,
 		},
 		{
-			MethodName: "UpdateCollateralDenomMaxDeposit",
-			Handler:    _Msg_UpdateCollateralDenomMaxDeposit_Handler,
+			MethodName: "CollateralUpdateDepositLimit",
+			Handler:    _Msg_CollateralUpdateDepositLimit_Handler,
 		},
 		{
-			MethodName: "AddCAsset",
-			Handler:    _Msg_AddCAsset_Handler,
+			MethodName: "CAssetAddDenom",
+			Handler:    _Msg_CAssetAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetDexFeeShare",
-			Handler:    _Msg_UpdateCAssetDexFeeShare_Handler,
+			MethodName: "CAssetUpdateDexFeeShare",
+			Handler:    _Msg_CAssetUpdateDexFeeShare_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetBorrowLimit",
-			Handler:    _Msg_UpdateCAssetBorrowLimit_Handler,
+			MethodName: "CAssetUpdateBorrowLimit",
+			Handler:    _Msg_CAssetUpdateBorrowLimit_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetMinimumLoanSize",
-			Handler:    _Msg_UpdateCAssetMinimumLoanSize_Handler,
+			MethodName: "CAssetUpdateMinimumLoanSize",
+			Handler:    _Msg_CAssetUpdateMinimumLoanSize_Handler,
+		},
+		{
+			MethodName: "ArbitrageAddDenom",
+			Handler:    _Msg_ArbitrageAddDenom_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateBuyThreshold",
+			Handler:    _Msg_ArbitrageUpdateBuyThreshold_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateSellThreshold",
+			Handler:    _Msg_ArbitrageUpdateSellThreshold_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateBuyAmount",
+			Handler:    _Msg_ArbitrageUpdateBuyAmount_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateSellAmount",
+			Handler:    _Msg_ArbitrageUpdateSellAmount_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateRedemptionFee",
+			Handler:    _Msg_ArbitrageUpdateRedemptionFee_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateRedemptionFeeReserveShare",
+			Handler:    _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1882,7 +2689,7 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddDEXDenom) Marshal() (dAtA []byte, err error) {
+func (m *MsgDexAddDenom) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1892,16 +2699,21 @@ func (m *MsgAddDEXDenom) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddDEXDenom) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDexAddDenom) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDexAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.Exponent != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Exponent))
+		i--
+		dAtA[i] = 0x30
+	}
 	if len(m.MinOrderSize) > 0 {
 		i -= len(m.MinOrderSize)
 		copy(dAtA[i:], m.MinOrderSize)
@@ -1940,7 +2752,7 @@ func (m *MsgAddDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) Marshal() (dAtA []byte, err error) {
+func (m *MsgDexUpdateMinimumLiquidity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1950,12 +2762,12 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumLiquidity) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1984,7 +2796,7 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) Marshal() (dAtA []byte, err error) {
+func (m *MsgDexUpdateMinimumOrderSize) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1994,12 +2806,12 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumOrderSize) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumOrderSize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2028,7 +2840,7 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddKCoin) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinAddDenom) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2038,12 +2850,12 @@ func (m *MsgAddKCoin) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddKCoin) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinAddDenom) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddKCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2099,10 +2911,10 @@ func (m *MsgAddKCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x1a
 		}
 	}
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -2116,7 +2928,7 @@ func (m *MsgAddKCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateKCoinSupply) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinUpdateSupplyLimit) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2126,12 +2938,12 @@ func (m *MsgUpdateKCoinSupply) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateKCoinSupply) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateSupplyLimit) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateKCoinSupply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateSupplyLimit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2160,7 +2972,7 @@ func (m *MsgUpdateKCoinSupply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateKCoinBurnAmount) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinUpdateBurnAmount) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2170,12 +2982,12 @@ func (m *MsgUpdateKCoinBurnAmount) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateKCoinBurnAmount) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateBurnAmount) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateKCoinBurnAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateBurnAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2204,7 +3016,7 @@ func (m *MsgUpdateKCoinBurnAmount) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateKCoinMintAmount) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinUpdateMintAmount) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2214,12 +3026,12 @@ func (m *MsgUpdateKCoinMintAmount) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateKCoinMintAmount) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateMintAmount) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateKCoinMintAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinUpdateMintAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2248,7 +3060,7 @@ func (m *MsgUpdateKCoinMintAmount) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddKCoinReferences) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinAddReferences) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2258,12 +3070,12 @@ func (m *MsgAddKCoinReferences) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddKCoinReferences) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinAddReferences) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddKCoinReferences) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinAddReferences) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2294,7 +3106,7 @@ func (m *MsgAddKCoinReferences) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRemoveKCoinReferences) Marshal() (dAtA []byte, err error) {
+func (m *MsgKCoinRemoveReferences) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2304,12 +3116,12 @@ func (m *MsgRemoveKCoinReferences) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRemoveKCoinReferences) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgKCoinRemoveReferences) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRemoveKCoinReferences) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgKCoinRemoveReferences) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2340,7 +3152,7 @@ func (m *MsgRemoveKCoinReferences) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddCollateralDenom) Marshal() (dAtA []byte, err error) {
+func (m *MsgCollateralAddDenom) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2350,12 +3162,12 @@ func (m *MsgAddCollateralDenom) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddCollateralDenom) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCollateralAddDenom) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddCollateralDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCollateralAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2391,7 +3203,7 @@ func (m *MsgAddCollateralDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateCollateralDenomLTV) Marshal() (dAtA []byte, err error) {
+func (m *MsgCollateralUpdateLTV) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2401,12 +3213,12 @@ func (m *MsgUpdateCollateralDenomLTV) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateCollateralDenomLTV) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCollateralUpdateLTV) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateCollateralDenomLTV) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCollateralUpdateLTV) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2435,7 +3247,7 @@ func (m *MsgUpdateCollateralDenomLTV) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) Marshal() (dAtA []byte, err error) {
+func (m *MsgCollateralUpdateDepositLimit) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2445,12 +3257,12 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) Marshal() (dAtA []byte, err error) 
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCollateralUpdateDepositLimit) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCollateralUpdateDepositLimit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2479,7 +3291,7 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) MarshalToSizedBuffer(dAtA []byte) (
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddCAsset) Marshal() (dAtA []byte, err error) {
+func (m *MsgCAssetAddDenom) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2489,16 +3301,23 @@ func (m *MsgAddCAsset) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddCAsset) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCAssetAddDenom) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddCAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCAssetAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.MinLoanSize) > 0 {
+		i -= len(m.MinLoanSize)
+		copy(dAtA[i:], m.MinLoanSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinLoanSize)))
+		i--
+		dAtA[i] = 0x4a
+	}
 	if len(m.BorrowLimit) > 0 {
 		i -= len(m.BorrowLimit)
 		copy(dAtA[i:], m.BorrowLimit)
@@ -2558,7 +3377,7 @@ func (m *MsgAddCAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) Marshal() (dAtA []byte, err error) {
+func (m *MsgCAssetUpdateDexFeeShare) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2568,12 +3387,12 @@ func (m *MsgUpdateCAssetDexFeeShare) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateDexFeeShare) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateDexFeeShare) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2602,7 +3421,7 @@ func (m *MsgUpdateCAssetDexFeeShare) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) Marshal() (dAtA []byte, err error) {
+func (m *MsgCAssetUpdateBorrowLimit) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2612,12 +3431,12 @@ func (m *MsgUpdateCAssetBorrowLimit) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateBorrowLimit) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateBorrowLimit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2646,7 +3465,7 @@ func (m *MsgUpdateCAssetBorrowLimit) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) Marshal() (dAtA []byte, err error) {
+func (m *MsgCAssetUpdateMinimumLoanSize) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2656,12 +3475,12 @@ func (m *MsgUpdateCAssetMinimumLoanSize) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateMinimumLoanSize) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCAssetUpdateMinimumLoanSize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2670,6 +3489,384 @@ func (m *MsgUpdateCAssetMinimumLoanSize) MarshalToSizedBuffer(dAtA []byte) (int,
 		i -= len(m.MinimumLoanSize)
 		copy(dAtA[i:], m.MinimumLoanSize)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.MinimumLoanSize)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAddArbitrageDenom) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddArbitrageDenom) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddArbitrageDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RedemptionFeeReserveShare) > 0 {
+		i -= len(m.RedemptionFeeReserveShare)
+		copy(dAtA[i:], m.RedemptionFeeReserveShare)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RedemptionFeeReserveShare)))
+		i--
+		dAtA[i] = 0x6a
+	}
+	if len(m.RedemptionFee) > 0 {
+		i -= len(m.RedemptionFee)
+		copy(dAtA[i:], m.RedemptionFee)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RedemptionFee)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if len(m.SellTradeAmount) > 0 {
+		i -= len(m.SellTradeAmount)
+		copy(dAtA[i:], m.SellTradeAmount)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SellTradeAmount)))
+		i--
+		dAtA[i] = 0x5a
+	}
+	if len(m.BuyTradeAmount) > 0 {
+		i -= len(m.BuyTradeAmount)
+		copy(dAtA[i:], m.BuyTradeAmount)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BuyTradeAmount)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if len(m.SellThreshold) > 0 {
+		i -= len(m.SellThreshold)
+		copy(dAtA[i:], m.SellThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SellThreshold)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.BuyThreshold) > 0 {
+		i -= len(m.BuyThreshold)
+		copy(dAtA[i:], m.BuyThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BuyThreshold)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.CAsset) > 0 {
+		i -= len(m.CAsset)
+		copy(dAtA[i:], m.CAsset)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CAsset)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Kcoin) > 0 {
+		i -= len(m.Kcoin)
+		copy(dAtA[i:], m.Kcoin)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Kcoin)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.MinOrderSize) > 0 {
+		i -= len(m.MinOrderSize)
+		copy(dAtA[i:], m.MinOrderSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinOrderSize)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.MinLiquidity) > 0 {
+		i -= len(m.MinLiquidity)
+		copy(dAtA[i:], m.MinLiquidity)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinLiquidity)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Factor) > 0 {
+		i -= len(m.Factor)
+		copy(dAtA[i:], m.Factor)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Factor)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BuyThreshold) > 0 {
+		i -= len(m.BuyThreshold)
+		copy(dAtA[i:], m.BuyThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BuyThreshold)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SellThreshold) > 0 {
+		i -= len(m.SellThreshold)
+		copy(dAtA[i:], m.SellThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SellThreshold)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BuyAmount) > 0 {
+		i -= len(m.BuyAmount)
+		copy(dAtA[i:], m.BuyAmount)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BuyAmount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateSellAmount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateSellAmount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateSellAmount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SellAmount) > 0 {
+		i -= len(m.SellAmount)
+		copy(dAtA[i:], m.SellAmount)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SellAmount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RedemptionFee) > 0 {
+		i -= len(m.RedemptionFee)
+		copy(dAtA[i:], m.RedemptionFee)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RedemptionFee)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RedemptionFeeReserveShare) > 0 {
+		i -= len(m.RedemptionFeeReserveShare)
+		copy(dAtA[i:], m.RedemptionFeeReserveShare)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RedemptionFeeReserveShare)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -2710,7 +3907,7 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddDEXDenom) Size() (n int) {
+func (m *MsgDexAddDenom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2736,10 +3933,13 @@ func (m *MsgAddDEXDenom) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.Exponent != 0 {
+		n += 1 + sovTx(uint64(m.Exponent))
+	}
 	return n
 }
 
-func (m *MsgUpdateDEXDenomMinimumLiquidity) Size() (n int) {
+func (m *MsgDexUpdateMinimumLiquidity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2760,7 +3960,7 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateDEXDenomMinimumOrderSize) Size() (n int) {
+func (m *MsgDexUpdateMinimumOrderSize) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2781,7 +3981,7 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddKCoin) Size() (n int) {
+func (m *MsgKCoinAddDenom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2791,7 +3991,7 @@ func (m *MsgAddKCoin) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Denom)
+	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2828,7 +4028,7 @@ func (m *MsgAddKCoin) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateKCoinSupply) Size() (n int) {
+func (m *MsgKCoinUpdateSupplyLimit) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2849,7 +4049,7 @@ func (m *MsgUpdateKCoinSupply) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateKCoinBurnAmount) Size() (n int) {
+func (m *MsgKCoinUpdateBurnAmount) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2870,7 +4070,7 @@ func (m *MsgUpdateKCoinBurnAmount) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateKCoinMintAmount) Size() (n int) {
+func (m *MsgKCoinUpdateMintAmount) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2891,7 +4091,7 @@ func (m *MsgUpdateKCoinMintAmount) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddKCoinReferences) Size() (n int) {
+func (m *MsgKCoinAddReferences) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2914,7 +4114,7 @@ func (m *MsgAddKCoinReferences) Size() (n int) {
 	return n
 }
 
-func (m *MsgRemoveKCoinReferences) Size() (n int) {
+func (m *MsgKCoinRemoveReferences) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2937,7 +4137,7 @@ func (m *MsgRemoveKCoinReferences) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddCollateralDenom) Size() (n int) {
+func (m *MsgCollateralAddDenom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2962,7 +4162,7 @@ func (m *MsgAddCollateralDenom) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateCollateralDenomLTV) Size() (n int) {
+func (m *MsgCollateralUpdateLTV) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2983,7 +4183,7 @@ func (m *MsgUpdateCollateralDenomLTV) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateCollateralDenomMaxDeposit) Size() (n int) {
+func (m *MsgCollateralUpdateDepositLimit) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3004,7 +4204,7 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddCAsset) Size() (n int) {
+func (m *MsgCAssetAddDenom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3042,10 +4242,14 @@ func (m *MsgAddCAsset) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.MinLoanSize)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgUpdateCAssetDexFeeShare) Size() (n int) {
+func (m *MsgCAssetUpdateDexFeeShare) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3066,7 +4270,7 @@ func (m *MsgUpdateCAssetDexFeeShare) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateCAssetBorrowLimit) Size() (n int) {
+func (m *MsgCAssetUpdateBorrowLimit) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3087,7 +4291,7 @@ func (m *MsgUpdateCAssetBorrowLimit) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateCAssetMinimumLoanSize) Size() (n int) {
+func (m *MsgCAssetUpdateMinimumLoanSize) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3102,6 +4306,193 @@ func (m *MsgUpdateCAssetMinimumLoanSize) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.MinimumLoanSize)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgAddArbitrageDenom) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Factor)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinLiquidity)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinOrderSize)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Kcoin)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CAsset)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BuyThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SellThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BuyTradeAmount)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SellTradeAmount)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RedemptionFee)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RedemptionFeeReserveShare)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateBuyThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BuyThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateSellThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SellThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateBuyAmount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BuyAmount)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateSellAmount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SellAmount)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateRedemptionFee) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RedemptionFee)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RedemptionFeeReserveShare)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -3164,7 +4555,7 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
+func (m *MsgDexAddDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3187,10 +4578,10 @@ func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddDEXDenom: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDexAddDenom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddDEXDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDexAddDenom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3353,6 +4744,25 @@ func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
 			}
 			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exponent", wireType)
+			}
+			m.Exponent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Exponent |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -3374,7 +4784,7 @@ func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateDEXDenomMinimumLiquidity) Unmarshal(dAtA []byte) error {
+func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3397,10 +4807,10 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumLiquidity: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDexUpdateMinimumLiquidity: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDexUpdateMinimumLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3520,7 +4930,7 @@ func (m *MsgUpdateDEXDenomMinimumLiquidity) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateDEXDenomMinimumOrderSize) Unmarshal(dAtA []byte) error {
+func (m *MsgDexUpdateMinimumOrderSize) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3543,10 +4953,10 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumOrderSize: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDexUpdateMinimumOrderSize: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumOrderSize: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDexUpdateMinimumOrderSize: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3666,7 +5076,7 @@ func (m *MsgUpdateDEXDenomMinimumOrderSize) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinAddDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3689,10 +5099,10 @@ func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddKCoin: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinAddDenom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddKCoin: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinAddDenom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3729,7 +5139,7 @@ func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3757,7 +5167,7 @@ func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -4004,7 +5414,7 @@ func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateKCoinSupply) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinUpdateSupplyLimit) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4027,10 +5437,10 @@ func (m *MsgUpdateKCoinSupply) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateKCoinSupply: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinUpdateSupplyLimit: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateKCoinSupply: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinUpdateSupplyLimit: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4150,7 +5560,7 @@ func (m *MsgUpdateKCoinSupply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateKCoinBurnAmount) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinUpdateBurnAmount) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4173,10 +5583,10 @@ func (m *MsgUpdateKCoinBurnAmount) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateKCoinBurnAmount: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinUpdateBurnAmount: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateKCoinBurnAmount: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinUpdateBurnAmount: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4296,7 +5706,7 @@ func (m *MsgUpdateKCoinBurnAmount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateKCoinMintAmount) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinUpdateMintAmount) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4319,10 +5729,10 @@ func (m *MsgUpdateKCoinMintAmount) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateKCoinMintAmount: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinUpdateMintAmount: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateKCoinMintAmount: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinUpdateMintAmount: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4442,7 +5852,7 @@ func (m *MsgUpdateKCoinMintAmount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddKCoinReferences) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinAddReferences) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4465,10 +5875,10 @@ func (m *MsgAddKCoinReferences) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddKCoinReferences: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinAddReferences: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddKCoinReferences: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinAddReferences: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4588,7 +5998,7 @@ func (m *MsgAddKCoinReferences) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRemoveKCoinReferences) Unmarshal(dAtA []byte) error {
+func (m *MsgKCoinRemoveReferences) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4611,10 +6021,10 @@ func (m *MsgRemoveKCoinReferences) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRemoveKCoinReferences: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgKCoinRemoveReferences: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRemoveKCoinReferences: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgKCoinRemoveReferences: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4734,7 +6144,7 @@ func (m *MsgRemoveKCoinReferences) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddCollateralDenom) Unmarshal(dAtA []byte) error {
+func (m *MsgCollateralAddDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4757,10 +6167,10 @@ func (m *MsgAddCollateralDenom) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddCollateralDenom: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCollateralAddDenom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddCollateralDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCollateralAddDenom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4912,7 +6322,7 @@ func (m *MsgAddCollateralDenom) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateCollateralDenomLTV) Unmarshal(dAtA []byte) error {
+func (m *MsgCollateralUpdateLTV) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4935,10 +6345,10 @@ func (m *MsgUpdateCollateralDenomLTV) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateCollateralDenomLTV: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCollateralUpdateLTV: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateCollateralDenomLTV: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCollateralUpdateLTV: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5058,7 +6468,7 @@ func (m *MsgUpdateCollateralDenomLTV) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateCollateralDenomMaxDeposit) Unmarshal(dAtA []byte) error {
+func (m *MsgCollateralUpdateDepositLimit) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5081,10 +6491,10 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateCollateralDenomMaxDeposit: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCollateralUpdateDepositLimit: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateCollateralDenomMaxDeposit: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCollateralUpdateDepositLimit: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5204,7 +6614,7 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddCAsset) Unmarshal(dAtA []byte) error {
+func (m *MsgCAssetAddDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5227,10 +6637,10 @@ func (m *MsgAddCAsset) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddCAsset: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCAssetAddDenom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddCAsset: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCAssetAddDenom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5489,6 +6899,38 @@ func (m *MsgAddCAsset) Unmarshal(dAtA []byte) error {
 			}
 			m.BorrowLimit = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinLoanSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinLoanSize = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -5510,7 +6952,7 @@ func (m *MsgAddCAsset) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateCAssetDexFeeShare) Unmarshal(dAtA []byte) error {
+func (m *MsgCAssetUpdateDexFeeShare) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5533,10 +6975,10 @@ func (m *MsgUpdateCAssetDexFeeShare) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateCAssetDexFeeShare: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCAssetUpdateDexFeeShare: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateCAssetDexFeeShare: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCAssetUpdateDexFeeShare: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5656,7 +7098,7 @@ func (m *MsgUpdateCAssetDexFeeShare) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateCAssetBorrowLimit) Unmarshal(dAtA []byte) error {
+func (m *MsgCAssetUpdateBorrowLimit) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5679,10 +7121,10 @@ func (m *MsgUpdateCAssetBorrowLimit) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateCAssetBorrowLimit: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCAssetUpdateBorrowLimit: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateCAssetBorrowLimit: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCAssetUpdateBorrowLimit: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5802,7 +7244,7 @@ func (m *MsgUpdateCAssetBorrowLimit) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateCAssetMinimumLoanSize) Unmarshal(dAtA []byte) error {
+func (m *MsgCAssetUpdateMinimumLoanSize) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5825,10 +7267,10 @@ func (m *MsgUpdateCAssetMinimumLoanSize) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateCAssetMinimumLoanSize: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCAssetUpdateMinimumLoanSize: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateCAssetMinimumLoanSize: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCAssetUpdateMinimumLoanSize: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5926,6 +7368,1348 @@ func (m *MsgUpdateCAssetMinimumLoanSize) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.MinimumLoanSize = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddArbitrageDenom) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddArbitrageDenom: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddArbitrageDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Factor", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Factor = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinLiquidity", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kcoin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kcoin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CAsset", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CAsset = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BuyThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SellThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyTradeAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BuyTradeAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellTradeAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SellTradeAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RedemptionFee = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFeeReserveShare", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RedemptionFeeReserveShare = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateBuyThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateBuyThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateBuyThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BuyThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateSellThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateSellThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateSellThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SellThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateBuyAmount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateBuyAmount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateBuyAmount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BuyAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateSellAmount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateSellAmount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateSellAmount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SellAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateRedemptionFee) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateRedemptionFee: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateRedemptionFee: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RedemptionFee = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateRedemptionFeeReserveShare: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgArbitrageUpdateRedemptionFeeReserveShare: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionFeeReserveShare", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RedemptionFeeReserveShare = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

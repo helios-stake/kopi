@@ -11,7 +11,17 @@ message Params {
   option (amino.name) = "kopi/x/swap/Params";
   option (gogoproto.equal) = true;
 
-  bytes staking_share = 1 [
+  bytes burn_threshold = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes mint_threshold = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes staking_share = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];

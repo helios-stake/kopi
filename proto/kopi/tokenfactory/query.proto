@@ -28,7 +28,6 @@ message QueryDenomsRequest {
 
 message QueryDenomsResponse {
   repeated FactoryDenom denoms = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryParamsRequest {}

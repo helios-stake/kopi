@@ -1,0 +1,23 @@
+syntax = "proto3";
+package kopi.strategies;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "kopi/strategies/params.proto";
+import "kopi/strategies/arbitrage.proto";
+import "kopi/strategies/automations.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/strategies/types";
+
+// GenesisState defines the pt module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  repeated ArbitrageDenom arbitrage_denoms = 2;
+  repeated Automation automations = 3;
+  repeated GenesisAutomationFunds automation_funds = 4;
+}

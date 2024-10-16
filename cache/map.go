@@ -2,13 +2,13 @@ package cache
 
 import (
 	"context"
+	"fmt"
+	"sync"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/collections/codec"
-	"cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"sync"
 )
 
 type CreateCollectionIterator[K ordered, V any] func() Iterator[K, V]
@@ -16,6 +16,7 @@ type CreateCollectionIterator[K ordered, V any] func() Iterator[K, V]
 type CollectionMap[K, V any] interface {
 	Get(context.Context, K) (V, error)
 	Iterate(context.Context, collections.Ranger[K]) (collections.Iterator[K, V], error)
+	IterateRaw(ctx context.Context, start, end []byte, order collections.Order) (collections.Iterator[K, V], error)
 	Set(context.Context, K, V) error
 	Remove(context.Context, K) error
 	GetName() string
@@ -175,7 +176,16 @@ type MapCache[K ordered, V any] struct {
 	currentHeight int64
 }
 
-func NewCacheMap[K ordered, V any](sb *collections.SchemaBuilder, prefix []byte, name string, kc codec.KeyCodec[K], vc codec.ValueCodec[V], caches *Caches) *MapCache[K, V] {
+func (mc *MapCache[K, V]) IterateRaw(ctx context.Context, start, end []byte, order collections.Order) (collections.Iterator[K, V], error) {
+	return mc.collection.IterateRaw(ctx, start, end, order)
+}
+
+func (mc *MapCache[K, V]) KeyCodec() codec.KeyCodec[K] {
+	//TODO implement me
+	panic("implement me")
+}
+
+func NewMapCache[K ordered, V any](sb *collections.SchemaBuilder, prefix []byte, name string, kc codec.KeyCodec[K], vc codec.ValueCodec[V], caches *Caches) *MapCache[K, V] {
 	mc := &MapCache[K, V]{
 		kc:     kc,
 		vc:     vc,
@@ -204,14 +214,14 @@ func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
 
 	iterator, err := mc.collection.Iterate(ctx, nil)
 	if err != nil {
-		return errors.Wrap(err, "could not create collection iterator")
+		return fmt.Errorf("could not create collection iterator: %w", err)
 	}
 
 	var key K
 	for ; iterator.Valid(); iterator.Next() {
 		key, err = iterator.Key()
 		if err != nil {
-			return errors.Wrap(err, "could not get key")
+			return fmt.Errorf("could not get key: %w", err)
 		}
 
 		entry, has := mc.loadFromStorage(ctx, key)
@@ -313,7 +323,7 @@ func (mc *MapCache[K, V]) Remove(ctx context.Context, key K) {
 // Iterator returns an iterator which contains a list of all keys. Since the cache doesn't know about all keys, they
 // have to be loaded from storage first. Then interim changes to the data have to be applied to the keys, i.e.
 // adding new ones or removes those that have been deleted. If new keys are added, the list has to be sorted once more.
-func (mc *MapCache[K, V]) Iterator(ctx context.Context, rng collections.Ranger[K], filter Filter[K]) Iterator[K, V] {
+func (mc *MapCache[K, V]) Iterator(ctx context.Context, rng collections.Ranger[K]) Iterator[K, V] {
 	var changes *OrderedList[K, Entry[V]]
 	var removals []K
 
@@ -338,7 +348,32 @@ func (mc *MapCache[K, V]) Iterator(ctx context.Context, rng collections.Ranger[K
 		}
 	}
 
-	return newIterator(ctx, mc.cache, changes, valueGetter, removals, createIterator, filter, mc.currentHeight)
+	return newIterator(ctx, mc.cache, changes, valueGetter, removals, createIterator, mc.currentHeight)
+}
+
+func (mc *MapCache[K, V]) CollectionIterator(ctx context.Context, rng collections.Ranger[K]) (collections.Iterator[K, V], error) {
+	return mc.collection.Iterate(ctx, rng)
+}
+
+func (mc *MapCache[K, V]) CacheIterator(ctx context.Context) Iterator[K, V] {
+	var changes *OrderedList[K, Entry[V]]
+	var removals []K
+
+	txKey := getTXKey(ctx)
+	if txKey != nil {
+		mapTransaction := mc.transactions.Get(*txKey)
+		changes = mapTransaction.changes
+		removals = mapTransaction.removals
+	} else {
+		changes = &OrderedList[K, Entry[V]]{}
+	}
+
+	valueGetter := func(key K) V {
+		v, _ := mc.Get(ctx, key)
+		return v
+	}
+
+	return newCacheIterator(ctx, mc.cache, changes, valueGetter, removals)
 }
 
 func (mc *MapCache[K, V]) Size() int {
@@ -354,11 +389,11 @@ func (mc *MapCache[K, V]) CommitToDB(ctx context.Context) error {
 	for _, change := range mc.transactions.Get(*txKey).changes.GetAll() {
 		if change.value.value != nil {
 			if err := mc.collection.Set(ctx, change.key, *change.value.value); err != nil {
-				return errors.Wrap(err, "could not add value to collection")
+				return fmt.Errorf("could not add value to collection: %w", err)
 			}
 		} else {
 			if err := mc.collection.Remove(ctx, change.key); err != nil {
-				return errors.Wrap(err, "could not remove value from collection")
+				return fmt.Errorf("could not remove value from collection: %w", err)
 			}
 		}
 	}
@@ -423,7 +458,7 @@ func (mc *MapCache[K, V]) ClearTransactions() {
 
 func (mc *MapCache[K, V]) CheckCache(ctx context.Context) error {
 	if err := mc.checkCacheComplete(ctx); err != nil {
-		return errors.Wrap(err, "error checkCacheComplete")
+		return fmt.Errorf("error checkCacheComplete: %w", err)
 	}
 
 	return nil
@@ -432,7 +467,7 @@ func (mc *MapCache[K, V]) CheckCache(ctx context.Context) error {
 func (mc *MapCache[K, V]) checkCollectionComplete(goCtx context.Context) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := mc.Iterator(goCtx, nil, nil)
+	iterator := mc.Iterator(goCtx, nil)
 
 	var keyValue KeyValue[K, Entry[V]]
 	for iterator.Valid() {
@@ -464,7 +499,7 @@ func (mc *MapCache[K, V]) checkCollectionComplete(goCtx context.Context) error {
 func (mc *MapCache[K, V]) checkCacheComplete(ctx context.Context) error {
 	iterator, err := mc.collection.Iterate(ctx, nil)
 	if err != nil {
-		return errors.Wrap(err, "could not create iterator")
+		return fmt.Errorf("could not create iterator: %w", err)
 	}
 
 	keyValues, err := iterator.KeyValues()

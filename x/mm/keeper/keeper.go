@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
 	"fmt"
+
+	"cosmossdk.io/collections"
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/core/store"
@@ -15,8 +16,8 @@ import (
 )
 
 var (
-	PrefixCollateral    = collections.NewPrefix(0)
-	PrefixCollateralSum = collections.NewPrefix(1)
+	PrefixParams        = collections.NewPrefix(0)
+	PrefixCollateral    = collections.NewPrefix(1)
 	PrefixLoans         = collections.NewPrefix(2)
 	PrefixLoanNextIndex = collections.NewPrefix(3)
 	PrefixLoanSum       = collections.NewPrefix(4)
@@ -29,12 +30,14 @@ type (
 		storeService store.KVStoreService
 		logger       log.Logger
 
-		AccountKeeper types.AccountKeeper
-		BankKeeper    types.BankKeeper
-		DenomKeeper   types.DenomKeeper
-		DexKeeper     types.DexKeeper
+		AccountKeeper    types.AccountKeeper
+		BlockspeedKeeper types.BlockspeedKeeper
+		BankKeeper       types.BankKeeper
+		DenomKeeper      types.DenomKeeper
+		DexKeeper        types.DexKeeper
 
 		// Collections
+		params        *cache.ItemCache[types.Params]
 		collateral    *cache.NestedMapCache[string, string, types.Collateral]
 		loans         *cache.NestedMapCache[string, string, types.Loan]
 		loanNextIndex *cache.ItemCache[uint64]
@@ -56,6 +59,7 @@ func NewKeeper(
 	logger log.Logger,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	blockspeedKeeper types.BlockspeedKeeper,
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	authority string,
@@ -69,16 +73,25 @@ func NewKeeper(
 	caches := &cache.Caches{}
 
 	return Keeper{
-		cdc:           cdc,
-		storeService:  storeService,
-		authority:     authority,
-		AccountKeeper: accountKeeper,
-		BankKeeper:    bankKeeper,
-		DenomKeeper:   denomKeeper,
-		DexKeeper:     dexKeeper,
-		logger:        logger,
+		cdc:              cdc,
+		storeService:     storeService,
+		authority:        authority,
+		AccountKeeper:    accountKeeper,
+		BankKeeper:       bankKeeper,
+		BlockspeedKeeper: blockspeedKeeper,
+		DenomKeeper:      denomKeeper,
+		DexKeeper:        dexKeeper,
+		logger:           logger,
 
 		caches: caches,
+
+		params: cache.NewItemCache(
+			sb,
+			PrefixParams,
+			"params",
+			codec.CollValue[types.Params](cdc),
+			caches,
+		),
 
 		collateral: cache.NewNestedMapCache(
 			sb,
@@ -106,7 +119,7 @@ func NewKeeper(
 			caches,
 		),
 
-		loansSum: cache.NewCacheMap(
+		loansSum: cache.NewMapCache(
 			sb,
 			PrefixLoanSum,
 			"loans_sum",

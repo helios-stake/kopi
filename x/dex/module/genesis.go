@@ -1,7 +1,7 @@
 package dex
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"context"
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/dex/keeper"
@@ -9,32 +9,36 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
+	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		// Set all the liquidity
-		for _, elem := range genState.LiquidityList {
-			k.SetLiquidity(ctx, elem)
+		for _, denomLiquidity := range genState.LiquidityList {
+			for _, entry := range denomLiquidity.Entries {
+				if entry != nil {
+					k.SetLiquidity(innerCtx, denomLiquidity.Denom, *entry)
+				}
+			}
 		}
 
 		for _, elem := range genState.RatioList {
-			k.SetRatio(ctx, elem)
+			k.SetRatio(innerCtx, elem)
 			//k.SetLiquidityPair(ctx, k.CreateLiquidityPair(ctx, elem))
 		}
 
 		// Set all the order
 		for _, elem := range genState.OrderList {
-			k.SetOrder(ctx, elem)
+			k.SetOrder(innerCtx, elem)
 		}
 
 		oni := types.OrderNextIndex{Next: genState.OrderNextIndex}
-		k.SetOrderNextIndex(ctx, oni)
+		k.SetOrderNextIndex(innerCtx, oni.Next)
 		// this line is used by starport scaffolding # genesis/module/init
 
-		if err := k.SetParams(ctx, genState.Params); err != nil {
+		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return err
 		}
 
-		k.SetLiquidityEntryNextIndex(ctx, genState.LiquidityNextIndex)
+		k.SetLiquidityEntryNextIndex(innerCtx, genState.LiquidityNextIndex)
 
 		return nil
 	}); err != nil {
@@ -43,7 +47,7 @@ func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState
 }
 
 // ExportGenesis returns the module's exported genesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
 	// this line is used by starport scaffolding # genesis/module/export
 	return k.ExportGenesis(ctx)
 }

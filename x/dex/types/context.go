@@ -2,21 +2,35 @@ package types
 
 import (
 	"context"
+	"fmt"
+
+	"github.com/kopi-money/kopi/x/dex/constant_product"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
+)
+
+type TradeType int
+
+const (
+	TradeTypeSell = iota + 1
+	TradeTypeBuy
 )
 
 type TradeContext struct {
 	context.Context
 
-	GivenAmount math.Int
-	MaxPrice    *math.LegacyDec
+	Fee                    math.LegacyDec
+	TradeType              TradeType
+	TradeAmount            math.Int
+	MaxPrice               *math.LegacyDec
+	MinimumTradeAmount     *math.Int
+	MaximumAvailableAmount math.Int
 
-	TradeDenomStart string
-	TradeDenomEnd   string
+	TradeDenomGiving    string
+	TradeDenomReceiving string
 
-	AllowIncomplete     bool
 	ExcludeFromDiscount bool
 	ProtocolTrade       bool
 	IsOrder             bool
@@ -25,9 +39,102 @@ type TradeContext struct {
 	CoinTarget      string
 	DiscountAddress string
 
-	TradeBalances    TradeBalances
-	TradeCalculation TradeCalculation
-	OrdersCaches     *OrdersCaches
+	CalcMaximumTradableAmount      func(*OrdersCaches, string, string) *math.Int
+	CalcTradableAmountGivenPrice   constant_product.CalculateMaximumAmount
+	CalcAmountToGive               func() math.Int
+	IntermediateTradeAmount        IntermediateTradeAmount
+	CalcMaximumTradeAmountByWallet func() math.Int
+
+	TradeBalances TradeBalances
+	OrdersCaches  *OrdersCaches
+
+	FlatPrice *constant_product.FlatPrice
+}
+
+func (tc *TradeContext) GetOrdersCaches() *OrdersCaches {
+	return tc.OrdersCaches
+}
+
+func (tc *TradeContext) FullFee() math.LegacyDec {
+	if tc.TradeDenomGiving == constants.BaseCurrency || tc.TradeDenomReceiving == constants.BaseCurrency {
+		return tc.StepFee()
+	}
+
+	return tc.Fee
+}
+
+func (tc *TradeContext) StepFee() math.LegacyDec {
+	return tc.Fee.Quo(math.LegacyNewDec(2))
+}
+
+func (tc *TradeContext) ToSell(amount math.Int) TradeContext {
+	return TradeContext{
+		Context:                tc.Context,
+		CoinSource:             tc.CoinSource,
+		CoinTarget:             tc.CoinTarget,
+		TradeAmount:            amount,
+		MaximumAvailableAmount: tc.MaximumAvailableAmount,
+		MaxPrice:               tc.MaxPrice,
+		MinimumTradeAmount:     tc.MinimumTradeAmount,
+		TradeDenomGiving:       tc.TradeDenomGiving,
+		TradeDenomReceiving:    tc.TradeDenomReceiving,
+		ProtocolTrade:          tc.ProtocolTrade,
+		TradeBalances:          tc.TradeBalances,
+		Fee:                    tc.Fee,
+	}
+}
+
+type IntermediateTradeAmount func(math.Int, math.Int) math.Int
+
+func IntermediateTradeAmountReceived(_, amount math.Int) math.Int {
+	return amount
+}
+
+func IntermediateTradeAmountUsed(amount, _ math.Int) math.Int {
+	return amount
+}
+
+type TradeResults struct {
+	Step1 TradeResult
+	Step2 TradeResult
+
+	FeePaid1 math.Int
+	FeePaid2 math.Int
+}
+
+func (tr TradeResults) Get(tradeType TradeType) TradeResult {
+	if tradeType == TradeTypeSell {
+		return TradeResult{
+			AmountIntermediate: tr.Step1.AmountReceived,
+			AmountGiven:        tr.Step1.AmountGiven,
+			AmountReceived:     tr.Step2.AmountReceived,
+			FeeBase:            tr.FeePaid2,
+			FeeOther:           tr.FeePaid1,
+		}
+	} else {
+		return TradeResult{
+			AmountIntermediate: tr.Step1.AmountReceived,
+			AmountGiven:        tr.Step2.AmountGiven,
+			AmountReceived:     tr.Step1.AmountReceived,
+			FeeBase:            tr.FeePaid1,
+			FeeOther:           tr.FeePaid2,
+		}
+	}
+}
+
+type TradeSimulationResult struct {
+	AmountIntermediate math.Int
+	AmountGiven        math.Int
+	AmountReceived     math.Int
+	FeeGiven           math.Int
+}
+
+type TradeResult struct {
+	AmountIntermediate math.Int
+	AmountGiven        math.Int
+	AmountReceived     math.Int
+	FeeBase            math.Int
+	FeeOther           math.Int
 }
 
 type Sender interface {
@@ -40,40 +147,126 @@ type TradeBalances interface {
 	Settle(context.Context, Sender) error
 }
 
+func plain(_, _, amount, _ math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
+	return amount, math.LegacyZeroDec()
+}
+
 type TradeStepContext struct {
 	TradeContext
 
-	StepDenomFrom string
-	StepDenomTo   string
+	StepDenomGiving    string
+	StepDenomReceiving string
+	FeeDenom           string
 
-	Amount          math.Int
-	TradeFee        math.LegacyDec
+	TradeAmount     math.Int
 	ReserveFeeShare math.LegacyDec
+
+	CalcAmountToGive    constant_product.ConstantProductTrade
+	CalcAmountToReceive constant_product.ConstantProductTrade
 }
 
-func (tc TradeContext) TradeToBase(tradeFee, reserveFeeShare math.LegacyDec) TradeStepContext {
+// When selling: givingDenom > XKP
+// When buying: XKP > receivingDenom
+func (tc TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType TradeType) TradeStepContext {
+	var (
+		calcAmountToGive    constant_product.ConstantProductTrade
+		calcAmountToReceive constant_product.ConstantProductTrade
+
+		denomGiving    string
+		denomReceiving string
+	)
+
+	switch tradeType {
+	case TradeTypeSell:
+		denomGiving = tc.TradeDenomGiving
+		denomReceiving = constants.BaseCurrency
+
+		calcAmountToGive = plain
+
+		if tc.FlatPrice != nil {
+			calcAmountToReceive = tc.FlatPrice.Sell
+		} else {
+			calcAmountToReceive = constant_product.ConstantProductTradeSell
+		}
+
+	case TradeTypeBuy:
+		denomGiving = constants.BaseCurrency
+		denomReceiving = tc.TradeDenomReceiving
+
+		calcAmountToReceive = plain
+
+		if tc.FlatPrice != nil {
+			calcAmountToGive = tc.FlatPrice.Buy
+		} else {
+			calcAmountToGive = constant_product.ConstantProductTradeBuy
+		}
+	default:
+		panic(fmt.Sprintf("unknown trade type: %v", tradeType))
+	}
+
+	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:    tc,
-		StepDenomFrom:   tc.TradeDenomStart,
-		StepDenomTo:     utils.BaseCurrency,
-		Amount:          tc.GivenAmount,
-		TradeFee:        tradeFee,
-		ReserveFeeShare: reserveFeeShare,
+		TradeContext:        tc,
+		StepDenomGiving:     denomGiving,
+		StepDenomReceiving:  denomReceiving,
+		TradeAmount:         tc.TradeAmount,
+		ReserveFeeShare:     reserveFeeShare,
+		CalcAmountToGive:    calcAmountToGive,
+		CalcAmountToReceive: calcAmountToReceive,
 	}
 }
 
-func (tc TradeContext) TradeToTarget(tradeFee, reserveFeeShare math.LegacyDec, amount math.Int) TradeStepContext {
+// When selling: XKP > receivingDenom
+// When buying: givingDenom > XKP
+func (tc TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.Int, tradeType TradeType) TradeStepContext {
+	var (
+		calcAmountToGive    constant_product.ConstantProductTrade
+		calcAmountToReceive constant_product.ConstantProductTrade
+
+		denomGiving    string
+		denomReceiving string
+	)
+
+	switch tradeType {
+	case TradeTypeSell:
+		denomGiving = constants.BaseCurrency
+		denomReceiving = tc.TradeDenomReceiving
+
+		calcAmountToGive = plain
+		calcAmountToReceive = constant_product.ConstantProductTradeSell
+		if tc.FlatPrice != nil {
+			calcAmountToReceive = tc.FlatPrice.Sell
+		}
+
+	case TradeTypeBuy:
+		denomGiving = tc.TradeDenomGiving
+		denomReceiving = constants.BaseCurrency
+
+		calcAmountToReceive = plain
+		calcAmountToGive = constant_product.ConstantProductTradeBuy
+		if tc.FlatPrice != nil {
+			calcAmountToGive = tc.FlatPrice.Buy
+		}
+
+	default:
+		panic(fmt.Sprintf("unknown trade type: %v", tradeType))
+	}
+
+	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:    tc,
-		StepDenomFrom:   utils.BaseCurrency,
-		StepDenomTo:     tc.TradeDenomEnd,
-		Amount:          amount,
-		TradeFee:        tradeFee,
-		ReserveFeeShare: reserveFeeShare,
+		TradeContext:        tc,
+		StepDenomGiving:     denomGiving,
+		StepDenomReceiving:  denomReceiving,
+		TradeAmount:         amount,
+		ReserveFeeShare:     reserveFeeShare,
+		CalcAmountToGive:    calcAmountToGive,
+		CalcAmountToReceive: calcAmountToReceive,
 	}
 }
 
 type TradeCalculation interface {
+	// Forward is for sells, ie users give a fixed amount and receive a calculated amount
 	Forward(poolFrom, poolTo, offer math.LegacyDec) math.Int
+	// Backward is for buys, ie users give receive fixed amount and give a calculated amount
 	Backward(poolFrom, poolTo, result math.LegacyDec) math.Int
 }

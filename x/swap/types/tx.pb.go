@@ -67,7 +67,110 @@ func (m *Void) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Void proto.InternalMessageInfo
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
+type MsgUpdateBurnThreshold struct {
+	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BurnThreshold string `protobuf:"bytes,2,opt,name=burn_threshold,json=burnThreshold,proto3" json:"burn_threshold,omitempty"`
+}
+
+func (m *MsgUpdateBurnThreshold) Reset()         { *m = MsgUpdateBurnThreshold{} }
+func (m *MsgUpdateBurnThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBurnThreshold) ProtoMessage()    {}
+func (*MsgUpdateBurnThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6f8a6c8c2c7a228, []int{1}
+}
+func (m *MsgUpdateBurnThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateBurnThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateBurnThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateBurnThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBurnThreshold.Merge(m, src)
+}
+func (m *MsgUpdateBurnThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateBurnThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBurnThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateBurnThreshold proto.InternalMessageInfo
+
+func (m *MsgUpdateBurnThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateBurnThreshold) GetBurnThreshold() string {
+	if m != nil {
+		return m.BurnThreshold
+	}
+	return ""
+}
+
+type MsgUpdateMintThreshold struct {
+	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	MintThreshold string `protobuf:"bytes,2,opt,name=mint_threshold,json=mintThreshold,proto3" json:"mint_threshold,omitempty"`
+}
+
+func (m *MsgUpdateMintThreshold) Reset()         { *m = MsgUpdateMintThreshold{} }
+func (m *MsgUpdateMintThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMintThreshold) ProtoMessage()    {}
+func (*MsgUpdateMintThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a6f8a6c8c2c7a228, []int{2}
+}
+func (m *MsgUpdateMintThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMintThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMintThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMintThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMintThreshold.Merge(m, src)
+}
+func (m *MsgUpdateMintThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMintThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMintThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMintThreshold proto.InternalMessageInfo
+
+func (m *MsgUpdateMintThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateMintThreshold) GetMintThreshold() string {
+	if m != nil {
+		return m.MintThreshold
+	}
+	return ""
+}
+
 type MsgUpdateStakingShare struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	StakingShare string `protobuf:"bytes,2,opt,name=staking_share,json=stakingShare,proto3" json:"staking_share,omitempty"`
@@ -77,7 +180,7 @@ func (m *MsgUpdateStakingShare) Reset()         { *m = MsgUpdateStakingShare{} }
 func (m *MsgUpdateStakingShare) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateStakingShare) ProtoMessage()    {}
 func (*MsgUpdateStakingShare) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a6f8a6c8c2c7a228, []int{1}
+	return fileDescriptor_a6f8a6c8c2c7a228, []int{3}
 }
 func (m *MsgUpdateStakingShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -122,34 +225,42 @@ func (m *MsgUpdateStakingShare) GetStakingShare() string {
 
 func init() {
 	proto.RegisterType((*Void)(nil), "kopi.swap.Void")
+	proto.RegisterType((*MsgUpdateBurnThreshold)(nil), "kopi.swap.MsgUpdateBurnThreshold")
+	proto.RegisterType((*MsgUpdateMintThreshold)(nil), "kopi.swap.MsgUpdateMintThreshold")
 	proto.RegisterType((*MsgUpdateStakingShare)(nil), "kopi.swap.MsgUpdateStakingShare")
 }
 
 func init() { proto.RegisterFile("kopi/swap/tx.proto", fileDescriptor_a6f8a6c8c2c7a228) }
 
 var fileDescriptor_a6f8a6c8c2c7a228 = []byte{
-	// 328 bytes of a gzipped FileDescriptorProto
+	// 430 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xca, 0xce, 0x2f, 0xc8,
 	0xd4, 0x2f, 0x2e, 0x4f, 0x2c, 0xd0, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2,
 	0x04, 0x89, 0xe9, 0x81, 0xc4, 0xa4, 0x04, 0x13, 0x73, 0x33, 0xf3, 0xf2, 0xf5, 0xc1, 0x24, 0x44,
 	0x56, 0x4a, 0x3c, 0x39, 0xbf, 0x38, 0x37, 0xbf, 0x58, 0x3f, 0xb7, 0x38, 0x5d, 0xbf, 0xcc, 0x10,
 	0x44, 0x41, 0x25, 0x24, 0x21, 0x12, 0xf1, 0x60, 0x9e, 0x3e, 0x84, 0x03, 0x95, 0x12, 0x49, 0xcf,
 	0x4f, 0xcf, 0x87, 0x88, 0x83, 0x58, 0x50, 0x51, 0x31, 0x84, 0xdd, 0x05, 0x89, 0x45, 0x89, 0xb9,
-	0x50, 0xd5, 0x4a, 0x6c, 0x5c, 0x2c, 0x61, 0xf9, 0x99, 0x29, 0x4a, 0xab, 0x18, 0xb9, 0x44, 0x7d,
-	0x8b, 0xd3, 0x43, 0x0b, 0x52, 0x12, 0x4b, 0x52, 0x83, 0x4b, 0x12, 0xb3, 0x33, 0xf3, 0xd2, 0x83,
-	0x33, 0x12, 0x8b, 0x52, 0x85, 0xcc, 0xb8, 0x38, 0x13, 0x4b, 0x4b, 0x32, 0xf2, 0x8b, 0x32, 0x4b,
-	0x2a, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38, 0x9d, 0x24, 0x2e, 0x6d, 0xd1, 0x15, 0x81, 0x5a, 0xea,
-	0x98, 0x92, 0x52, 0x94, 0x5a, 0x5c, 0x1c, 0x5c, 0x52, 0x94, 0x99, 0x97, 0x1e, 0x84, 0x50, 0x2a,
-	0xa4, 0xcc, 0xc5, 0x5b, 0x0c, 0x31, 0x27, 0xbe, 0x18, 0x64, 0x90, 0x04, 0x13, 0x48, 0x6f, 0x10,
-	0x4f, 0x31, 0x92, 0xe1, 0x56, 0x26, 0x4d, 0xcf, 0x37, 0x68, 0x21, 0x34, 0x75, 0x3d, 0xdf, 0xa0,
-	0xa5, 0x08, 0x76, 0x69, 0x05, 0xc4, 0xad, 0x58, 0x9d, 0x64, 0x14, 0xca, 0xc5, 0xec, 0x5b, 0x9c,
-	0x2e, 0xe4, 0xce, 0x25, 0x84, 0xc5, 0xbd, 0x0a, 0x7a, 0xf0, 0x20, 0xd5, 0xc3, 0xaa, 0x5d, 0x8a,
-	0x1f, 0x49, 0x05, 0xc8, 0xf3, 0x52, 0xac, 0x0d, 0xcf, 0x37, 0x68, 0x31, 0x3a, 0x39, 0x9e, 0x78,
-	0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c,
-	0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x7a, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92,
-	0x5e, 0x72, 0x7e, 0xae, 0x3e, 0x48, 0xaf, 0x6e, 0x6e, 0x7e, 0x5e, 0x6a, 0xa5, 0x3e, 0xb2, 0x4b,
-	0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xa1, 0x6a, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff,
-	0xcf, 0x5d, 0x93, 0xc8, 0xeb, 0x01, 0x00, 0x00,
+	0x50, 0xd5, 0x4a, 0x6c, 0x5c, 0x2c, 0x61, 0xf9, 0x99, 0x29, 0x4a, 0xeb, 0x18, 0xb9, 0xc4, 0x7c,
+	0x8b, 0xd3, 0x43, 0x0b, 0x52, 0x12, 0x4b, 0x52, 0x9d, 0x4a, 0x8b, 0xf2, 0x42, 0x32, 0x8a, 0x52,
+	0x8b, 0x33, 0xf2, 0x73, 0x52, 0x84, 0xcc, 0xb8, 0x38, 0x13, 0x4b, 0x4b, 0x32, 0xf2, 0x8b, 0x32,
+	0x4b, 0x2a, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38, 0x9d, 0x24, 0x2e, 0x6d, 0xd1, 0x15, 0x81, 0xda,
+	0xea, 0x98, 0x92, 0x52, 0x94, 0x5a, 0x5c, 0x1c, 0x5c, 0x52, 0x94, 0x99, 0x97, 0x1e, 0x84, 0x50,
+	0x2a, 0xa4, 0xca, 0xc5, 0x97, 0x54, 0x5a, 0x94, 0x17, 0x5f, 0x02, 0x33, 0x49, 0x82, 0x09, 0xa4,
+	0x39, 0x88, 0x37, 0x09, 0xd9, 0x78, 0x2b, 0xd3, 0xa6, 0xe7, 0x1b, 0xb4, 0x10, 0xda, 0xba, 0x9e,
+	0x6f, 0xd0, 0x52, 0x02, 0x3b, 0xb6, 0x02, 0xe2, 0x5c, 0xec, 0xae, 0x42, 0x75, 0xb0, 0x6f, 0x66,
+	0x5e, 0x09, 0x55, 0x1c, 0x9c, 0x9b, 0x99, 0x57, 0x82, 0xe9, 0xe0, 0x5c, 0x64, 0xe3, 0x89, 0x77,
+	0x30, 0x8a, 0xab, 0x94, 0x56, 0x31, 0x72, 0x89, 0xc2, 0xa5, 0x82, 0x4b, 0x12, 0xb3, 0x33, 0xf3,
+	0xd2, 0x83, 0x33, 0x12, 0x8b, 0x52, 0xc9, 0x76, 0xaf, 0x32, 0x17, 0x6f, 0x31, 0xc4, 0x9c, 0xf8,
+	0x62, 0x90, 0x41, 0x50, 0xe7, 0xf2, 0x14, 0x23, 0x19, 0x6e, 0x65, 0x82, 0xe9, 0x5a, 0x45, 0xac,
+	0xae, 0x45, 0x76, 0x92, 0xd1, 0x6b, 0x46, 0x2e, 0x66, 0xdf, 0xe2, 0x74, 0x21, 0x4f, 0x2e, 0x61,
+	0x6c, 0x49, 0x42, 0x51, 0x0f, 0x9e, 0x6c, 0xf5, 0xb0, 0xc7, 0x8f, 0x14, 0x3f, 0x92, 0x12, 0x50,
+	0x0a, 0x43, 0x18, 0x85, 0x1a, 0x59, 0x58, 0x8d, 0x42, 0x51, 0x82, 0x69, 0x94, 0x3b, 0x97, 0x10,
+	0x96, 0x60, 0x54, 0xc0, 0x66, 0x12, 0xb2, 0x0a, 0x0c, 0x83, 0xa4, 0x58, 0x1b, 0x9e, 0x6f, 0xd0,
+	0x62, 0x74, 0x72, 0x3c, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18,
+	0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xf5, 0xf4,
+	0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0x90, 0x5e, 0xdd, 0xdc, 0xfc, 0xbc,
+	0xd4, 0x4a, 0x7d, 0xe4, 0x00, 0x2c, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0x67, 0x27, 0x63,
+	0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe2, 0x00, 0x39, 0xc1, 0xe4, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -164,6 +275,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	UpdateBurnThreshold(ctx context.Context, in *MsgUpdateBurnThreshold, opts ...grpc.CallOption) (*Void, error)
+	UpdateMintThreshold(ctx context.Context, in *MsgUpdateMintThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateStakingShare(ctx context.Context, in *MsgUpdateStakingShare, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -173,6 +286,24 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
+}
+
+func (c *msgClient) UpdateBurnThreshold(ctx context.Context, in *MsgUpdateBurnThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.swap.Msg/UpdateBurnThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMintThreshold(ctx context.Context, in *MsgUpdateMintThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.swap.Msg/UpdateMintThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgClient) UpdateStakingShare(ctx context.Context, in *MsgUpdateStakingShare, opts ...grpc.CallOption) (*Void, error) {
@@ -186,6 +317,8 @@ func (c *msgClient) UpdateStakingShare(ctx context.Context, in *MsgUpdateStaking
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	UpdateBurnThreshold(context.Context, *MsgUpdateBurnThreshold) (*Void, error)
+	UpdateMintThreshold(context.Context, *MsgUpdateMintThreshold) (*Void, error)
 	UpdateStakingShare(context.Context, *MsgUpdateStakingShare) (*Void, error)
 }
 
@@ -193,12 +326,54 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) UpdateBurnThreshold(ctx context.Context, req *MsgUpdateBurnThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBurnThreshold not implemented")
+}
+func (*UnimplementedMsgServer) UpdateMintThreshold(ctx context.Context, req *MsgUpdateMintThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMintThreshold not implemented")
+}
 func (*UnimplementedMsgServer) UpdateStakingShare(ctx context.Context, req *MsgUpdateStakingShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStakingShare not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_UpdateBurnThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBurnThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateBurnThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.swap.Msg/UpdateBurnThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateBurnThreshold(ctx, req.(*MsgUpdateBurnThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMintThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMintThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMintThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.swap.Msg/UpdateMintThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMintThreshold(ctx, req.(*MsgUpdateMintThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_UpdateStakingShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -223,6 +398,14 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kopi.swap.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UpdateBurnThreshold",
+			Handler:    _Msg_UpdateBurnThreshold_Handler,
+		},
+		{
+			MethodName: "UpdateMintThreshold",
+			Handler:    _Msg_UpdateMintThreshold_Handler,
+		},
 		{
 			MethodName: "UpdateStakingShare",
 			Handler:    _Msg_UpdateStakingShare_Handler,
@@ -252,6 +435,80 @@ func (m *Void) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateBurnThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateBurnThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateBurnThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BurnThreshold) > 0 {
+		i -= len(m.BurnThreshold)
+		copy(dAtA[i:], m.BurnThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BurnThreshold)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMintThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMintThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMintThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MintThreshold) > 0 {
+		i -= len(m.MintThreshold)
+		copy(dAtA[i:], m.MintThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MintThreshold)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -312,6 +569,40 @@ func (m *Void) Size() (n int) {
 	return n
 }
 
+func (m *MsgUpdateBurnThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BurnThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateMintThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MintThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgUpdateStakingShare) Size() (n int) {
 	if m == nil {
 		return 0
@@ -364,6 +655,234 @@ func (m *Void) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Void: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateBurnThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateBurnThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateBurnThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BurnThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BurnThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMintThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMintThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMintThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MintThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MintThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

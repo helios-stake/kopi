@@ -1,10 +1,11 @@
 package measurement
 
 import (
-	"cosmossdk.io/log"
 	"fmt"
 	"sort"
 	"time"
+
+	"cosmossdk.io/log"
 )
 
 type Measurement struct {

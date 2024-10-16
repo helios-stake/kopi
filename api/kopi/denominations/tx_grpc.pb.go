@@ -19,44 +19,58 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_AddDEXDenom_FullMethodName                     = "/kopi.denominations.Msg/AddDEXDenom"
-	Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName  = "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity"
-	Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName  = "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize"
-	Msg_AddKCoin_FullMethodName                        = "/kopi.denominations.Msg/AddKCoin"
-	Msg_UpdateKCoinSupply_FullMethodName               = "/kopi.denominations.Msg/UpdateKCoinSupply"
-	Msg_UpdateKCoinMintAmount_FullMethodName           = "/kopi.denominations.Msg/UpdateKCoinMintAmount"
-	Msg_UpdateKCoinBurnAmount_FullMethodName           = "/kopi.denominations.Msg/UpdateKCoinBurnAmount"
-	Msg_AddKCoinReferences_FullMethodName              = "/kopi.denominations.Msg/AddKCoinReferences"
-	Msg_RemoveKCoinReferences_FullMethodName           = "/kopi.denominations.Msg/RemoveKCoinReferences"
-	Msg_AddCollateralDenom_FullMethodName              = "/kopi.denominations.Msg/AddCollateralDenom"
-	Msg_UpdateCollateralDenomLTV_FullMethodName        = "/kopi.denominations.Msg/UpdateCollateralDenomLTV"
-	Msg_UpdateCollateralDenomMaxDeposit_FullMethodName = "/kopi.denominations.Msg/UpdateCollateralDenomMaxDeposit"
-	Msg_AddCAsset_FullMethodName                       = "/kopi.denominations.Msg/AddCAsset"
-	Msg_UpdateCAssetDexFeeShare_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetDexFeeShare"
-	Msg_UpdateCAssetBorrowLimit_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetBorrowLimit"
-	Msg_UpdateCAssetMinimumLoanSize_FullMethodName     = "/kopi.denominations.Msg/UpdateCAssetMinimumLoanSize"
+	Msg_DexAddDenom_FullMethodName                              = "/kopi.denominations.Msg/DexAddDenom"
+	Msg_DexUpdateMinimumLiquidity_FullMethodName                = "/kopi.denominations.Msg/DexUpdateMinimumLiquidity"
+	Msg_DexUpdateMinimumOrderSize_FullMethodName                = "/kopi.denominations.Msg/DexUpdateMinimumOrderSize"
+	Msg_KCoinAddDenom_FullMethodName                            = "/kopi.denominations.Msg/KCoinAddDenom"
+	Msg_KCoinUpdateSupplyLimit_FullMethodName                   = "/kopi.denominations.Msg/KCoinUpdateSupplyLimit"
+	Msg_KCoinUpdateMintAmount_FullMethodName                    = "/kopi.denominations.Msg/KCoinUpdateMintAmount"
+	Msg_KCoinUpdateBurnAmount_FullMethodName                    = "/kopi.denominations.Msg/KCoinUpdateBurnAmount"
+	Msg_KCoinAddReferences_FullMethodName                       = "/kopi.denominations.Msg/KCoinAddReferences"
+	Msg_KCoinRemoveReferences_FullMethodName                    = "/kopi.denominations.Msg/KCoinRemoveReferences"
+	Msg_CollateralAddDenom_FullMethodName                       = "/kopi.denominations.Msg/CollateralAddDenom"
+	Msg_CollateralUpdateLTV_FullMethodName                      = "/kopi.denominations.Msg/CollateralUpdateLTV"
+	Msg_CollateralUpdateDepositLimit_FullMethodName             = "/kopi.denominations.Msg/CollateralUpdateDepositLimit"
+	Msg_CAssetAddDenom_FullMethodName                           = "/kopi.denominations.Msg/CAssetAddDenom"
+	Msg_CAssetUpdateDexFeeShare_FullMethodName                  = "/kopi.denominations.Msg/CAssetUpdateDexFeeShare"
+	Msg_CAssetUpdateBorrowLimit_FullMethodName                  = "/kopi.denominations.Msg/CAssetUpdateBorrowLimit"
+	Msg_CAssetUpdateMinimumLoanSize_FullMethodName              = "/kopi.denominations.Msg/CAssetUpdateMinimumLoanSize"
+	Msg_ArbitrageAddDenom_FullMethodName                        = "/kopi.denominations.Msg/ArbitrageAddDenom"
+	Msg_ArbitrageUpdateBuyThreshold_FullMethodName              = "/kopi.denominations.Msg/ArbitrageUpdateBuyThreshold"
+	Msg_ArbitrageUpdateSellThreshold_FullMethodName             = "/kopi.denominations.Msg/ArbitrageUpdateSellThreshold"
+	Msg_ArbitrageUpdateBuyAmount_FullMethodName                 = "/kopi.denominations.Msg/ArbitrageUpdateBuyAmount"
+	Msg_ArbitrageUpdateSellAmount_FullMethodName                = "/kopi.denominations.Msg/ArbitrageUpdateSellAmount"
+	Msg_ArbitrageUpdateRedemptionFee_FullMethodName             = "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFee"
+	Msg_ArbitrageUpdateRedemptionFeeReserveShare_FullMethodName = "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFeeReserveShare"
 )
 
 // MsgClient is the client API for Msg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinBurnAmount(ctx context.Context, in *MsgUpdateKCoinBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddKCoinReferences(ctx context.Context, in *MsgAddKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	RemoveKCoinReferences(ctx context.Context, in *MsgRemoveKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddCollateralDenom(ctx context.Context, in *MsgAddCollateralDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomLTV(ctx context.Context, in *MsgUpdateCollateralDenomLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomMaxDeposit(ctx context.Context, in *MsgUpdateCollateralDenomMaxDeposit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateBurnAmount(ctx context.Context, in *MsgKCoinUpdateBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinAddReferences(ctx context.Context, in *MsgKCoinAddReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralAddDenom(ctx context.Context, in *MsgCollateralAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateBorrowLimit(ctx context.Context, in *MsgCAssetUpdateBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateMinimumLoanSize(ctx context.Context, in *MsgCAssetUpdateMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageAddDenom(ctx context.Context, in *MsgAddArbitrageDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyThreshold(ctx context.Context, in *MsgArbitrageUpdateBuyThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellThreshold(ctx context.Context, in *MsgArbitrageUpdateSellThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyAmount(ctx context.Context, in *MsgArbitrageUpdateBuyAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellAmount(ctx context.Context, in *MsgArbitrageUpdateSellAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFee(ctx context.Context, in *MsgArbitrageUpdateRedemptionFee, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, in *MsgArbitrageUpdateRedemptionFeeReserveShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
 type msgClient struct {
@@ -67,144 +81,207 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_AddDEXDenom_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_DexAddDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_DexUpdateMinimumLiquidity_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_DexUpdateMinimumOrderSize_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_AddKCoin_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinAddDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateKCoinSupply_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinUpdateSupplyLimit_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateKCoinMintAmount_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinUpdateMintAmount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateKCoinBurnAmount(ctx context.Context, in *MsgUpdateKCoinBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinUpdateBurnAmount(ctx context.Context, in *MsgKCoinUpdateBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateKCoinBurnAmount_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinUpdateBurnAmount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddKCoinReferences(ctx context.Context, in *MsgAddKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinAddReferences(ctx context.Context, in *MsgKCoinAddReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_AddKCoinReferences_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinAddReferences_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) RemoveKCoinReferences(ctx context.Context, in *MsgRemoveKCoinReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_RemoveKCoinReferences_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_KCoinRemoveReferences_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddCollateralDenom(ctx context.Context, in *MsgAddCollateralDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralAddDenom(ctx context.Context, in *MsgCollateralAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_AddCollateralDenom_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CollateralAddDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCollateralDenomLTV(ctx context.Context, in *MsgUpdateCollateralDenomLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateCollateralDenomLTV_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CollateralUpdateLTV_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCollateralDenomMaxDeposit(ctx context.Context, in *MsgUpdateCollateralDenomMaxDeposit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateCollateralDenomMaxDeposit_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CollateralUpdateDepositLimit_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_AddCAsset_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CAssetAddDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateCAssetDexFeeShare_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CAssetUpdateDexFeeShare_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateBorrowLimit(ctx context.Context, in *MsgCAssetUpdateBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateCAssetBorrowLimit_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CAssetUpdateBorrowLimit_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) CAssetUpdateMinimumLoanSize(ctx context.Context, in *MsgCAssetUpdateMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateCAssetMinimumLoanSize_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_CAssetUpdateMinimumLoanSize_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageAddDenom(ctx context.Context, in *MsgAddArbitrageDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageAddDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateBuyThreshold(ctx context.Context, in *MsgArbitrageUpdateBuyThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateBuyThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateSellThreshold(ctx context.Context, in *MsgArbitrageUpdateSellThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateSellThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateBuyAmount(ctx context.Context, in *MsgArbitrageUpdateBuyAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateBuyAmount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateSellAmount(ctx context.Context, in *MsgArbitrageUpdateSellAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateSellAmount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateRedemptionFee(ctx context.Context, in *MsgArbitrageUpdateRedemptionFee, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateRedemptionFee_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, in *MsgArbitrageUpdateRedemptionFeeReserveShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_ArbitrageUpdateRedemptionFeeReserveShare_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -215,22 +292,29 @@ func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpda
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
-	AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error)
-	AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinSupply(context.Context, *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinMintAmount(context.Context, *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error)
-	UpdateKCoinBurnAmount(context.Context, *MsgUpdateKCoinBurnAmount) (*MsgUpdateParamsResponse, error)
-	AddKCoinReferences(context.Context, *MsgAddKCoinReferences) (*MsgUpdateParamsResponse, error)
-	RemoveKCoinReferences(context.Context, *MsgRemoveKCoinReferences) (*MsgUpdateParamsResponse, error)
-	AddCollateralDenom(context.Context, *MsgAddCollateralDenom) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomLTV(context.Context, *MsgUpdateCollateralDenomLTV) (*MsgUpdateParamsResponse, error)
-	UpdateCollateralDenomMaxDeposit(context.Context, *MsgUpdateCollateralDenomMaxDeposit) (*MsgUpdateParamsResponse, error)
-	AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error)
-	UpdateCAssetMinimumLoanSize(context.Context, *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error)
+	DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error)
+	KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateSupplyLimit(context.Context, *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateMintAmount(context.Context, *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error)
+	KCoinUpdateBurnAmount(context.Context, *MsgKCoinUpdateBurnAmount) (*MsgUpdateParamsResponse, error)
+	KCoinAddReferences(context.Context, *MsgKCoinAddReferences) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveReferences(context.Context, *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error)
+	CollateralAddDenom(context.Context, *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateLTV(context.Context, *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error)
+	CollateralUpdateDepositLimit(context.Context, *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error)
+	CAssetAddDenom(context.Context, *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateDexFeeShare(context.Context, *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateBorrowLimit(context.Context, *MsgCAssetUpdateBorrowLimit) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateMinimumLoanSize(context.Context, *MsgCAssetUpdateMinimumLoanSize) (*MsgUpdateParamsResponse, error)
+	ArbitrageAddDenom(context.Context, *MsgAddArbitrageDenom) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyThreshold(context.Context, *MsgArbitrageUpdateBuyThreshold) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellThreshold(context.Context, *MsgArbitrageUpdateSellThreshold) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateBuyAmount(context.Context, *MsgArbitrageUpdateBuyAmount) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateSellAmount(context.Context, *MsgArbitrageUpdateSellAmount) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFee(context.Context, *MsgArbitrageUpdateRedemptionFee) (*MsgUpdateParamsResponse, error)
+	ArbitrageUpdateRedemptionFeeReserveShare(context.Context, *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -238,53 +322,74 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddDEXDenom not implemented")
+func (UnimplementedMsgServer) DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexAddDenom not implemented")
 }
-func (UnimplementedMsgServer) UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumLiquidity not implemented")
+func (UnimplementedMsgServer) DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumLiquidity not implemented")
 }
-func (UnimplementedMsgServer) UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumOrderSize not implemented")
+func (UnimplementedMsgServer) DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumOrderSize not implemented")
 }
-func (UnimplementedMsgServer) AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKCoin not implemented")
+func (UnimplementedMsgServer) KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddDenom not implemented")
 }
-func (UnimplementedMsgServer) UpdateKCoinSupply(context.Context, *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinSupply not implemented")
+func (UnimplementedMsgServer) KCoinUpdateSupplyLimit(context.Context, *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateSupplyLimit not implemented")
 }
-func (UnimplementedMsgServer) UpdateKCoinMintAmount(context.Context, *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinMintAmount not implemented")
+func (UnimplementedMsgServer) KCoinUpdateMintAmount(context.Context, *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateMintAmount not implemented")
 }
-func (UnimplementedMsgServer) UpdateKCoinBurnAmount(context.Context, *MsgUpdateKCoinBurnAmount) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinBurnAmount not implemented")
+func (UnimplementedMsgServer) KCoinUpdateBurnAmount(context.Context, *MsgKCoinUpdateBurnAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinUpdateBurnAmount not implemented")
 }
-func (UnimplementedMsgServer) AddKCoinReferences(context.Context, *MsgAddKCoinReferences) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKCoinReferences not implemented")
+func (UnimplementedMsgServer) KCoinAddReferences(context.Context, *MsgKCoinAddReferences) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddReferences not implemented")
 }
-func (UnimplementedMsgServer) RemoveKCoinReferences(context.Context, *MsgRemoveKCoinReferences) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveKCoinReferences not implemented")
+func (UnimplementedMsgServer) KCoinRemoveReferences(context.Context, *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinRemoveReferences not implemented")
 }
-func (UnimplementedMsgServer) AddCollateralDenom(context.Context, *MsgAddCollateralDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddCollateralDenom not implemented")
+func (UnimplementedMsgServer) CollateralAddDenom(context.Context, *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralAddDenom not implemented")
 }
-func (UnimplementedMsgServer) UpdateCollateralDenomLTV(context.Context, *MsgUpdateCollateralDenomLTV) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollateralDenomLTV not implemented")
+func (UnimplementedMsgServer) CollateralUpdateLTV(context.Context, *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralUpdateLTV not implemented")
 }
-func (UnimplementedMsgServer) UpdateCollateralDenomMaxDeposit(context.Context, *MsgUpdateCollateralDenomMaxDeposit) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollateralDenomMaxDeposit not implemented")
+func (UnimplementedMsgServer) CollateralUpdateDepositLimit(context.Context, *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollateralUpdateDepositLimit not implemented")
 }
-func (UnimplementedMsgServer) AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddCAsset not implemented")
+func (UnimplementedMsgServer) CAssetAddDenom(context.Context, *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetAddDenom not implemented")
 }
-func (UnimplementedMsgServer) UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetDexFeeShare not implemented")
+func (UnimplementedMsgServer) CAssetUpdateDexFeeShare(context.Context, *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateDexFeeShare not implemented")
 }
-func (UnimplementedMsgServer) UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetBorrowLimit not implemented")
+func (UnimplementedMsgServer) CAssetUpdateBorrowLimit(context.Context, *MsgCAssetUpdateBorrowLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateBorrowLimit not implemented")
 }
-func (UnimplementedMsgServer) UpdateCAssetMinimumLoanSize(context.Context, *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetMinimumLoanSize not implemented")
+func (UnimplementedMsgServer) CAssetUpdateMinimumLoanSize(context.Context, *MsgCAssetUpdateMinimumLoanSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateMinimumLoanSize not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageAddDenom(context.Context, *MsgAddArbitrageDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageAddDenom not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateBuyThreshold(context.Context, *MsgArbitrageUpdateBuyThreshold) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateBuyThreshold not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateSellThreshold(context.Context, *MsgArbitrageUpdateSellThreshold) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateSellThreshold not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateBuyAmount(context.Context, *MsgArbitrageUpdateBuyAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateBuyAmount not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateSellAmount(context.Context, *MsgArbitrageUpdateSellAmount) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateSellAmount not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateRedemptionFee(context.Context, *MsgArbitrageUpdateRedemptionFee) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateRedemptionFee not implemented")
+}
+func (UnimplementedMsgServer) ArbitrageUpdateRedemptionFeeReserveShare(context.Context, *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateRedemptionFeeReserveShare not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -299,290 +404,416 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
 }
 
-func _Msg_AddDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddDEXDenom)
+func _Msg_DexAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddDEXDenom(ctx, in)
+		return srv.(MsgServer).DexAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddDEXDenom_FullMethodName,
+		FullMethod: Msg_DexAddDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddDEXDenom(ctx, req.(*MsgAddDEXDenom))
+		return srv.(MsgServer).DexAddDenom(ctx, req.(*MsgDexAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenomMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenomMinimumLiquidity)
+func _Msg_DexUpdateMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumLiquidity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, in)
+		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName,
+		FullMethod: Msg_DexUpdateMinimumLiquidity_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, req.(*MsgUpdateDEXDenomMinimumLiquidity))
+		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, req.(*MsgDexUpdateMinimumLiquidity))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenomMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenomMinimumOrderSize)
+func _Msg_DexUpdateMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumOrderSize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, in)
+		return srv.(MsgServer).DexUpdateMinimumOrderSize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName,
+		FullMethod: Msg_DexUpdateMinimumOrderSize_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, req.(*MsgUpdateDEXDenomMinimumOrderSize))
+		return srv.(MsgServer).DexUpdateMinimumOrderSize(ctx, req.(*MsgDexUpdateMinimumOrderSize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddKCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddKCoin)
+func _Msg_KCoinAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddKCoin(ctx, in)
+		return srv.(MsgServer).KCoinAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddKCoin_FullMethodName,
+		FullMethod: Msg_KCoinAddDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddKCoin(ctx, req.(*MsgAddKCoin))
+		return srv.(MsgServer).KCoinAddDenom(ctx, req.(*MsgKCoinAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinSupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinSupply)
+func _Msg_KCoinUpdateSupplyLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateSupplyLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinSupply(ctx, in)
+		return srv.(MsgServer).KCoinUpdateSupplyLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateKCoinSupply_FullMethodName,
+		FullMethod: Msg_KCoinUpdateSupplyLimit_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinSupply(ctx, req.(*MsgUpdateKCoinSupply))
+		return srv.(MsgServer).KCoinUpdateSupplyLimit(ctx, req.(*MsgKCoinUpdateSupplyLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinMintAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinMintAmount)
+func _Msg_KCoinUpdateMintAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateMintAmount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinMintAmount(ctx, in)
+		return srv.(MsgServer).KCoinUpdateMintAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateKCoinMintAmount_FullMethodName,
+		FullMethod: Msg_KCoinUpdateMintAmount_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinMintAmount(ctx, req.(*MsgUpdateKCoinMintAmount))
+		return srv.(MsgServer).KCoinUpdateMintAmount(ctx, req.(*MsgKCoinUpdateMintAmount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateKCoinBurnAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateKCoinBurnAmount)
+func _Msg_KCoinUpdateBurnAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinUpdateBurnAmount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateKCoinBurnAmount(ctx, in)
+		return srv.(MsgServer).KCoinUpdateBurnAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateKCoinBurnAmount_FullMethodName,
+		FullMethod: Msg_KCoinUpdateBurnAmount_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateKCoinBurnAmount(ctx, req.(*MsgUpdateKCoinBurnAmount))
+		return srv.(MsgServer).KCoinUpdateBurnAmount(ctx, req.(*MsgKCoinUpdateBurnAmount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddKCoinReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddKCoinReferences)
+func _Msg_KCoinAddReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinAddReferences)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddKCoinReferences(ctx, in)
+		return srv.(MsgServer).KCoinAddReferences(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddKCoinReferences_FullMethodName,
+		FullMethod: Msg_KCoinAddReferences_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddKCoinReferences(ctx, req.(*MsgAddKCoinReferences))
+		return srv.(MsgServer).KCoinAddReferences(ctx, req.(*MsgKCoinAddReferences))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RemoveKCoinReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveKCoinReferences)
+func _Msg_KCoinRemoveReferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinRemoveReferences)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RemoveKCoinReferences(ctx, in)
+		return srv.(MsgServer).KCoinRemoveReferences(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_RemoveKCoinReferences_FullMethodName,
+		FullMethod: Msg_KCoinRemoveReferences_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveKCoinReferences(ctx, req.(*MsgRemoveKCoinReferences))
+		return srv.(MsgServer).KCoinRemoveReferences(ctx, req.(*MsgKCoinRemoveReferences))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddCollateralDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddCollateralDenom)
+func _Msg_CollateralAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddCollateralDenom(ctx, in)
+		return srv.(MsgServer).CollateralAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddCollateralDenom_FullMethodName,
+		FullMethod: Msg_CollateralAddDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddCollateralDenom(ctx, req.(*MsgAddCollateralDenom))
+		return srv.(MsgServer).CollateralAddDenom(ctx, req.(*MsgCollateralAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCollateralDenomLTV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCollateralDenomLTV)
+func _Msg_CollateralUpdateLTV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralUpdateLTV)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCollateralDenomLTV(ctx, in)
+		return srv.(MsgServer).CollateralUpdateLTV(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateCollateralDenomLTV_FullMethodName,
+		FullMethod: Msg_CollateralUpdateLTV_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCollateralDenomLTV(ctx, req.(*MsgUpdateCollateralDenomLTV))
+		return srv.(MsgServer).CollateralUpdateLTV(ctx, req.(*MsgCollateralUpdateLTV))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCollateralDenomMaxDeposit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCollateralDenomMaxDeposit)
+func _Msg_CollateralUpdateDepositLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCollateralUpdateDepositLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCollateralDenomMaxDeposit(ctx, in)
+		return srv.(MsgServer).CollateralUpdateDepositLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateCollateralDenomMaxDeposit_FullMethodName,
+		FullMethod: Msg_CollateralUpdateDepositLimit_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCollateralDenomMaxDeposit(ctx, req.(*MsgUpdateCollateralDenomMaxDeposit))
+		return srv.(MsgServer).CollateralUpdateDepositLimit(ctx, req.(*MsgCollateralUpdateDepositLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddCAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddCAsset)
+func _Msg_CAssetAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetAddDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddCAsset(ctx, in)
+		return srv.(MsgServer).CAssetAddDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddCAsset_FullMethodName,
+		FullMethod: Msg_CAssetAddDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddCAsset(ctx, req.(*MsgAddCAsset))
+		return srv.(MsgServer).CAssetAddDenom(ctx, req.(*MsgCAssetAddDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetDexFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetDexFeeShare)
+func _Msg_CAssetUpdateDexFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateDexFeeShare)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetDexFeeShare(ctx, in)
+		return srv.(MsgServer).CAssetUpdateDexFeeShare(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateCAssetDexFeeShare_FullMethodName,
+		FullMethod: Msg_CAssetUpdateDexFeeShare_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetDexFeeShare(ctx, req.(*MsgUpdateCAssetDexFeeShare))
+		return srv.(MsgServer).CAssetUpdateDexFeeShare(ctx, req.(*MsgCAssetUpdateDexFeeShare))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetBorrowLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetBorrowLimit)
+func _Msg_CAssetUpdateBorrowLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateBorrowLimit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, in)
+		return srv.(MsgServer).CAssetUpdateBorrowLimit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateCAssetBorrowLimit_FullMethodName,
+		FullMethod: Msg_CAssetUpdateBorrowLimit_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, req.(*MsgUpdateCAssetBorrowLimit))
+		return srv.(MsgServer).CAssetUpdateBorrowLimit(ctx, req.(*MsgCAssetUpdateBorrowLimit))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateCAssetMinimumLoanSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateCAssetMinimumLoanSize)
+func _Msg_CAssetUpdateMinimumLoanSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateMinimumLoanSize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, in)
+		return srv.(MsgServer).CAssetUpdateMinimumLoanSize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateCAssetMinimumLoanSize_FullMethodName,
+		FullMethod: Msg_CAssetUpdateMinimumLoanSize_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, req.(*MsgUpdateCAssetMinimumLoanSize))
+		return srv.(MsgServer).CAssetUpdateMinimumLoanSize(ctx, req.(*MsgCAssetUpdateMinimumLoanSize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageAddDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddArbitrageDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageAddDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageAddDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageAddDenom(ctx, req.(*MsgAddArbitrageDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateBuyThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateBuyThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateBuyThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateBuyThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateBuyThreshold(ctx, req.(*MsgArbitrageUpdateBuyThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateSellThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateSellThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateSellThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateSellThreshold(ctx, req.(*MsgArbitrageUpdateSellThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateBuyAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateBuyAmount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateBuyAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateBuyAmount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateBuyAmount(ctx, req.(*MsgArbitrageUpdateBuyAmount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateSellAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateSellAmount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateSellAmount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateSellAmount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateSellAmount(ctx, req.(*MsgArbitrageUpdateSellAmount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateRedemptionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateRedemptionFee)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateRedemptionFee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFee(ctx, req.(*MsgArbitrageUpdateRedemptionFee))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgArbitrageUpdateRedemptionFeeReserveShare)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFeeReserveShare(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ArbitrageUpdateRedemptionFeeReserveShare_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ArbitrageUpdateRedemptionFeeReserveShare(ctx, req.(*MsgArbitrageUpdateRedemptionFeeReserveShare))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -595,68 +826,96 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddDEXDenom",
-			Handler:    _Msg_AddDEXDenom_Handler,
+			MethodName: "DexAddDenom",
+			Handler:    _Msg_DexAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenomMinimumLiquidity",
-			Handler:    _Msg_UpdateDEXDenomMinimumLiquidity_Handler,
+			MethodName: "DexUpdateMinimumLiquidity",
+			Handler:    _Msg_DexUpdateMinimumLiquidity_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenomMinimumOrderSize",
-			Handler:    _Msg_UpdateDEXDenomMinimumOrderSize_Handler,
+			MethodName: "DexUpdateMinimumOrderSize",
+			Handler:    _Msg_DexUpdateMinimumOrderSize_Handler,
 		},
 		{
-			MethodName: "AddKCoin",
-			Handler:    _Msg_AddKCoin_Handler,
+			MethodName: "KCoinAddDenom",
+			Handler:    _Msg_KCoinAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinSupply",
-			Handler:    _Msg_UpdateKCoinSupply_Handler,
+			MethodName: "KCoinUpdateSupplyLimit",
+			Handler:    _Msg_KCoinUpdateSupplyLimit_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinMintAmount",
-			Handler:    _Msg_UpdateKCoinMintAmount_Handler,
+			MethodName: "KCoinUpdateMintAmount",
+			Handler:    _Msg_KCoinUpdateMintAmount_Handler,
 		},
 		{
-			MethodName: "UpdateKCoinBurnAmount",
-			Handler:    _Msg_UpdateKCoinBurnAmount_Handler,
+			MethodName: "KCoinUpdateBurnAmount",
+			Handler:    _Msg_KCoinUpdateBurnAmount_Handler,
 		},
 		{
-			MethodName: "AddKCoinReferences",
-			Handler:    _Msg_AddKCoinReferences_Handler,
+			MethodName: "KCoinAddReferences",
+			Handler:    _Msg_KCoinAddReferences_Handler,
 		},
 		{
-			MethodName: "RemoveKCoinReferences",
-			Handler:    _Msg_RemoveKCoinReferences_Handler,
+			MethodName: "KCoinRemoveReferences",
+			Handler:    _Msg_KCoinRemoveReferences_Handler,
 		},
 		{
-			MethodName: "AddCollateralDenom",
-			Handler:    _Msg_AddCollateralDenom_Handler,
+			MethodName: "CollateralAddDenom",
+			Handler:    _Msg_CollateralAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateCollateralDenomLTV",
-			Handler:    _Msg_UpdateCollateralDenomLTV_Handler,
+			MethodName: "CollateralUpdateLTV",
+			Handler:    _Msg_CollateralUpdateLTV_Handler,
 		},
 		{
-			MethodName: "UpdateCollateralDenomMaxDeposit",
-			Handler:    _Msg_UpdateCollateralDenomMaxDeposit_Handler,
+			MethodName: "CollateralUpdateDepositLimit",
+			Handler:    _Msg_CollateralUpdateDepositLimit_Handler,
 		},
 		{
-			MethodName: "AddCAsset",
-			Handler:    _Msg_AddCAsset_Handler,
+			MethodName: "CAssetAddDenom",
+			Handler:    _Msg_CAssetAddDenom_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetDexFeeShare",
-			Handler:    _Msg_UpdateCAssetDexFeeShare_Handler,
+			MethodName: "CAssetUpdateDexFeeShare",
+			Handler:    _Msg_CAssetUpdateDexFeeShare_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetBorrowLimit",
-			Handler:    _Msg_UpdateCAssetBorrowLimit_Handler,
+			MethodName: "CAssetUpdateBorrowLimit",
+			Handler:    _Msg_CAssetUpdateBorrowLimit_Handler,
 		},
 		{
-			MethodName: "UpdateCAssetMinimumLoanSize",
-			Handler:    _Msg_UpdateCAssetMinimumLoanSize_Handler,
+			MethodName: "CAssetUpdateMinimumLoanSize",
+			Handler:    _Msg_CAssetUpdateMinimumLoanSize_Handler,
+		},
+		{
+			MethodName: "ArbitrageAddDenom",
+			Handler:    _Msg_ArbitrageAddDenom_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateBuyThreshold",
+			Handler:    _Msg_ArbitrageUpdateBuyThreshold_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateSellThreshold",
+			Handler:    _Msg_ArbitrageUpdateSellThreshold_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateBuyAmount",
+			Handler:    _Msg_ArbitrageUpdateBuyAmount_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateSellAmount",
+			Handler:    _Msg_ArbitrageUpdateSellAmount_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateRedemptionFee",
+			Handler:    _Msg_ArbitrageUpdateRedemptionFee_Handler,
+		},
+		{
+			MethodName: "ArbitrageUpdateRedemptionFeeReserveShare",
+			Handler:    _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

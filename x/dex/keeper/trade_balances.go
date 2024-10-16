@@ -2,25 +2,13 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"fmt"
+	"sort"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"sort"
 )
-
-type TradeBalances struct {
-	senders   TransferAmounts
-	receivers TransferAmounts
-}
-
-func NewTradeBalances() *TradeBalances {
-	return &TradeBalances{
-		senders:   TransferAmounts{transferAmounts: make(map[transferKey]math.Int)},
-		receivers: TransferAmounts{transferAmounts: make(map[transferKey]math.Int)},
-	}
-}
 
 type transferKey struct {
 	address string
@@ -119,7 +107,31 @@ func (t *Transfers) add(newTransfer Transfer) {
 	*t = append(*t, &newTransfer)
 }
 
+type TradeBalances struct {
+	senders   TransferAmounts
+	receivers TransferAmounts
+}
+
+func NewTradeBalances() *TradeBalances {
+	return &TradeBalances{
+		senders:   TransferAmounts{transferAmounts: make(map[transferKey]math.Int)},
+		receivers: TransferAmounts{transferAmounts: make(map[transferKey]math.Int)},
+	}
+}
+
+func (tb *TradeBalances) Merge(other *TradeBalances) {
+	for sender, amount := range other.senders.transferAmounts {
+		tb.senders.add(sender.address, sender.denom, amount)
+	}
+
+	for sender, amount := range other.receivers.transferAmounts {
+		tb.receivers.add(sender.address, sender.denom, amount)
+	}
+}
+
 func (tb *TradeBalances) AddTransfer(from, to, denom string, amount math.Int) {
+	//fmt.Println(fmt.Sprintf("%v%v: %v > %v", amount.String(), denom, from, to))
+
 	if amount.GT(math.ZeroInt()) {
 		tb.senders.add(from, denom, amount)
 		tb.receivers.add(to, denom, amount)
@@ -149,7 +161,7 @@ func (tb *TradeBalances) NetBalance(acc, denom string) math.Int {
 func (tb *TradeBalances) Settle(ctx context.Context, bank types.Sender) error {
 	transfers, err := tb.MergeTransfers()
 	if err != nil {
-		return errors.Wrap(err, "could not merge transfers")
+		return fmt.Errorf("could not merge transfers: %w", err)
 	}
 
 	var accFrom, accTo sdk.AccAddress
@@ -157,16 +169,16 @@ func (tb *TradeBalances) Settle(ctx context.Context, bank types.Sender) error {
 		coins := sdk.NewCoins(sdk.NewCoin(transfer.Denom, transfer.Amount))
 		accFrom, err = sdk.AccAddressFromBech32(transfer.From)
 		if err != nil {
-			return errors.Wrap(err, "invalid from address")
+			return fmt.Errorf("invalid from address: %w", err)
 		}
 
 		accTo, err = sdk.AccAddressFromBech32(transfer.To)
 		if err != nil {
-			return errors.Wrap(err, "invalid to address")
+			return fmt.Errorf("invalid to address: %w", err)
 		}
 
 		if err = bank.SendCoins(ctx, accFrom, accTo, coins); err != nil {
-			return errors.Wrap(err, "could not send coins")
+			return fmt.Errorf("could not send coins from %v: %w", accFrom.String(), err)
 		}
 	}
 

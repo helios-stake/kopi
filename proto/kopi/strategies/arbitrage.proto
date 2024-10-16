@@ -1,0 +1,15 @@
+syntax = "proto3";
+package kopi.strategies;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/strategies/types";
+
+message ArbitrageDenom {
+  string name = 1;
+
+  bytes k_coin_amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

@@ -8,16 +8,27 @@ import (
 )
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAddLiquidity{},
-	)
 	// this line is used by starport scaffolding # 3
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateFeeReimbursement{},
-		&MsgUpdateMaxOrderLife{},
-		&MsgUpdateReserveShare{},
+		&MsgAddLiquidity{},
+		&MsgRemoveLiquidity{},
+		&MsgSell{},
+		&MsgBuy{},
+
+		&MsgRemoveAllLiquidityForDenom{},
+		&MsgAddOrder{},
+		&MsgRemoveOrder{},
+		&MsgRemoveOrders{},
+		&MsgUpdateOrder{},
+
 		&MsgUpdateTradeFee{},
+		&MsgUpdateOrderFee{},
+		&MsgUpdateReserveShare{},
+		&MsgUpdateVirtualLiquidityDecay{},
+		&MsgUpdateMaxOrderLife{},
+		&MsgUpdateTradeAmountDecay{},
+		&MsgUpdateDiscountLevels{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

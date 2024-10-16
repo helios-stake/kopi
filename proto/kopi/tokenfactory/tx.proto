@@ -17,11 +17,99 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateFeeAmount(MsgUpdateFeeAmount) returns (Void);
 
-  rpc CreateDenom(MsgCreateDenom)     returns (Void);
-  rpc MintDenom(MsgMintDenom)         returns (Void);
-  rpc BurnDenom(MsgBurnDenom)         returns (Void);
-  rpc ChangeAdmin(MsgChangeAdmin)     returns (Void);
-  rpc ForceTransfer(MsgForceTransfer) returns (Void);
+  rpc CreateDenom(MsgCreateDenom)          returns (MsgCreateDenomResponse);
+  rpc MintDenom(MsgMintDenom)              returns (Void);
+  rpc BurnDenom(MsgBurnDenom)              returns (Void);
+  rpc ChangeAdmin(MsgChangeAdmin)          returns (Void);
+  rpc UpdateIconHash(MsgUpdateIconHash)    returns (Void);
+  rpc UpdateLiquidityPoolSettings(MsgUpdateLiquidityPoolSettings)    returns (Void);
+  rpc Buyback(MsgBuyback)                  returns (Void);
+
+  rpc CreatePool(MsgCreatePool)     returns (Void);
+  rpc AddLiquidity(MsgAddLiquidity)    returns (Void);
+  rpc UnlockLiquidity(MsgUnlockLiquidity) returns (Void);
+
+  rpc Buy(MsgBuy) returns (MsgTradeResponse);
+  rpc Sell(MsgSell) returns (MsgTradeResponse);
+}
+
+message MsgCreateDenomResponse {
+  string display_name = 1;
+  string full_name = 2;
+}
+
+message MsgTradeResponse {
+  int64 amount_given_gross = 1;
+  int64 amount_given_net = 2;
+  int64 amount_received_gross = 3;
+  int64 amount_received_net = 4;
+  int64 fee = 5;
+  int64 fee_pool = 6;
+  int64 fee_reserve = 7;
+}
+
+message MsgBuy {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1;
+
+  string full_factory_denom_name = 2;
+  string denom_giving = 3;
+  string denom_receiving = 4;
+  string amount = 5;
+  string max_price = 6;
+  bool allow_incomplete = 7;
+}
+
+message MsgSell {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1;
+
+  string full_factory_denom_name = 2;
+  string denom_giving = 3;
+  string denom_receiving = 4;
+  string amount = 5;
+  string max_price = 6;
+  bool allow_incomplete = 7;
+}
+
+message MsgAddLiquidity {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+
+  string factory_denom_amount = 3;
+}
+
+message MsgUnlockLiquidity {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+
+  string factory_denom_amount = 3;
+}
+
+message MsgCreatePool {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+  string k_coin = 3;
+
+  string factory_denom_amount = 4;
+  string k_coin_amount = 5;
+
+  string pool_fee = 6;
+  uint64 unlock_blocks = 7;
+}
+
+message MsgBuyback {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+  string buyback_amount = 3;
 }
 
 message Void {}
@@ -38,14 +126,16 @@ message MsgCreateDenom {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
+  string name = 2;
+  string icon_hash = 3;
+  uint64 exponent = 4;
 }
 
 message MsgMintDenom {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
+  string full_factory_denom_name = 2;
   string amount = 3;
   string target_address = 4;
 }
@@ -54,25 +144,31 @@ message MsgBurnDenom {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
+  string full_factory_denom_name = 2;
   string amount = 3;
-  string target_address = 4;
 }
 
 message MsgChangeAdmin {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
+  string full_factory_denom_name = 2;
   string new_admin = 3;
 }
 
-message MsgForceTransfer {
+message MsgUpdateIconHash {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
-  string amount = 3;
-  string from_address = 4;
-  string target_address = 5;
+  string full_factory_denom_name = 2;
+  string icon_hash = 3;
+}
+
+message MsgUpdateLiquidityPoolSettings {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+  string pool_fee = 3;
+  uint64 unlock_blocks = 4;
 }

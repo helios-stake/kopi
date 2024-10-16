@@ -13,65 +13,73 @@ option go_package = "github.com/kopi-money/kopi/x/denominations/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  rpc AddDEXDenom(MsgAddDEXDenom) returns (MsgUpdateParamsResponse);
-  rpc UpdateDEXDenomMinimumLiquidity(MsgUpdateDEXDenomMinimumLiquidity) returns (MsgUpdateParamsResponse);
-  rpc UpdateDEXDenomMinimumOrderSize(MsgUpdateDEXDenomMinimumOrderSize) returns (MsgUpdateParamsResponse);
+  rpc DexAddDenom(MsgDexAddDenom) returns (MsgUpdateParamsResponse);
+  rpc DexUpdateMinimumLiquidity(MsgDexUpdateMinimumLiquidity) returns (MsgUpdateParamsResponse);
+  rpc DexUpdateMinimumOrderSize(MsgDexUpdateMinimumOrderSize) returns (MsgUpdateParamsResponse);
 
-  rpc AddKCoin(MsgAddKCoin) returns (MsgUpdateParamsResponse);
-  rpc UpdateKCoinSupply(MsgUpdateKCoinSupply) returns (MsgUpdateParamsResponse);
-  rpc UpdateKCoinMintAmount(MsgUpdateKCoinMintAmount) returns (MsgUpdateParamsResponse);
-  rpc UpdateKCoinBurnAmount(MsgUpdateKCoinBurnAmount) returns (MsgUpdateParamsResponse);
+  rpc KCoinAddDenom(MsgKCoinAddDenom) returns (MsgUpdateParamsResponse);
+  rpc KCoinUpdateSupplyLimit(MsgKCoinUpdateSupplyLimit) returns (MsgUpdateParamsResponse);
+  rpc KCoinUpdateMintAmount(MsgKCoinUpdateMintAmount) returns (MsgUpdateParamsResponse);
+  rpc KCoinUpdateBurnAmount(MsgKCoinUpdateBurnAmount) returns (MsgUpdateParamsResponse);
+  rpc KCoinAddReferences(MsgKCoinAddReferences) returns (MsgUpdateParamsResponse);
+  rpc KCoinRemoveReferences(MsgKCoinRemoveReferences) returns (MsgUpdateParamsResponse);
 
-  rpc AddKCoinReferences(MsgAddKCoinReferences) returns (MsgUpdateParamsResponse);
-  rpc RemoveKCoinReferences(MsgRemoveKCoinReferences) returns (MsgUpdateParamsResponse);
+  rpc CollateralAddDenom(MsgCollateralAddDenom) returns (MsgUpdateParamsResponse);
+  rpc CollateralUpdateLTV(MsgCollateralUpdateLTV) returns (MsgUpdateParamsResponse);
+  rpc CollateralUpdateDepositLimit(MsgCollateralUpdateDepositLimit) returns (MsgUpdateParamsResponse);
 
-  rpc AddCollateralDenom(MsgAddCollateralDenom) returns (MsgUpdateParamsResponse);
-  rpc UpdateCollateralDenomLTV(MsgUpdateCollateralDenomLTV) returns (MsgUpdateParamsResponse);
-  rpc UpdateCollateralDenomMaxDeposit(MsgUpdateCollateralDenomMaxDeposit) returns (MsgUpdateParamsResponse);
+  rpc CAssetAddDenom(MsgCAssetAddDenom) returns (MsgUpdateParamsResponse);
+  rpc CAssetUpdateDexFeeShare(MsgCAssetUpdateDexFeeShare) returns (MsgUpdateParamsResponse);
+  rpc CAssetUpdateBorrowLimit(MsgCAssetUpdateBorrowLimit) returns (MsgUpdateParamsResponse);
+  rpc CAssetUpdateMinimumLoanSize(MsgCAssetUpdateMinimumLoanSize) returns (MsgUpdateParamsResponse);
 
-  rpc AddCAsset(MsgAddCAsset) returns (MsgUpdateParamsResponse);
-  rpc UpdateCAssetDexFeeShare(MsgUpdateCAssetDexFeeShare) returns (MsgUpdateParamsResponse);
-  rpc UpdateCAssetBorrowLimit(MsgUpdateCAssetBorrowLimit) returns (MsgUpdateParamsResponse);
-  rpc UpdateCAssetMinimumLoanSize(MsgUpdateCAssetMinimumLoanSize) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageAddDenom(MsgAddArbitrageDenom) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateBuyThreshold(MsgArbitrageUpdateBuyThreshold) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateSellThreshold(MsgArbitrageUpdateSellThreshold) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateBuyAmount(MsgArbitrageUpdateBuyAmount) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateSellAmount(MsgArbitrageUpdateSellAmount) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateRedemptionFee(MsgArbitrageUpdateRedemptionFee) returns (MsgUpdateParamsResponse);
+  rpc ArbitrageUpdateRedemptionFeeReserveShare(MsgArbitrageUpdateRedemptionFeeReserveShare) returns (MsgUpdateParamsResponse);
 }
 
 message MsgUpdateParamsResponse {}
 
-message MsgAddDEXDenom {
+message MsgDexAddDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgAddDEXDenom";
+  option (amino.name) = "kopi/x/denominations/MsgDexAddDenom";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string factor = 3;
   string min_liquidity = 4;
   string min_order_size = 5;
+  uint64 exponent = 6;
 }
 
-message MsgUpdateDEXDenomMinimumLiquidity {
+message MsgDexUpdateMinimumLiquidity {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateDEXDenomMinimumLiquidity";
+  option (amino.name) = "kopi/x/denominations/MsgDexUpdateMinimumLiquidity";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string min_liquidity = 3;
 }
 
-message MsgUpdateDEXDenomMinimumOrderSize {
+message MsgDexUpdateMinimumOrderSize {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateDEXDenomMinimumOrderSize";
+  option (amino.name) = "kopi/x/denominations/MsgDexUpdateMinimumOrderSize";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string min_order_size = 3;
 }
 
-message MsgAddKCoin {
+message MsgKCoinAddDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgAddKCoin";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinAddDenom";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  string denom = 2;
+  string name = 2;
   repeated string references = 3;
   string max_supply = 4;
   string max_mint_amount = 5;
@@ -81,54 +89,54 @@ message MsgAddKCoin {
   string min_order_size = 9;
 }
 
-message MsgUpdateKCoinSupply {
-    option (cosmos.msg.v1.signer) = "authority";
-    option (amino.name) = "kopi/x/denominations/MsgUpdateKCoinSupply";
-    string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+message MsgKCoinUpdateSupplyLimit {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinUpdateSupplyLimit";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   string max_supply = 3;
 }
 
-message MsgUpdateKCoinBurnAmount {
+message MsgKCoinUpdateBurnAmount {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateKCoinBurnAmount";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinUpdateBurnAmount";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   string max_burn_amount = 3;
 }
 
-message MsgUpdateKCoinMintAmount {
+message MsgKCoinUpdateMintAmount {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateKCoinMintAmount";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinUpdateMintAmount";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   string max_mint_amount = 3;
 }
 
-message MsgAddKCoinReferences {
+message MsgKCoinAddReferences {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgAddKCoinReferences";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinAddReferences";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   repeated string references = 3;
 }
 
-message MsgRemoveKCoinReferences {
+message MsgKCoinRemoveReferences {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgRemoveKCoinReferences";
+  option (amino.name) = "kopi/x/denominations/MsgKCoinRemoveReferences";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   repeated string references = 3;
 }
 
-message MsgAddCollateralDenom {
+message MsgCollateralAddDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgAddCollateralDenom";
+  option (amino.name) = "kopi/x/denominations/MsgCollateralAddDenom";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
@@ -136,27 +144,27 @@ message MsgAddCollateralDenom {
   string max_deposit = 4;
 }
 
-message MsgUpdateCollateralDenomLTV {
+message MsgCollateralUpdateLTV {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateCollateralDenomLTV";
+  option (amino.name) = "kopi/x/denominations/MsgCollateralUpdateLTV";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   string ltv = 3;
 }
 
-message MsgUpdateCollateralDenomMaxDeposit {
+message MsgCollateralUpdateDepositLimit {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateCollateralDenomMaxDeposit";
+  option (amino.name) = "kopi/x/denominations/MsgCollateralUpdateDepositLimit";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string denom = 2;
   string max_deposit = 3;
 }
 
-message MsgAddCAsset {
+message MsgCAssetAddDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgAddCAsset";
+  option (amino.name) = "kopi/x/denominations/MsgCAssetAddDenom";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
@@ -166,31 +174,108 @@ message MsgAddCAsset {
   string min_liquidity = 6;
   string min_order_size = 7;
   string borrow_limit = 8;
+  string min_loan_size = 9;
 }
 
-message MsgUpdateCAssetDexFeeShare {
+message MsgCAssetUpdateDexFeeShare {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateCAssetDexFeeShare";
+  option (amino.name) = "kopi/x/denominations/MsgCAssetUpdateDexFeeShare";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string dex_fee_share = 3;
 }
 
-message MsgUpdateCAssetBorrowLimit {
+message MsgCAssetUpdateBorrowLimit {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateCAssetBorrowLimit";
+  option (amino.name) = "kopi/x/denominations/MsgCAssetUpdateBorrowLimit";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string borrow_limit = 3;
 }
 
-message MsgUpdateCAssetMinimumLoanSize {
+message MsgCAssetUpdateMinimumLoanSize {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateCAssetMinimumLoanSize";
+  option (amino.name) = "kopi/x/denominations/MsgCAssetUpdateMinimumLoanSize";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;
   string minimum_loan_size = 3;
+}
+
+message MsgAddArbitrageDenom {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgAddArbitrageDenom";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string factor = 3;
+  string min_liquidity = 4;
+  string min_order_size = 5;
+
+  string kcoin = 6;
+  string c_asset = 7;
+
+  string buy_threshold = 8;
+  string buy_trade_amount = 10;
+  string sell_threshold = 9;
+  string sell_trade_amount = 11;
+
+  string redemption_fee = 12;
+  string redemption_fee_reserve_share = 13;
+}
+
+message MsgArbitrageUpdateBuyThreshold {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateBuyThreshold";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string buy_threshold = 3;
+}
+
+message MsgArbitrageUpdateSellThreshold {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateSellThreshold";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string sell_threshold = 3;
+}
+
+message MsgArbitrageUpdateBuyAmount {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateBuyAmount";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string buy_amount = 3;
+}
+
+message MsgArbitrageUpdateSellAmount {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateSellAmount";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string sell_amount = 3;
+}
+
+message MsgArbitrageUpdateRedemptionFee {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateRedemptionFee";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string redemption_fee = 3;
+}
+
+message MsgArbitrageUpdateRedemptionFeeReserveShare {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgArbitrageUpdateRedemptionFeeReserveShare";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string redemption_fee_reserve_share = 3;
 }

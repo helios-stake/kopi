@@ -1,6 +1,10 @@
 package app
 
 import (
+	"io"
+	"os"
+	"path/filepath"
+
 	testdata_pulsar "github.com/cosmos/cosmos-sdk/testutil/testdata/testpb"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -8,9 +12,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/kopi-money/kopi/app/upgrades"
 	"github.com/kopi-money/kopi/cache"
-	"io"
-	"os"
-	"path/filepath"
 
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
@@ -62,6 +63,10 @@ import (
 	swapmodulekeeper "github.com/kopi-money/kopi/x/swap/keeper"
 	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 
+	reservemodulekeeper "github.com/kopi-money/kopi/x/reserve/keeper"
+	strategiesmodulekeeper "github.com/kopi-money/kopi/x/strategies/keeper"
+
+	blockspeedmodulekeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/kopi-money/kopi/docs"
@@ -129,6 +134,9 @@ type App struct {
 	SwapKeeper          swapmodulekeeper.Keeper
 	MMKeeper            mmmodulekeeper.Keeper
 	TokenfactoryKeeper  tokenfactorymodulekeeper.Keeper
+	StrategiesKeeper    strategiesmodulekeeper.Keeper
+	ReserveKeeper       reservemodulekeeper.Keeper
+	BlockspeedKeeper    blockspeedmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -270,6 +278,9 @@ func New(
 		&app.MMKeeper,
 		&app.TokenfactoryKeeper,
 		&app.DexKeeper,
+		&app.StrategiesKeeper,
+		&app.ReserveKeeper,
+		&app.BlockspeedKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)
@@ -334,15 +345,18 @@ func New(
 
 func (app *App) registerCacheHandling() {
 	cache.AddCaches(cache.Caches{
+		app.BlockspeedKeeper,
 		app.DenominationsKeeper,
 		app.DexKeeper,
 		app.MMKeeper,
+		app.ReserveKeeper,
 		app.SwapKeeper,
+		app.StrategiesKeeper,
+		app.TokenfactoryKeeper,
 	})
 
 	app.SetBeginBlocker(func(ctx sdk.Context) (sdk.BeginBlock, error) {
-		err := cache.TransactionHandler.Initialize(ctx)
-		return sdk.BeginBlock{}, err
+		return sdk.BeginBlock{}, cache.TransactionHandler.Initialize(ctx)
 	})
 
 	app.SetCacheTransactionInit(func(ctx sdk.Context, finalizing bool) sdk.Context {

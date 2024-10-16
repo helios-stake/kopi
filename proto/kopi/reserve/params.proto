@@ -1,0 +1,18 @@
+syntax = "proto3";
+package kopi.reserve;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/reserve/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "kopi/x/reserve/Params";
+  option (gogoproto.equal) = true;
+
+  bytes kcoin_burn_share = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

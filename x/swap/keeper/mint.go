@@ -2,9 +2,12 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/utils"
+
+	"cosmossdk.io/math"
+	"github.com/kopi-money/kopi/constants"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/swap/types"
@@ -19,7 +22,7 @@ func (k Keeper) Mint(ctx context.Context) error {
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, kCoin)
 		if err := k.CheckMint(ctx, kCoin, maxMintAmount); err != nil {
-			return errors.Wrap(err, "could not mint denom")
+			return fmt.Errorf("could not mint denom: %w", err)
 		}
 	}
 
@@ -31,10 +34,15 @@ func (k Keeper) Mint(ctx context.Context) error {
 func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.Int) error {
 	parity, referenceDenom, err := k.DexKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
-		return errors.Wrap(err, "could not calculate parity")
+		return fmt.Errorf("could not calculate parity: %w", err)
 	}
 
-	if parity == nil || parity.LT(math.LegacyOneDec()) {
+	// parity can be nil at initialization of the chain when not all currencies have liquidity. It is an edge case.
+	if parity == nil {
+		return nil
+	}
+
+	if parity.LT(k.mintThreshold(ctx)) {
 		return nil
 	}
 
@@ -48,26 +56,24 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 
 	mintCoins := sdk.NewCoins(sdk.NewCoin(kCoin, mintAmount))
 	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
-		return errors.Wrap(err, "could not mint coins")
+		return fmt.Errorf("could not mint new kcoin %v: %w", kCoin, err)
 	}
 
-	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
+	moduleAddress := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
 	tradeCtx := dextypes.TradeContext{
 		Context:             ctx,
-		CoinSource:          address.String(),
-		CoinTarget:          address.String(),
-		GivenAmount:         mintAmount,
-		MaxPrice:            nil,
-		TradeDenomStart:     kCoin,
-		TradeDenomEnd:       utils.BaseCurrency,
-		AllowIncomplete:     true,
+		CoinSource:          moduleAddress.String(),
+		CoinTarget:          moduleAddress.String(),
+		TradeAmount:         mintAmount,
+		TradeDenomGiving:    kCoin,
+		TradeDenomReceiving: constants.BaseCurrency,
 		ExcludeFromDiscount: true,
 		ProtocolTrade:       true,
 		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
-	if _, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx); err != nil {
+	if _, err = k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
 		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
 			return nil
 		}
@@ -75,15 +81,15 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 			return nil
 		}
 
-		return errors.Wrap(err, "could not execute incomplete trade")
+		return fmt.Errorf("could not execute incomplete trade: %w", err)
 	}
 
 	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return errors.Wrap(err, "could not settle trade balances")
+		return fmt.Errorf("could not settle trade balances: %w", err)
 	}
 
-	if _, err = k.burnFunds(ctx, utils.BaseCurrency); err != nil {
-		return errors.Wrap(err, "could not burn funds")
+	if err = k.burnFunds(ctx, constants.BaseCurrency); err != nil {
+		return fmt.Errorf("could not burn funds: %w", err)
 	}
 
 	return nil
@@ -110,13 +116,5 @@ func (k Keeper) calcKCoinMintAmount(ctx context.Context, referenceRatio math.Leg
 
 func (k Keeper) getUsableAmount(ctx context.Context, denom, module string) math.Int {
 	address := k.AccountKeeper.GetModuleAccount(ctx, module).GetAddress()
-	coins := k.BankKeeper.SpendableCoins(ctx, address)
-
-	for _, coin := range coins {
-		if coin.Denom == denom {
-			return coin.Amount
-		}
-	}
-
-	return math.ZeroInt()
+	return k.BankKeeper.SpendableCoin(ctx, address, denom).Amount
 }

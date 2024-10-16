@@ -42,7 +42,8 @@ const (
 	Query_Ratios_FullMethodName               = "/kopi.dex.Query/Ratios"
 	Query_ReserveFunds_FullMethodName         = "/kopi.dex.Query/ReserveFunds"
 	Query_ReserveFundsPerDenom_FullMethodName = "/kopi.dex.Query/ReserveFundsPerDenom"
-	Query_SimulateTrade_FullMethodName        = "/kopi.dex.Query/SimulateTrade"
+	Query_QuerySimulateSell_FullMethodName    = "/kopi.dex.Query/QuerySimulateSell"
+	Query_QuerySimulateBuy_FullMethodName     = "/kopi.dex.Query/QuerySimulateBuy"
 )
 
 // QueryClient is the client API for Query service.
@@ -72,7 +73,8 @@ type QueryClient interface {
 	Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error)
 	ReserveFunds(ctx context.Context, in *QueryReserveFundsRequest, opts ...grpc.CallOption) (*QueryReserveFundsResponse, error)
 	ReserveFundsPerDenom(ctx context.Context, in *QueryReserveFundsPerDenomRequest, opts ...grpc.CallOption) (*Denom, error)
-	SimulateTrade(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
+	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
+	QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 }
 
 type queryClient struct {
@@ -290,9 +292,18 @@ func (c *queryClient) ReserveFundsPerDenom(ctx context.Context, in *QueryReserve
 	return out, nil
 }
 
-func (c *queryClient) SimulateTrade(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
+func (c *queryClient) QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
 	out := new(QuerySimulateTradeResponse)
-	err := c.cc.Invoke(ctx, Query_SimulateTrade_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QuerySimulateSell_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
+	out := new(QuerySimulateTradeResponse)
+	err := c.cc.Invoke(ctx, Query_QuerySimulateBuy_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +337,8 @@ type QueryServer interface {
 	Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error)
 	ReserveFunds(context.Context, *QueryReserveFundsRequest) (*QueryReserveFundsResponse, error)
 	ReserveFundsPerDenom(context.Context, *QueryReserveFundsPerDenomRequest) (*Denom, error)
-	SimulateTrade(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
+	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
+	QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -403,8 +415,11 @@ func (UnimplementedQueryServer) ReserveFunds(context.Context, *QueryReserveFunds
 func (UnimplementedQueryServer) ReserveFundsPerDenom(context.Context, *QueryReserveFundsPerDenomRequest) (*Denom, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReserveFundsPerDenom not implemented")
 }
-func (UnimplementedQueryServer) SimulateTrade(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SimulateTrade not implemented")
+func (UnimplementedQueryServer) QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateSell not implemented")
+}
+func (UnimplementedQueryServer) QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateBuy not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -833,20 +848,38 @@ func _Query_ReserveFundsPerDenom_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SimulateTrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QuerySimulateSell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QuerySimulateTradeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SimulateTrade(ctx, in)
+		return srv.(QueryServer).QuerySimulateSell(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_SimulateTrade_FullMethodName,
+		FullMethod: Query_QuerySimulateSell_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SimulateTrade(ctx, req.(*QuerySimulateTradeRequest))
+		return srv.(QueryServer).QuerySimulateSell(ctx, req.(*QuerySimulateTradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuerySimulateBuy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySimulateTradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuerySimulateBuy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QuerySimulateBuy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuerySimulateBuy(ctx, req.(*QuerySimulateTradeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -951,8 +984,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_ReserveFundsPerDenom_Handler,
 		},
 		{
-			MethodName: "SimulateTrade",
-			Handler:    _Query_SimulateTrade_Handler,
+			MethodName: "QuerySimulateSell",
+			Handler:    _Query_QuerySimulateSell_Handler,
+		},
+		{
+			MethodName: "QuerySimulateBuy",
+			Handler:    _Query_QuerySimulateBuy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

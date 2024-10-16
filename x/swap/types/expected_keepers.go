@@ -2,8 +2,10 @@ package types
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,6 +21,7 @@ type AccountKeeper interface {
 
 type BankKeeper interface {
 	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoin(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	// Methods imported from bank should be defined here
 
 	SendCoins(ctx context.Context, sendingAddress, recipientAddress sdk.AccAddress, amt sdk.Coins) error
@@ -32,26 +35,28 @@ type BankKeeper interface {
 type DexKeeper interface {
 	cache.Cache
 
-	AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI, address sdk.AccAddress, denom string, amount math.Int) error
+	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error)
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
-	ExecuteTrade(ctx dextypes.TradeContext) (math.Int, math.Int, math.Int, math.Int, math.Int, error)
+	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
 	GetFullLiquidityOther(ctx context.Context, denom string) math.LegacyDec
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
 	GetRatio(ctx context.Context, denom string) (dextypes.Ratio, error)
+	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	RemoveAllLiquidityForModule(ctx context.Context, denom, module string) error
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int) error
-	SimulateTradeForReserve(ctx dextypes.TradeContext) (math.Int, math.LegacyDec, math.LegacyDec, error)
+	SimulateTradeForReserve(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
 }
 
 type DenomKeeper interface {
+	GetArbitrageDenoms(ctx context.Context) []*denomtypes.ArbitrageDenom
 	IsKCoin(ctx context.Context, denom string) bool
+	KCoins(ctx context.Context) []string
 	MaxSupply(ctx context.Context, kCoin string) math.Int
 	MaxBurnAmount(ctx context.Context, kCoin string) math.Int
 	MaxMintAmount(ctx context.Context, kCoin string) math.Int
-	KCoins(ctx context.Context) []string
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.

@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/cache"
@@ -20,6 +21,7 @@ var (
 	PrefixOrdersNextIndex    = collections.NewPrefix(4)
 	PrefixRatios             = collections.NewPrefix(5)
 	PrefixTradeAmounts       = collections.NewPrefix(6)
+	PrefixBaseTradeFee       = collections.NewPrefix(7)
 )
 
 type (
@@ -40,6 +42,7 @@ type (
 		ordersNextIndex           *cache.ItemCache[uint64]
 		ratios                    *cache.MapCache[string, types.Ratio]
 		tradeAmounts              *cache.MapCache[string, types.WalletTradeAmount]
+		tradeFeeTracker           *cache.ItemCache[int64]
 
 		caches *cache.Caches
 
@@ -103,7 +106,7 @@ func NewKeeper(
 			caches,
 		),
 
-		orders: cache.NewCacheMap(
+		orders: cache.NewMapCache(
 			sb,
 			PrefixOrders,
 			"orders_list",
@@ -120,7 +123,7 @@ func NewKeeper(
 			caches,
 		),
 
-		ratios: cache.NewCacheMap(
+		ratios: cache.NewMapCache(
 			sb,
 			PrefixRatios,
 			"ratios",
@@ -129,12 +132,20 @@ func NewKeeper(
 			caches,
 		),
 
-		tradeAmounts: cache.NewCacheMap(
+		tradeAmounts: cache.NewMapCache(
 			sb,
 			PrefixTradeAmounts,
 			"trade_amounts",
 			collections.StringKey,
 			codec.CollValue[types.WalletTradeAmount](cdc),
+			caches,
+		),
+
+		tradeFeeTracker: cache.NewItemCache(
+			sb,
+			PrefixBaseTradeFee,
+			"trade_fee_tracker",
+			collections.Int64Value,
 			caches,
 		),
 	}

@@ -4,19 +4,10 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/mm/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetTotalValueLocked(goCtx context.Context, req *types.GetTotalValueLockedQuery) (*types.GetTotalValueLockedResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) GetTotalValueLocked(ctx context.Context, _ *types.GetTotalValueLockedQuery) (*types.GetTotalValueLockedResponse, error) {
 	totalDeposited, err := k.getTotalDeposited(ctx)
 	if err != nil {
 		return nil, err
@@ -28,21 +19,23 @@ func (k Keeper) GetTotalValueLocked(goCtx context.Context, req *types.GetTotalVa
 	}
 
 	totalValueLocked := totalDeposited.Add(totalCollateral)
-	return &types.GetTotalValueLockedResponse{Sum: totalValueLocked.String()}, nil
+	return &types.GetTotalValueLockedResponse{
+		Sum: totalValueLocked.String(),
+	}, nil
 }
 
-func (k Keeper) getTotalDeposited(ctx sdk.Context) (math.LegacyDec, error) {
+func (k Keeper) getTotalDeposited(ctx context.Context) (math.LegacyDec, error) {
 	total := math.LegacyZeroDec()
 
 	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		available := k.GetVaultAmount(ctx, CAsset)
-		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, available.ToLegacyDec())
+		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDexDenom, available.ToLegacyDec())
 		if err != nil {
 			return total, err
 		}
 
-		borrowed := k.GetLoanSumWithDefault(ctx, CAsset.BaseDenom).LoanSum
-		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, borrowed)
+		borrowed := k.GetLoanSumWithDefault(ctx, CAsset.BaseDexDenom).LoanSum
+		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDexDenom, borrowed)
 		if err != nil {
 			return total, err
 		}
@@ -54,12 +47,12 @@ func (k Keeper) getTotalDeposited(ctx sdk.Context) (math.LegacyDec, error) {
 	return total, nil
 }
 
-func (k Keeper) getTotalCollateral(ctx sdk.Context) (math.LegacyDec, error) {
+func (k Keeper) getTotalCollateral(ctx context.Context) (math.LegacyDec, error) {
 	total := math.LegacyZeroDec()
 
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
-		sum := k.getCollateralSum(ctx, denom.Denom)
-		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum.ToLegacyDec())
+		sum := k.getCollateralSum(ctx, denom.DexDenom)
+		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.DexDenom, sum.ToLegacyDec())
 		if err != nil {
 			return total, err
 		}

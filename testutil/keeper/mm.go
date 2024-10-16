@@ -1,8 +1,11 @@
 package keeper
 
 import (
-	"github.com/kopi-money/kopi/cache"
+	"context"
+	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
@@ -11,7 +14,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/kopi-money/kopi/utils"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 
@@ -21,24 +23,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func MmKeeper(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, sdk.Context) {
+type BlockspeedKeeper struct{}
+
+func (k BlockspeedKeeper) BlocksPerYear(_ context.Context) (math.LegacyDec, error) {
+	return math.LegacyNewDec(constants.SecondsPerYear), nil
+}
+
+func MmKeeperKeys(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, context.Context, *Keys) {
 	dexKeeper, ctx, keys := DexKeeper(t)
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-
-	mmKeeper := mmkeeper.NewKeeper(
-		keys.cdc,
-		runtime.NewKVStoreService(keys.mm),
-		log.NewNopLogger(),
-		dexKeeper.AccountKeeper,
-		dexKeeper.BankKeeper,
-		dexKeeper.DenomKeeper.(mmtypes.DenomKeeper),
-		dexKeeper,
-		authority.String(),
-	)
+	mmKeeper := NewMMKeeper(keys, dexKeeper, authority)
 	cache.AddCache(mmKeeper)
 
-	require.NoError(t, mmKeeper.SetParams(ctx, MMTestingParams()))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return mmKeeper.SetParams(innerCtx, MMTestingParams())
+	}))
 
 	accountKeeper := mmKeeper.AccountKeeper.(authkeeper.AccountKeeper)
 
@@ -51,27 +51,48 @@ func MmKeeper(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, sdk.Context) {
 		accountKeeper.SetAccount(ctx, acc)
 	}
 
+	return dexKeeper, mmKeeper, ctx, keys
+}
+
+func NewMMKeeper(keys *Keys, dexKeeper dexkeeper.Keeper, authority sdk.AccAddress) mmkeeper.Keeper {
+	return mmkeeper.NewKeeper(
+		keys.cdc,
+		runtime.NewKVStoreService(keys.mm),
+		log.NewNopLogger(),
+		dexKeeper.AccountKeeper,
+		dexKeeper.BankKeeper,
+		BlockspeedKeeper{},
+		dexKeeper.DenomKeeper.(mmtypes.DenomKeeper),
+		dexKeeper,
+		authority.String(),
+	)
+}
+
+func MmKeeper(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, context.Context) {
+	dexKeeper, mmKeeper, ctx, _ := MmKeeperKeys(t)
 	return dexKeeper, mmKeeper, ctx
 }
 
 func MMTestingParams() mmtypes.Params {
 	return mmtypes.Params{
-		ProtocolShare:    math.LegacyNewDecWithPrec(5, 1),
-		MinRedemptionFee: math.LegacyNewDecWithPrec(1, 1),
-		MinInterestRate:  math.LegacyNewDecWithPrec(5, 2),
-		A:                math.LegacyNewDec(14),
-		B:                math.LegacyNewDec(131072),
+		CollateralDiscount: math.LegacyNewDecWithPrec(5, 2),
+		ProtocolShare:      math.LegacyNewDecWithPrec(5, 1),
+		MinRedemptionFee:   math.LegacyNewDecWithPrec(1, 2),
+		MaxRedemptionFee:   math.LegacyNewDecWithPrec(5, 2),
+		MinInterestRate:    math.LegacyNewDecWithPrec(5, 2),
+		A:                  math.LegacyNewDec(14),
+		B:                  math.LegacyNewDec(131072),
 	}
 }
 
-func SetupMMMsgServer(t *testing.T) (mmkeeper.Keeper, dextypes.MsgServer, mmtypes.MsgServer, sdk.Context) {
+func SetupMMMsgServer(t *testing.T) (mmkeeper.Keeper, dextypes.MsgServer, mmtypes.MsgServer, context.Context) {
 	dexK, mmK, ctx := MmKeeper(t)
 	addFunds(ctx, mmK.BankKeeper.(bankkeeper.BaseKeeper), t)
 
 	dexMsg := dexkeeper.NewMsgServerImpl(dexK)
 	mmMsg := mmkeeper.NewMsgServerImpl(mmK)
 
-	err := AddLiquidity(ctx, dexMsg, Alice, utils.BaseCurrency, Pow(2))
+	err := AddLiquidity(ctx, dexMsg, Alice, constants.BaseCurrency, Pow(2))
 	require.Nil(t, err)
 	err = AddLiquidity(ctx, dexMsg, Alice, "ukusd", Pow(2))
 	require.Nil(t, err)

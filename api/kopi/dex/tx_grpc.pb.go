@@ -21,7 +21,8 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Msg_AddLiquidity_FullMethodName                = "/kopi.dex.Msg/AddLiquidity"
 	Msg_RemoveLiquidity_FullMethodName             = "/kopi.dex.Msg/RemoveLiquidity"
-	Msg_Trade_FullMethodName                       = "/kopi.dex.Msg/Trade"
+	Msg_Sell_FullMethodName                        = "/kopi.dex.Msg/Sell"
+	Msg_Buy_FullMethodName                         = "/kopi.dex.Msg/Buy"
 	Msg_RemoveAllLiquidityForDenom_FullMethodName  = "/kopi.dex.Msg/RemoveAllLiquidityForDenom"
 	Msg_AddOrder_FullMethodName                    = "/kopi.dex.Msg/AddOrder"
 	Msg_RemoveOrder_FullMethodName                 = "/kopi.dex.Msg/RemoveOrder"
@@ -31,7 +32,6 @@ const (
 	Msg_UpdateOrderFee_FullMethodName              = "/kopi.dex.Msg/UpdateOrderFee"
 	Msg_UpdateReserveShare_FullMethodName          = "/kopi.dex.Msg/UpdateReserveShare"
 	Msg_UpdateVirtualLiquidityDecay_FullMethodName = "/kopi.dex.Msg/UpdateVirtualLiquidityDecay"
-	Msg_UpdateFeeReimbursement_FullMethodName      = "/kopi.dex.Msg/UpdateFeeReimbursement"
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
@@ -43,7 +43,8 @@ const (
 type MsgClient interface {
 	AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts ...grpc.CallOption) (*MsgAddLiquidityResponse, error)
 	RemoveLiquidity(ctx context.Context, in *MsgRemoveLiquidity, opts ...grpc.CallOption) (*MsgRemoveLiquidityResponse, error)
-	Trade(ctx context.Context, in *MsgTrade, opts ...grpc.CallOption) (*MsgTradeResponse, error)
+	Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error)
+	Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 	// this line is used by starport scaffolding # proto/tx/rpc
 	RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*Void, error)
 	AddOrder(ctx context.Context, in *MsgAddOrder, opts ...grpc.CallOption) (*Order, error)
@@ -54,7 +55,6 @@ type MsgClient interface {
 	UpdateOrderFee(ctx context.Context, in *MsgUpdateOrderFee, opts ...grpc.CallOption) (*Void, error)
 	UpdateReserveShare(ctx context.Context, in *MsgUpdateReserveShare, opts ...grpc.CallOption) (*Void, error)
 	UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpdateVirtualLiquidityDecay, opts ...grpc.CallOption) (*Void, error)
-	UpdateFeeReimbursement(ctx context.Context, in *MsgUpdateFeeReimbursement, opts ...grpc.CallOption) (*Void, error)
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
@@ -86,9 +86,18 @@ func (c *msgClient) RemoveLiquidity(ctx context.Context, in *MsgRemoveLiquidity,
 	return out, nil
 }
 
-func (c *msgClient) Trade(ctx context.Context, in *MsgTrade, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
+func (c *msgClient) Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
 	out := new(MsgTradeResponse)
-	err := c.cc.Invoke(ctx, Msg_Trade_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_Sell_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
+	out := new(MsgTradeResponse)
+	err := c.cc.Invoke(ctx, Msg_Buy_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -176,15 +185,6 @@ func (c *msgClient) UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpda
 	return out, nil
 }
 
-func (c *msgClient) UpdateFeeReimbursement(ctx context.Context, in *MsgUpdateFeeReimbursement, opts ...grpc.CallOption) (*Void, error) {
-	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateFeeReimbursement_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_UpdateMaxOrderLife_FullMethodName, in, out, opts...)
@@ -218,7 +218,8 @@ func (c *msgClient) UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDisco
 type MsgServer interface {
 	AddLiquidity(context.Context, *MsgAddLiquidity) (*MsgAddLiquidityResponse, error)
 	RemoveLiquidity(context.Context, *MsgRemoveLiquidity) (*MsgRemoveLiquidityResponse, error)
-	Trade(context.Context, *MsgTrade) (*MsgTradeResponse, error)
+	Sell(context.Context, *MsgSell) (*MsgTradeResponse, error)
+	Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error)
 	// this line is used by starport scaffolding # proto/tx/rpc
 	RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*Void, error)
 	AddOrder(context.Context, *MsgAddOrder) (*Order, error)
@@ -229,7 +230,6 @@ type MsgServer interface {
 	UpdateOrderFee(context.Context, *MsgUpdateOrderFee) (*Void, error)
 	UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error)
 	UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error)
-	UpdateFeeReimbursement(context.Context, *MsgUpdateFeeReimbursement) (*Void, error)
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
@@ -246,8 +246,11 @@ func (UnimplementedMsgServer) AddLiquidity(context.Context, *MsgAddLiquidity) (*
 func (UnimplementedMsgServer) RemoveLiquidity(context.Context, *MsgRemoveLiquidity) (*MsgRemoveLiquidityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveLiquidity not implemented")
 }
-func (UnimplementedMsgServer) Trade(context.Context, *MsgTrade) (*MsgTradeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Trade not implemented")
+func (UnimplementedMsgServer) Sell(context.Context, *MsgSell) (*MsgTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sell not implemented")
+}
+func (UnimplementedMsgServer) Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
 }
 func (UnimplementedMsgServer) RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveAllLiquidityForDenom not implemented")
@@ -275,9 +278,6 @@ func (UnimplementedMsgServer) UpdateReserveShare(context.Context, *MsgUpdateRese
 }
 func (UnimplementedMsgServer) UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVirtualLiquidityDecay not implemented")
-}
-func (UnimplementedMsgServer) UpdateFeeReimbursement(context.Context, *MsgUpdateFeeReimbursement) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateFeeReimbursement not implemented")
 }
 func (UnimplementedMsgServer) UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxOrderLife not implemented")
@@ -337,20 +337,38 @@ func _Msg_RemoveLiquidity_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Trade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTrade)
+func _Msg_Sell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSell)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Trade(ctx, in)
+		return srv.(MsgServer).Sell(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Trade_FullMethodName,
+		FullMethod: Msg_Sell_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Trade(ctx, req.(*MsgTrade))
+		return srv.(MsgServer).Sell(ctx, req.(*MsgSell))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgBuy)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Buy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Buy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Buy(ctx, req.(*MsgBuy))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -517,24 +535,6 @@ func _Msg_UpdateVirtualLiquidityDecay_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateFeeReimbursement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateFeeReimbursement)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdateFeeReimbursement(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_UpdateFeeReimbursement_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateFeeReimbursement(ctx, req.(*MsgUpdateFeeReimbursement))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_UpdateMaxOrderLife_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateMaxOrderLife)
 	if err := dec(in); err != nil {
@@ -605,8 +605,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_RemoveLiquidity_Handler,
 		},
 		{
-			MethodName: "Trade",
-			Handler:    _Msg_Trade_Handler,
+			MethodName: "Sell",
+			Handler:    _Msg_Sell_Handler,
+		},
+		{
+			MethodName: "Buy",
+			Handler:    _Msg_Buy_Handler,
 		},
 		{
 			MethodName: "RemoveAllLiquidityForDenom",
@@ -643,10 +647,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateVirtualLiquidityDecay",
 			Handler:    _Msg_UpdateVirtualLiquidityDecay_Handler,
-		},
-		{
-			MethodName: "UpdateFeeReimbursement",
-			Handler:    _Msg_UpdateFeeReimbursement_Handler,
 		},
 		{
 			MethodName: "UpdateMaxOrderLife",

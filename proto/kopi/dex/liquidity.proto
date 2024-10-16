@@ -5,11 +5,16 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
+message DenomLiquidity {
+  string denom = 1;
+  repeated Liquidity entries = 2;
+}
+
+
 message Liquidity {
   uint64 index = 1;
-  string denom = 2;
-  string address = 3;
-  bytes amount = 4 [
+  string address = 2;
+  bytes amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

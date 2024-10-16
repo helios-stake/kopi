@@ -3,6 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
+
+	"cosmossdk.io/collections"
+
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/core/store"
@@ -11,6 +14,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/kopi-money/kopi/x/swap/types"
+)
+
+var (
+	PrefixParams = collections.NewPrefix(0)
 )
 
 type (
@@ -23,6 +30,9 @@ type (
 		BankKeeper    types.BankKeeper
 		DenomKeeper   types.DenomKeeper
 		DexKeeper     types.DexKeeper
+
+		// Collections
+		params *cache.ItemCache[types.Params]
 
 		caches *cache.Caches
 
@@ -47,6 +57,9 @@ func NewKeeper(
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
+	sb := collections.NewSchemaBuilder(storeService)
+	caches := &cache.Caches{}
+
 	return Keeper{
 		cdc:           cdc,
 		storeService:  storeService,
@@ -57,7 +70,15 @@ func NewKeeper(
 		DenomKeeper:   denomKeeper,
 		DexKeeper:     dexKeeper,
 
-		caches: &cache.Caches{},
+		caches: caches,
+
+		params: cache.NewItemCache(
+			sb,
+			PrefixParams,
+			"params",
+			codec.CollValue[types.Params](cdc),
+			caches,
+		),
 	}
 }
 

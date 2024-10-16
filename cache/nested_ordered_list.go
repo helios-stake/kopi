@@ -1,5 +1,7 @@
 package cache
 
+import "golang.org/x/exp/slices"
+
 type NestedOrderedList[K1, K2 ordered, V any] struct {
 	lists []KeyValue[K1, []KeyValue[K2, V]]
 }
@@ -56,11 +58,13 @@ func (nol *NestedOrderedList[K1, K2, V]) Remove(key1 K1, key2 K2) {
 
 	innerList := nol.lists[index1].value
 	innerList = append(innerList[:index2], innerList[index2+1:]...)
+	innerList = slices.Clip(innerList)
 
 	if len(innerList) > 0 {
 		nol.lists[index1].value = innerList
 	} else {
 		nol.lists = append(nol.lists[:index1], nol.lists[index1+1:]...)
+		nol.lists = slices.Clip(nol.lists)
 	}
 }
 

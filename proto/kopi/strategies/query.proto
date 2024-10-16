@@ -1,0 +1,164 @@
+syntax = "proto3";
+package kopi.strategies;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/strategies/params.proto";
+import "kopi/strategies/automations.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/strategies/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/kopi/strategies/params";
+  }
+
+  rpc ArbitrageDenomBalance(QueryArbitrageDenomBalanceRequest) returns (QueryArbitrageDenomBalanceResponse) {
+    option (google.api.http).get = "/kopi/strategies/arbitrage/balances/{denom}";
+  }
+
+  rpc ArbitrageBalance(QueryArbitrageBalancesRequest) returns (QueryArbitrageBalancesResponse) {
+    option (google.api.http).get = "/kopi/strategies/arbitrage";
+  }
+
+  rpc ArbitrageBalanceAddress(QueryArbitrageBalancesAddressRequest) returns (QueryArbitrageBalancesAddressResponse) {
+    option (google.api.http).get = "/kopi/strategies/arbitrage/address/{address}";
+  }
+
+  rpc AutomationsAll(QueryAutomationsAllRequest) returns (QueryAutomationsResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations";
+  }
+
+  rpc AutomationsStats(QueryAutomationsStatsRequest) returns (QueryAutomationsStatsResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations/stats";
+  }
+
+  rpc AutomationsFunds(QueryAutomationsFundsRequest) returns (QueryAutomationsFundsResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations/funds";
+  }
+
+  rpc AutomationsAddress(QueryAutomationsAddressRequest) returns (QueryAutomationsResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations/address/{address}";
+  }
+
+  rpc AutomationsIndex(QueryAutomationsByIndex) returns (Automation) {
+    option (google.api.http).get = "/kopi/strategies/automations/by_index";
+  }
+
+  rpc AutomationsAddressFunds(QueryAutomationsAddressFundsRequest) returns (QueryAutomationsAddressFundsResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations/funds/{address}";
+  }
+}
+
+message QueryAutomationsStatsRequest {}
+
+message QueryAutomationsStatsResponse {
+  int64 total = 1;
+  int64 active = 2;
+}
+
+message QueryAutomationsFundsRequest {}
+
+message QueryAutomationsFundsResponse {
+  string pool = 1;
+  string sum = 2;
+}
+
+message QueryAutomationsByIndex {
+  string index = 1;
+}
+
+message QueryAutomationsAllRequest {}
+
+message QueryAutomationsAddressFundsRequest {
+  string address = 1;
+}
+
+message QueryAutomationsAddressFundsResponse {
+  string balance = 1;
+  string funds = 2;
+}
+
+message QueryAutomationsAddressRequest {
+  string address = 1;
+}
+
+message QueryAutomationsResponse {
+  repeated Automation automations = 1;
+}
+
+message QueryArbitrageBalancesRequest {
+}
+
+message ArbitrageBalance {
+  string name = 1;
+  string c_asset = 2;
+  string k_coin = 3;
+  string base = 4;
+  string supply = 5;
+  string token_value = 6;
+  string token_value_usd = 7;
+  string vault_c_asset = 8;
+  string vault_k_coin = 9;
+  string parity = 10;
+}
+
+message QueryArbitrageBalancesResponse {
+  repeated ArbitrageBalance balances = 1;
+  string total_value_usd = 2;
+}
+
+message ArbitrageBalanceAddress {
+  string name = 1;
+  string c_asset = 2;
+  string k_coin = 3;
+  string base = 4;
+  string supply = 5;
+  string vault_c_asset = 6;
+  string vault_k_coin = 7;
+  string parity = 8;
+
+  string user_balance_arbitrage = 9;
+  string user_balance_arbitrage_usd = 10;
+  string user_balance_c_asset = 11;
+  string user_balance_c_asset_usd = 12;
+  string user_balance_base = 13;
+  string user_balance_base_usd = 14;
+
+  string user_balance_base_arb_redeemed = 15;
+  string user_balance_base_arb_redeemed_usd = 16;
+}
+
+message QueryArbitrageBalancesAddressRequest{
+  string address = 1;
+}
+
+message QueryArbitrageBalancesAddressResponse {
+  repeated ArbitrageBalanceAddress balances = 1;
+}
+
+message QueryArbitrageDenomBalanceRequest{
+  string denom = 1;
+}
+
+message QueryArbitrageDenomBalanceResponse {
+  string k_coin = 1;
+  string c_asset = 2;
+  string supply = 3;
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}

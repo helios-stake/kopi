@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"google.golang.org/grpc/codes"
@@ -27,22 +29,26 @@ func (k Keeper) GetRedemptionRequest(ctx context.Context, req *types.GetRedempti
 	}, nil
 }
 
-func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRedemptionStatsRequestQuery) (*types.GetRedemptionStatsRequestResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, _ *types.GetRedemptionStatsRequestQuery) (*types.GetRedemptionStatsRequestResponse, error) {
+	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
-	requestSum := sdkmath.LegacyZeroDec()
-	numRequests := 0
+	var (
+		requestSum    = sdkmath.LegacyZeroDec()
+		requestSumUSD sdkmath.LegacyDec
+		numRequests   int
+	)
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.Name)
-		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum.ToLegacyDec())
+		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.DexDenom)
+		requestSumUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, denomRequestSum.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
-		requestSum = requestSum.Add(requestSumUsd)
+		requestSum = requestSum.Add(requestSumUSD)
 		numRequests += denomNumRequests
 	}
 

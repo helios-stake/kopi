@@ -2,7 +2,6 @@ package denominations
 
 import (
 	"context"
-	"cosmossdk.io/errors"
 	"encoding/json"
 	"fmt"
 
@@ -155,7 +154,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return errors.Wrap(err, "could not initialize denom module")
+		return fmt.Errorf("could not initialize denom module: %w", err)
 	}
 
 	return nil

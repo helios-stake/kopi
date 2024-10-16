@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/cache"
+	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"math"
 	"strconv"
 	"sync"
@@ -9,8 +11,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/stretchr/testify/require"
 )
@@ -19,6 +20,7 @@ const (
 	Alice = "kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5"
 	Bob   = "kopi1cgxt4umyzmuupaem0t4azuvg5ca02mtm42cyxa"
 	Carol = "kopi1a622gyh8e95mkxhumtv7j3umky32vjq0c84zuv"
+	Dave  = "kopi1ktr8krut00d7yg43nr7tfhksqgape4789gqgfc"
 )
 
 var initConfig sync.Once
@@ -26,15 +28,15 @@ var initConfig sync.Once
 func initSDKConfig() {
 	initConfig.Do(func() {
 		// Set prefixes
-		accountPubKeyPrefix := utils.Bech32PrefixAccAddr + "pub"
-		validatorAddressPrefix := utils.Bech32PrefixAccAddr + "valoper"
-		validatorPubKeyPrefix := utils.Bech32PrefixAccAddr + "valoperpub"
-		consNodeAddressPrefix := utils.Bech32PrefixAccAddr + "valcons"
-		consNodePubKeyPrefix := utils.Bech32PrefixAccAddr + "valconspub"
+		accountPubKeyPrefix := constants.Bech32PrefixAccAddr + "pub"
+		validatorAddressPrefix := constants.Bech32PrefixAccAddr + "valoper"
+		validatorPubKeyPrefix := constants.Bech32PrefixAccAddr + "valoperpub"
+		consNodeAddressPrefix := constants.Bech32PrefixAccAddr + "valcons"
+		consNodePubKeyPrefix := constants.Bech32PrefixAccAddr + "valconspub"
 
 		// Set and seal config
 		config := sdk.GetConfig()
-		config.SetBech32PrefixForAccount(utils.Bech32PrefixAccAddr, accountPubKeyPrefix)
+		config.SetBech32PrefixForAccount(constants.Bech32PrefixAccAddr, accountPubKeyPrefix)
 		config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
 		config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
 		config.Seal()
@@ -42,7 +44,7 @@ func initSDKConfig() {
 }
 
 func Pow(amount int64) int64 {
-	fac := int64(math.Pow(10, float64(utils.DecimalPlaces)))
+	fac := int64(math.Pow(10, float64(constants.DecimalPlaces)))
 	return amount * fac
 }
 
@@ -62,7 +64,7 @@ func PowDec(amount int64) sdkmath.LegacyDec {
 	return sdkmath.LegacyNewDec(Pow(amount))
 }
 
-func addFunds(ctx context.Context, k bankkeeper.BaseKeeper, t *testing.T) {
+func addFunds(ctx context.Context, k TestBankKeeper, t *testing.T) {
 	addresses := []string{Alice, Bob, Carol}
 	denoms := []string{
 		"ukopi",
@@ -75,7 +77,7 @@ func addFunds(ctx context.Context, k bankkeeper.BaseKeeper, t *testing.T) {
 
 	for _, address := range addresses {
 		for _, denom := range denoms {
-			AddFunds(t, ctx, k, denom, address, int64(100_000_000_000))
+			AddFunds(ctx, t, k, denom, address, int64(100_000_000_000))
 		}
 	}
 }
@@ -85,7 +87,7 @@ type TestBankKeeper interface {
 	SendCoinsFromModuleToAccount(context.Context, string, sdk.AccAddress, sdk.Coins) error
 }
 
-func AddFunds(t *testing.T, ctx context.Context, k TestBankKeeper, denom, address string, amount int64) {
+func AddFunds(ctx context.Context, t *testing.T, k TestBankKeeper, denom, address string, amount int64) {
 	coin := sdk.NewCoin(denom, sdkmath.LegacyNewDec(amount).RoundInt())
 	coins := sdk.NewCoins(coin)
 	err := k.MintCoins(ctx, dextypes.PoolReserve, coins)
@@ -93,4 +95,29 @@ func AddFunds(t *testing.T, ctx context.Context, k TestBankKeeper, denom, addres
 	addr, err := sdk.AccAddressFromBech32(address)
 	require.NoError(t, err)
 	require.NoError(t, k.SendCoinsFromModuleToAccount(ctx, dextypes.PoolReserve, addr, coins))
+}
+
+type SetLiquidityBankKeeper interface {
+	TestBankKeeper
+
+	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(context.Context, string, string, sdk.Coins) error
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+}
+
+func SetLiquidity(ctx context.Context, k SetLiquidityBankKeeper, dexkeeper dexkeeper.Keeper, t *testing.T, pool map[string]int64) {
+	acc := dexkeeper.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolLiquidity)
+	existingCoins := k.SpendableCoins(ctx, acc.GetAddress())
+
+	require.NoError(t, k.SendCoinsFromModuleToModule(ctx, dextypes.PoolLiquidity, dextypes.PoolReserve, existingCoins))
+	require.NoError(t, k.BurnCoins(ctx, dextypes.PoolReserve, existingCoins))
+
+	for denom, amount := range pool {
+		AddFunds(ctx, t, k, denom, acc.GetAddress().String(), amount)
+
+		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+			dexkeeper.SetLiquidity(innerCtx, denom, dextypes.Liquidity{Address: Alice, Amount: sdkmath.NewInt(amount)})
+			return nil
+		}))
+	}
 }

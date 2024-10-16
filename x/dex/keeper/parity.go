@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -18,7 +19,7 @@ func (k Keeper) CalculateParity(ctx context.Context, kCoin string) (*math.Legacy
 			return nil, referenceDenom, nil
 		}
 
-		return nil, referenceDenom, errors.Wrap(err, "could not get highest price denom")
+		return nil, referenceDenom, fmt.Errorf("could not get highest price denom: %w", err)
 	}
 
 	referenceRatio, err := k.GetRatio(ctx, referenceDenom)
@@ -47,7 +48,7 @@ func (k Keeper) GetHighestPriceDenom(ctx context.Context, kCoin string) (math.Le
 	for _, reference := range k.DenomKeeper.ReferenceDenoms(ctx, kCoin) {
 		price, err := k.CalculatePrice(ctx, kCoin, reference)
 		if err != nil {
-			return referencePrice, referenceDenom, errors.Wrap(err, "could not calculate price")
+			return referencePrice, referenceDenom, fmt.Errorf("could not calculate price: %w", err)
 		}
 
 		if referencePrice.IsNil() || price.GT(referencePrice) {

@@ -18,15 +18,31 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:     "Shows the parameters of the module",
 				},
 				{
-					RpcMethod: "SimulateTrade",
-					Use:       "simulate-trade [denom_from] [denom_to] [amount]",
-					Short:     "Simulates a trade without executing it",
+					RpcMethod: "QuerySimulateSell",
+					Use:       "simulate-trade [denom_giving] [denom_receiving] [amount]",
+					Short:     "Simulates a sell without executing it",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
 						{
-							ProtoField: "denom_from",
+							ProtoField: "denom_giving",
 						},
 						{
-							ProtoField: "denom_to",
+							ProtoField: "denom_receiving",
+						},
+						{
+							ProtoField: "amount",
+						},
+					},
+				},
+				{
+					RpcMethod: "QuerySimulateBuy",
+					Use:       "simulate-buy [denom_giving] [denom_receiving] [amount]",
+					Short:     "Simulates a buy without executing it",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "denom_giving",
+						},
+						{
+							ProtoField: "denom_receiving",
 						},
 						{
 							ProtoField: "amount",
@@ -94,20 +110,42 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					},
 				},
 				{
-					RpcMethod: "Trade",
-					Use:       "trade [denom_from] [denom_to] [amount] [max_price] [allow_incomplete]",
+					RpcMethod: "Sell",
+					Use:       "sell [denom_giving] [denom_receiving] [amount] [max_price] [minimum_trade_amount]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
 						{
-							ProtoField: "denom_from",
+							ProtoField: "denom_giving",
 						},
 						{
-							ProtoField: "denom_to",
+							ProtoField: "denom_receiving",
 						},
 						{
 							ProtoField: "amount",
 						},
 						{
-							ProtoField: "allow_incomplete",
+							ProtoField: "minimum_trade_amount",
+						},
+						{
+							ProtoField: "max_price",
+							Optional:   true,
+						},
+					},
+				},
+				{
+					RpcMethod: "Buy",
+					Use:       "buy [denom_giving] [denom_receiving] [amount] [max_price] [minimum_trade_amount]",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "denom_giving",
+						},
+						{
+							ProtoField: "denom_receiving",
+						},
+						{
+							ProtoField: "amount",
+						},
+						{
+							ProtoField: "minimum_trade_amount",
 						},
 						{
 							ProtoField: "max_price",
@@ -117,13 +155,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "AddOrder",
-					Use:       "add-order [denom_from] [denom_to] [amount] [trade_amount] [max_price] [blocks] [interval] [allow_incomplete]",
+					Use:       "add-order [denom_giving] [denom_receiving] [amount] [trade_amount] [max_price] [blocks] [interval] [allow_incomplete]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
 						{
-							ProtoField: "denom_from",
+							ProtoField: "denom_giving",
 						},
 						{
-							ProtoField: "denom_to",
+							ProtoField: "denom_receiving",
 						},
 						{
 							ProtoField: "amount",
@@ -142,6 +180,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 						},
 						{
 							ProtoField: "allow_incomplete",
+						},
+					},
+				},
+				{
+					RpcMethod: "RemoveOrder",
+					Use:       "remove-order [index]",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "index",
 						},
 					},
 				},

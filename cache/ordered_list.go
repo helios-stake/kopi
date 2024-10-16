@@ -1,5 +1,7 @@
 package cache
 
+import "golang.org/x/exp/slices"
+
 type ordered interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 |
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
@@ -9,6 +11,10 @@ type ordered interface {
 type KeyValue[K ordered, V any] struct {
 	key   K
 	value V
+}
+
+func (kv KeyValue[K, V]) Key() K {
+	return kv.key
 }
 
 func (kv KeyValue[K, V]) Value() V {
@@ -58,7 +64,7 @@ func (ol *OrderedList[K, V]) GetKeys() (keys []K) {
 	return
 }
 
-func (ol OrderedList[K, V]) GetIndex(key K) (int, bool) {
+func (ol *OrderedList[K, V]) GetIndex(key K) (int, bool) {
 	return getIndex(ol.list, key)
 }
 
@@ -67,6 +73,8 @@ func (ol *OrderedList[K, V]) Remove(key K) {
 	if has {
 		ol.list = append(ol.list[:listIndex], ol.list[listIndex+1:]...)
 	}
+
+	ol.list = slices.Clip(ol.list)
 }
 
 func (ol *OrderedList[K, V]) Set(keyValue KeyValue[K, V]) {
@@ -96,15 +104,28 @@ func getIndex[K ordered, V any](list []KeyValue[K, V], key K) (int, bool) {
 	low, high := 0, len(list)-1
 
 	for low <= high {
-		mid := low + (high-low)/2
+		if high-low <= 8 {
+			for index := low; index <= high; index++ {
+				if list[index].key == key {
+					return index, true
+				}
 
-		if list[mid].key == key {
-			return mid, true
-		}
-		if list[mid].key < key {
-			low = mid + 1
+				if list[index].key > key {
+					return index, false
+				}
+			}
+
+			return high + 1, false
 		} else {
-			high = mid - 1
+			mid := low + (high-low)/2
+
+			if list[mid].key == key {
+				return mid, true
+			} else if list[mid].key < key {
+				low = mid + 1
+			} else {
+				high = mid - 1
+			}
 		}
 	}
 

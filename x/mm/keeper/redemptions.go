@@ -2,16 +2,13 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
 	"fmt"
-	"github.com/kopi-money/kopi/cache"
 	"sort"
 
-	"cosmossdk.io/errors"
+	"cosmossdk.io/collections"
+	"github.com/kopi-money/kopi/cache"
+
 	"cosmossdk.io/math"
-	"cosmossdk.io/store/prefix"
-	storetypes "cosmossdk.io/store/types"
-	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
@@ -24,21 +21,26 @@ func (k Keeper) LoadRedemptionRequest(ctx context.Context, denom, address string
 
 func (k Keeper) RedemptionIterator(ctx context.Context, denom string) cache.Iterator[string, types.Redemption] {
 	rng := collections.NewPrefixedPairRange[string, string](denom)
-	return k.redemptions.Iterator(ctx, rng, denom, nil)
+	return k.redemptions.Iterator(ctx, rng, denom)
+}
+
+func (k Keeper) GetRedemptionSum(ctx context.Context, denom string) math.Int {
+	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolRedemption)
+	return k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(denom)
 }
 
 func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		var redemptions []*types.Redemption
 
-		iterator := k.RedemptionIterator(ctx, cAsset.BaseDenom)
+		iterator := k.RedemptionIterator(ctx, cAsset.BaseDexDenom)
 		for iterator.Valid() {
 			redemption := iterator.GetNext()
 			redemptions = append(redemptions, &redemption)
 		}
 
 		list = append(list, types.DenomRedemption{
-			Denom:       cAsset.BaseDenom,
+			Denom:       cAsset.BaseDexDenom,
 			Redemptions: redemptions,
 		})
 	}
@@ -53,7 +55,7 @@ func (k Keeper) updateRedemption(ctx context.Context, denom string, redemption t
 		return nil
 	} else {
 		if err := k.SetRedemption(ctx, denom, redemption); err != nil {
-			return errors.Wrap(err, "could not set redemption")
+			return fmt.Errorf("could not set redemption: %w", err)
 		}
 
 		return nil
@@ -76,45 +78,24 @@ func (k Keeper) removeRedemption(ctx context.Context, denom, address string) {
 	k.redemptions.Remove(ctx, denom, address)
 }
 
-func (k Keeper) GetRedemptionSum(ctx context.Context, denom string) math.Int {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixRedemptions))
-
-	iterator := storetypes.KVStorePrefixIterator(store, types.KeyDenom(denom))
-	defer iterator.Close()
-
-	sum := math.ZeroInt()
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Redemption
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-
-		sum = sum.Add(val.Amount)
-	}
-
-	return sum
-}
-
-func (k Keeper) HandleRedemptions(ctx context.Context, eventManager sdk.EventManagerI) error {
+func (k Keeper) HandleRedemptions(ctx context.Context) error {
 	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		if err := k.handleRedemptionsForCAsset(ctx, eventManager, CAsset); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("could not handle withdrawals for CAsset %v", CAsset.Name))
+		if err := k.handleRedemptionsForCAsset(ctx, CAsset); err != nil {
+			return fmt.Errorf("could not handle withdrawals for CAsset %v: %w", CAsset.DexDenom, err)
 		}
 	}
 
 	return nil
 }
 
-func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset) error {
-	redemptions := k.RedemptionIterator(ctx, cAsset.BaseDenom).GetAll()
+func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset *denomtypes.CAsset) error {
+	redemptions := k.RedemptionIterator(ctx, cAsset.BaseDexDenom).GetAll()
 	if len(redemptions) == 0 {
 		return nil
 	}
 
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	k.logger.Info(fmt.Sprintf("(%v / %v): %v", sdkCtx.BlockHeight(), cAsset.BaseDenom, len(redemptions)))
-
 	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	found, coin := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).Find(cAsset.BaseDenom)
+	found, coin := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).Find(cAsset.BaseDexDenom)
 	if !found || coin.Amount.IsZero() {
 		return nil
 	}
@@ -133,11 +114,10 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk
 		redemptions = redemptions[1:]
 
 		if redemption.Amount.IsNil() {
-			k.logger.Error(fmt.Sprintf("RRN (%v / %v)", redemption.Address, cAsset.BaseDenom))
 			continue
 		}
 
-		sentAmount, err := k.handleSingleRedemption(ctx, eventManager, cAsset, redemption, available)
+		sentAmount, err := k.handleSingleRedemption(ctx, cAsset, redemption, available)
 		if err != nil {
 			return err
 		}
@@ -148,31 +128,31 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk
 	return nil
 }
 
-func (k Keeper) handleSingleRedemption(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
+func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset *denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
 	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
 
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
-	if err := k.updateRedemption(ctx, cAsset.BaseDenom, entry); err != nil {
-		return math.LegacyDec{}, errors.Wrap(err, "could not update redemption request")
+	if err := k.updateRedemption(ctx, cAsset.BaseDexDenom, entry); err != nil {
+		return math.LegacyDec{}, fmt.Errorf("could not update redemption request: %w", err)
 	}
 
 	// subtract the priority cost set by the user to be handled with higher priority
 	feeCost := grossRedemptionAmountBase.Mul(entry.Fee)
 	redemptionAmount := grossRedemptionAmountBase.Sub(feeCost)
-	if err := k.handleRedemptionFee(ctx, eventManager, cAsset, feeCost); err != nil {
+	if err := k.handleRedemptionFee(ctx, cAsset, feeCost); err != nil {
 		return math.LegacyDec{}, err
 	}
 
 	// send redeemed coins (sub fee) to user
 	acc, _ := sdk.AccAddressFromBech32(entry.Address)
-	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, redemptionAmount.TruncateInt()))
+	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, redemptionAmount.TruncateInt()))
 	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, acc, coins); err != nil {
 		return math.LegacyDec{}, err
 	}
 
 	// Burn the CAsset tokens that have been redeemed
-	coins = sdk.NewCoins(sdk.NewCoin(cAsset.Name, redemptionAmountCAsset.TruncateInt()))
+	coins = sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, redemptionAmountCAsset.TruncateInt()))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolRedemption, types.ModuleName, coins); err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -181,10 +161,10 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, eventManager sdk.Eve
 		return math.LegacyDec{}, err
 	}
 
-	eventManager.EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_executed",
 			sdk.Attribute{Key: "address", Value: entry.Address},
-			sdk.Attribute{Key: "denom", Value: cAsset.BaseDenom},
+			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
 			sdk.Attribute{Key: "redeemed", Value: redemptionAmountCAsset.String()},
 			sdk.Attribute{Key: "received", Value: redemptionAmount.String()},
 		),
@@ -199,8 +179,8 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 	}
 
 	// First it is calculated how much of the total share the withdrawal request's given tokens represent.
-	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.Name).Amount)
-	cAssetValue := k.calculateCAssetValue(ctx, cAsset)
+	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
+	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
 
 	// how much value of all cAssetValue does the redemption request represent
 	redemptionShare := requestedCAssetAmount.Quo(cAssetSupply)
@@ -220,11 +200,10 @@ func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *
 
 	// how much of the given cAssets have been used
 	usedCAssets := requestedCAssetAmount.Mul(requestedShare)
-
 	return redeemAmount, usedCAssets
 }
 
-func (k Keeper) handleRedemptionFee(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset, amount math.LegacyDec) error {
+func (k Keeper) handleRedemptionFee(ctx context.Context, cAsset *denomtypes.CAsset, amount math.LegacyDec) error {
 	if amount.LTE(math.LegacyZeroDec()) {
 		return nil
 	}
@@ -232,24 +211,17 @@ func (k Keeper) handleRedemptionFee(ctx context.Context, eventManager sdk.EventM
 	protocolShare := k.GetParams(ctx).ProtocolShare
 	protocolAmount := protocolShare.Mul(amount)
 
-	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, protocolAmount.TruncateInt()))
+	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, protocolAmount.TruncateInt()))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolVault, dextypes.PoolReserve, coins); err != nil {
 		return err
 	}
 
-	eventManager.EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("redemption_fee_protocol",
-			sdk.Attribute{Key: "denom", Value: cAsset.BaseDenom},
+			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
 			sdk.Attribute{Key: "fee", Value: protocolAmount.TruncateInt().String()},
 		),
 	)
 
 	return nil
-}
-
-func compareRedemptions(r1, r2 types.Redemption) bool {
-	return r1.Amount.Equal(r2.Amount) &&
-		r1.Fee.Equal(r2.Fee) &&
-		r1.Address == r2.Address &&
-		r1.AddedAt == r2.AddedAt
 }

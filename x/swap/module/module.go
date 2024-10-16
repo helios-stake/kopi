@@ -2,7 +2,6 @@ package swap
 
 import (
 	"context"
-	"cosmossdk.io/errors"
 	"encoding/json"
 	"fmt"
 	"github.com/kopi-money/kopi/cache"
@@ -161,7 +160,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return errors.Wrap(err, "could not initialize swap module")
+		return fmt.Errorf("could not initialize swap module: %w", err)
 	}
 
 	return nil
@@ -169,14 +168,18 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(goCtx context.Context) error {
-	return cache.Transact(goCtx, func(ctx sdk.Context) error {
-		if err := am.keeper.Burn(ctx); err != nil {
-			return errors.Wrap(err, "error burning end of block")
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		if err := am.keeper.Burn(innerCtx); err != nil {
+			return fmt.Errorf("error burning end of block: %w", err)
 		}
 
-		if err := am.keeper.Mint(ctx); err != nil {
-			return errors.Wrap(err, "error minting end of block")
+		if err := am.keeper.Mint(innerCtx); err != nil {
+			return fmt.Errorf("error minting end of block: %w", err)
+		}
+
+		if err := am.keeper.Clean(innerCtx); err != nil {
+			return fmt.Errorf("could not clean balance: %w", err)
 		}
 
 		return nil

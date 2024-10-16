@@ -2,53 +2,58 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
 var (
-	_ sdk.Msg = &MsgUpdateFeeReimbursement{}
 	_ sdk.Msg = &MsgUpdateMaxOrderLife{}
 	_ sdk.Msg = &MsgUpdateReserveShare{}
 	_ sdk.Msg = &MsgUpdateTradeFee{}
 	_ sdk.Msg = &MsgUpdateVirtualLiquidityDecay{}
 )
 
-// ValidateBasic does a sanity check on the provided data.
-func (m *MsgUpdateFeeReimbursement) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+func (msg *MsgUpdateMaxOrderLife) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
 	return nil
 }
 
-func (m *MsgUpdateMaxOrderLife) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+func (msg *MsgUpdateReserveShare) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	if err := denomtypes.IsDec(msg.ReserveShare, math.LegacyZeroDec()); err != nil {
+		return fmt.Errorf("reserve_share: %w", err)
 	}
 
 	return nil
 }
 
-func (m *MsgUpdateReserveShare) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+func (msg *MsgUpdateTradeFee) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	if err := denomtypes.IsDec(msg.TradeFee, math.LegacyZeroDec()); err != nil {
+		return fmt.Errorf("trade_fee: %w", err)
 	}
 
 	return nil
 }
 
-func (m *MsgUpdateTradeFee) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+func (msg *MsgUpdateVirtualLiquidityDecay) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	return nil
-}
-
-func (m *MsgUpdateVirtualLiquidityDecay) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return errorsmod.Wrap(err, "invalid authority address")
+	if err := denomtypes.IsDec(msg.VirtualLiquidityDecay, math.LegacyZeroDec()); err != nil {
+		return fmt.Errorf("virtual_liquidity_decay: %w", err)
 	}
 
 	return nil

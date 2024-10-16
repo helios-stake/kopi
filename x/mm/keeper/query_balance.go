@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
@@ -15,17 +17,22 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	orders := k.DexKeeper.GetAllOrdersByAddress(ctx, req.Address)
-	addr, _ := sdk.AccAddressFromBech32(req.Address)
-	coins := k.BankKeeper.SpendableCoins(ctx, addr)
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
 
-	sumSumUSD := math.LegacyZeroDec()
-	sumLiqUSD := math.LegacyZeroDec()
-	sumOrdUSD := math.LegacyZeroDec()
-	sumWalUSD := math.LegacyZeroDec()
-	sumColUSD := math.LegacyZeroDec()
+	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get reference denom: %w", err)
+	}
 
-	entries := []*types.FullDenomBalance{}
+	var (
+		orders  = k.DexKeeper.GetAllOrdersByAddress(ctx, req.Address)
+		coins   = k.BankKeeper.SpendableCoins(ctx, address)
+		entries = []*types.FullDenomBalance{}
+	)
+
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		liq := k.DexKeeper.GetLiquidityByAddress(ctx, denom, req.Address)
 		ord := getOrderValueByDenom(orders, denom)
@@ -33,17 +40,11 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		col := k.getProvidedCollateral(ctx, req.Address, denom)
 		sum := liq.Add(ord).Add(wal).Add(col)
 
-		liqUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, liq.ToLegacyDec())
-		ordUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, ord.ToLegacyDec())
-		walUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, wal.ToLegacyDec())
-		colUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, col.ToLegacyDec())
-		sumUSD, _ := k.DexKeeper.GetValueInUSD(ctx, denom, sum.ToLegacyDec())
-
-		sumSumUSD = sumSumUSD.Add(sumUSD)
-		sumLiqUSD = sumLiqUSD.Add(liqUSD)
-		sumOrdUSD = sumOrdUSD.Add(ordUSD)
-		sumWalUSD = sumWalUSD.Add(walUSD)
-		sumColUSD = sumColUSD.Add(colUSD)
+		liqUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, liq.ToLegacyDec())
+		ordUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, ord.ToLegacyDec())
+		walUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, wal.ToLegacyDec())
+		colUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, col.ToLegacyDec())
+		sumUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, sum.ToLegacyDec())
 
 		entries = append(entries, &types.FullDenomBalance{
 			Denom:         denom,
@@ -61,12 +62,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 	}
 
 	return &types.QueryFullBalanceResponse{
-		Sum:           sumSumUSD.String(),
-		SumWallet:     sumWalUSD.String(),
-		SumLiquidity:  sumLiqUSD.String(),
-		SumOrders:     sumOrdUSD.String(),
-		SumCollateral: sumColUSD.String(),
-		Denoms:        entries,
+		Denoms: entries,
 	}, nil
 }
 
@@ -83,7 +79,7 @@ func getOrderValueByDenom(orders []dextypes.Order, denom string) math.Int {
 	sum := math.ZeroInt()
 
 	for _, order := range orders {
-		if order.DenomFrom == denom {
+		if order.DenomGiving == denom {
 			sum = sum.Add(order.AmountLeft)
 		}
 	}

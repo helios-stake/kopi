@@ -1,0 +1,38 @@
+syntax = "proto3";
+package kopi.blockspeed;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/blockspeed/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/blockspeed/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/kopi/blockspeed/params";
+  }
+
+  rpc Blockspeed(QueryBlockspeedRequest) returns (QueryBlockspeedResponse) {
+    option (google.api.http).get = "/kopi/blockspeed/blockspeed";
+  }
+}
+
+message QueryBlockspeedRequest {}
+
+message QueryBlockspeedResponse {
+  string blocks_per_second = 1;
+  string seconds_per_block = 2;
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}

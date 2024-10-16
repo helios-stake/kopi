@@ -1,0 +1,18 @@
+syntax = "proto3";
+package kopi.blockspeed;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/blockspeed/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "kopi/x/blockspeed/Params";
+  option (gogoproto.equal) = true;
+
+  bytes moving_average_factor = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

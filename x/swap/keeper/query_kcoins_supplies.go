@@ -31,5 +31,7 @@ func (k Keeper) KCoinsSupplies(ctx context.Context, req *types.QueryKCoinsSuppli
 		})
 	}
 
-	return &types.QueryKCoinsSuppliesResponse{Supplies: supplies}, nil
+	return &types.QueryKCoinsSuppliesResponse{
+		Supplies: supplies,
+	}, nil
 }

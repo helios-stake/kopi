@@ -38,5 +38,7 @@ func (k Keeper) Ratios(ctx context.Context, _ *types.QueryGetRatiosRequest) (*ty
 		})
 	}
 
-	return &types.QueryGetRatiosResponse{Ratios: ratios}, nil
+	return &types.QueryGetRatiosResponse{
+		Ratios: ratios,
+	}, nil
 }

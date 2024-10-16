@@ -3,7 +3,7 @@ package types
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		LiquidityList:      []Liquidity{},
+		LiquidityList:      []DenomLiquidity{},
 		RatioList:          []Ratio{},
 		LiquidityNextIndex: 0,
 

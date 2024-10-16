@@ -1,8 +1,10 @@
 package keeper
 
 import (
-	"github.com/kopi-money/kopi/cache"
+	"context"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -17,11 +19,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
+	reservekeeper "github.com/kopi-money/kopi/x/reserve/keeper"
 	swapkeeper "github.com/kopi-money/kopi/x/swap/keeper"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
 )
 
-func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, sdk.Context) {
+func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, reservekeeper.Keeper, context.Context) {
 	dexKeeper, ctx, keys := DexKeeper(t)
 
 	registry := codectypes.NewInterfaceRegistry()
@@ -40,7 +43,9 @@ func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, sdk.Context)
 	)
 	cache.AddCache(swapKeeper)
 
-	require.NoError(t, swapKeeper.SetParams(ctx, swaptypes.DefaultParams()))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return swapKeeper.SetParams(innerCtx, swaptypes.DefaultParams())
+	}))
 
 	accountKeeper := swapKeeper.AccountKeeper.(authkeeper.AccountKeeper)
 	swapAcc := authtypes.NewEmptyModuleAccount(swaptypes.ModuleName, authtypes.Burner, authtypes.Minter)
@@ -48,11 +53,22 @@ func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, sdk.Context)
 	require.NoError(t, swapAcc.SetAccountNumber(acc.GetAccountNumber()))
 	accountKeeper.SetAccount(ctx, swapAcc)
 
-	return swapKeeper, dexKeeper, ctx
+	reserveKeeper := reservekeeper.NewKeeper(
+		cdc,
+		runtime.NewKVStoreService(keys.res),
+		log.NewNopLogger(),
+		accountKeeper,
+		dexKeeper.BankKeeper,
+		dexKeeper.DenomKeeper,
+		dexKeeper,
+		NewMMKeeper(keys, dexKeeper, authority),
+		authority.String())
+
+	return swapKeeper, dexKeeper, reserveKeeper, ctx
 }
 
-func SetupSwapMsgServer(t *testing.T) (swapkeeper.Keeper, dextypes.MsgServer, dexkeeper.Keeper, sdk.Context) {
-	k, dexKeeper, ctx := SwapKeeper(t)
+func SetupSwapMsgServer(t *testing.T) (swapkeeper.Keeper, dextypes.MsgServer, dexkeeper.Keeper, reservekeeper.Keeper, context.Context) {
+	k, dexKeeper, reserveKeeper, ctx := SwapKeeper(t)
 	addFunds(ctx, dexKeeper.BankKeeper.(bankkeeper.BaseKeeper), t)
-	return k, dexkeeper.NewMsgServerImpl(dexKeeper), dexKeeper, ctx
+	return k, dexkeeper.NewMsgServerImpl(dexKeeper), dexKeeper, reserveKeeper, ctx
 }

@@ -2,8 +2,8 @@ package cache
 
 import (
 	"context"
+
 	"cosmossdk.io/collections"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type ValueGetter[K, V any] func(K) V
@@ -23,7 +23,6 @@ type IteratorList[K ordered, V any] struct {
 	currentItem *KeyValue[K, Entry[V]]
 
 	deleteList []K
-	filter     Filter[K]
 
 	index    int
 	useEmpty bool
@@ -49,10 +48,6 @@ func (il *IteratorList[K, V]) stepToNextValue() {
 	for il.index < il.orderedList.Size() {
 		entry := il.orderedList.GetByIndex(il.index)
 		il.index++
-
-		if il.filter != nil && !il.filter(entry.key) {
-			continue
-		}
 
 		if len(il.deleteList) > 0 {
 			if il.deleteList[0] == entry.key {
@@ -83,16 +78,17 @@ func (il *IteratorList[K, V]) next() KeyValue[K, Entry[V]] {
 }
 
 func useCache(ctx context.Context, currentHeight int64) bool {
-	if sdkCtx, ok := ctx.(sdk.Context); ok {
-		return sdkCtx.BlockHeight() == currentHeight
+	height := getCurrentHeight(ctx)
+	if height == 0 {
+		height = currentHeight
 	}
 
-	return true
+	return height == currentHeight
 }
 
-func newIterator[K ordered, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], valueGetter ValueGetter[K, V], deleted []K, cci CreateCollectionIterator[K, V], filter Filter[K], currentHeight int64) Iterator[K, V] {
+func newIterator[K ordered, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], valueGetter ValueGetter[K, V], deleted []K, cci CreateCollectionIterator[K, V], currentHeight int64) Iterator[K, V] {
 	if useCache(ctx, currentHeight) {
-		return newCacheIterator(ctx, cache, changes, valueGetter, deleted, filter)
+		return newCacheIterator(ctx, cache, changes, valueGetter, deleted)
 	} else {
 		return cci()
 	}
@@ -110,7 +106,7 @@ func (c CollectionIterator[K, V]) GetAll() (list []V) {
 	return
 }
 
-// Probably not the most elegant way to do this
+// Probably not the most elegant way to do this...
 func (c CollectionIterator[K, V]) GetAllFromCache() []KeyValue[K, Entry[V]] {
 	panic("implement me")
 }
@@ -145,17 +141,15 @@ type CacheIterator[K ordered, V any] struct {
 	smallestDelete *K
 }
 
-func newCacheIterator[K ordered, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], valueGetter ValueGetter[K, V], deleted []K, filter Filter[K]) Iterator[K, V] {
+func newCacheIterator[K ordered, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], valueGetter ValueGetter[K, V], deleted []K) Iterator[K, V] {
 	iterator := CacheIterator[K, V]{
 		ctx: ctx,
 		changes: &IteratorList[K, V]{
 			orderedList: changes,
-			filter:      filter,
 			useEmpty:    true,
 		},
 		cache: &IteratorList[K, V]{
 			orderedList: cache,
-			filter:      filter,
 			deleteList:  deleted,
 		},
 		valueGetter: valueGetter,
@@ -186,7 +180,9 @@ func (it *CacheIterator[K, V]) stepToFirst() {
 
 func (it *CacheIterator[K, V]) currentCacheItemIsDeleted() bool {
 	if it.changes.currentItem != nil && it.cache.currentItem != nil {
-		return it.changes.currentItem.key == it.cache.currentItem.key
+		if it.changes.currentItem.key == it.cache.currentItem.key {
+			return it.changes.currentItem.value.value == nil
+		}
 	}
 
 	return false

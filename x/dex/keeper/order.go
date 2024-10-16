@@ -2,11 +2,22 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
+	"cosmossdk.io/collections"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
+
+func (k Keeper) GetOrderNextIndex(ctx context.Context) uint64 {
+	nextIndex, _ := k.ordersNextIndex.Get(ctx)
+	return nextIndex
+}
+
+func (k Keeper) SetOrderNextIndex(ctx context.Context, index uint64) {
+	k.ordersNextIndex.Set(ctx, index)
+}
 
 // SetOrder sets a specific order in the store from its index. When the index is zero, i.e. it's a new entry,
 // the NextIndex is increased and updated as well.
@@ -38,10 +49,10 @@ func (k Keeper) CheckOrderPoolBalance(ctx context.Context, denom string) error {
 		sumOrder   int64
 	)
 
-	iterator := k.orders.Iterator(ctx, nil, nil)
+	iterator := k.orders.Iterator(ctx, nil)
 	for iterator.Valid() {
 		order := iterator.GetNext()
-		if order.DenomFrom != denom {
+		if order.DenomGiving != denom {
 			continue
 		}
 
@@ -70,19 +81,23 @@ func (k Keeper) GetOrdersSum(ctx context.Context) map[string]math.Int {
 	iterator := k.OrderIterator(ctx)
 	for iterator.Valid() {
 		order := iterator.GetNext()
-		sum, has := denomSums[order.DenomFrom]
+		sum, has := denomSums[order.DenomGiving]
 		if !has {
 			sum = math.ZeroInt()
 		}
 
-		denomSums[order.DenomFrom] = sum.Add(order.AmountLeft)
+		denomSums[order.DenomGiving] = sum.Add(order.AmountLeft)
 	}
 
 	return denomSums
 }
 
 func (k Keeper) OrderIterator(ctx context.Context) cache.Iterator[uint64, types.Order] {
-	return k.orders.Iterator(ctx, nil, nil)
+	return k.orders.Iterator(ctx, nil)
+}
+
+func (k Keeper) OrderCollectionIterator(ctx context.Context, rng collections.Ranger[uint64]) (collections.Iterator[uint64, types.Order], error) {
+	return k.orders.CollectionIterator(ctx, rng)
 }
 
 func (k Keeper) GetAllOrdersNum() int {
@@ -94,7 +109,7 @@ func (k Keeper) NumRunningOrderTransactions() int {
 }
 
 func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list []types.Order) {
-	iterator := k.orders.Iterator(ctx, nil, nil)
+	iterator := k.orders.Iterator(ctx, nil)
 	for iterator.Valid() {
 		order := iterator.GetNext()
 		if order.Creator == address {
@@ -103,18 +118,4 @@ func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list
 	}
 
 	return
-}
-
-func compareOrders(o1, o2 types.Order) bool {
-	return o1.AddedAt == o2.AddedAt &&
-		o1.AllowIncomplete == o2.AllowIncomplete &&
-		o1.AmountLeft.Equal(o2.AmountLeft) &&
-		o1.Creator == o2.Creator &&
-		o1.DenomFrom == o2.DenomFrom &&
-		o1.DenomTo == o2.DenomTo &&
-		o1.ExecutionInterval == o2.ExecutionInterval &&
-		o1.Index == o2.Index &&
-		o1.MaxPrice.Equal(o2.MaxPrice) &&
-		o1.NumBlocks == o2.NumBlocks &&
-		o1.TradeAmount.Equal(o2.TradeAmount)
 }

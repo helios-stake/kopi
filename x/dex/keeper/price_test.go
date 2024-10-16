@@ -4,28 +4,28 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
-	"github.com/kopi-money/kopi/utils"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPrice1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, utils.BaseCurrency, keepertest.Pow(2))
+	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2))
 	require.Nil(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "ukusd", keepertest.Pow(2))
+	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2))
 	require.Nil(t, err)
 
-	price1, err := k.CalculatePrice(ctx, utils.BaseCurrency, "ukusd")
+	price1, err := k.CalculatePrice(ctx, constants.BaseCurrency, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(4), price1)
 
-	price2, err := k.CalculatePrice(ctx, "ukusd", utils.BaseCurrency)
+	price2, err := k.CalculatePrice(ctx, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), price2)
 
-	price3, err := k.CalculatePrice(ctx, "ukusd", "uwusdc")
+	price3, err := k.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(1), price3)
 }

@@ -4,18 +4,12 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) ReserveFunds(goCtx context.Context, req *types.QueryReserveFundsRequest) (*types.QueryReserveFundsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) ReserveFunds(ctx context.Context, _ *types.QueryReserveFundsRequest) (*types.QueryReserveFundsResponse, error) {
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve).GetAddress()
 
 	total := math.LegacyZeroDec()
@@ -47,15 +41,15 @@ func (k Keeper) ReserveFunds(goCtx context.Context, req *types.QueryReserveFunds
 		AmountUsd: total.String(),
 	})
 
-	return &types.QueryReserveFundsResponse{Funds: funds}, nil
+	return &types.QueryReserveFundsResponse{
+		Funds: funds,
+	}, nil
 }
 
-func (k Keeper) ReserveFundsPerDenom(goCtx context.Context, req *types.QueryReserveFundsPerDenomRequest) (*types.Denom, error) {
+func (k Keeper) ReserveFundsPerDenom(ctx context.Context, req *types.QueryReserveFundsPerDenomRequest) (*types.Denom, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve).GetAddress()
 	amount := k.GetLiquidityByAddress(ctx, req.Denom, address.String())

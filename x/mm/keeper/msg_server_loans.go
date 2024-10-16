@@ -12,21 +12,14 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
-func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom)
-	if err != nil {
-		return nil, types.ErrInvalidDepositDenom
-	}
-
+func (k msgServer) Borrow(ctx context.Context, msg *types.MsgBorrow) (*types.Void, error) {
 	amountStr := strings.ReplaceAll(msg.Amount, ",", "")
-	amount, err := math.LegacyNewDecFromStr(amountStr)
-	if err != nil {
+	amount, ok := math.NewIntFromString(amountStr)
+	if !ok {
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if amount.LT(math.LegacyZeroDec()) {
+	if amount.LT(math.ZeroInt()) {
 		return nil, types.ErrNegativeAmount
 	}
 
@@ -39,69 +32,89 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, types.ErrInvalidAddress
 	}
 
-	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	vault := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
-	available := vault.AmountOf(msg.Denom)
-
-	if available.LT(amount.TruncateInt()) {
-		return nil, types.ErrNotEnoughFundsInVault
-	}
-
-	borrowableAmount, err := k.calculateBorrowableAmount(ctx, msg.Creator, msg.Denom)
+	_, _, err = k.Keeper.Borrow(ctx, address, msg.Denom, amount)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not execute borrow: %w", err)
 	}
-
-	if borrowableAmount.LT(amount) {
-		errMsg := fmt.Errorf("borrow threshold passed, borrowable: %v, requested: %v", borrowableAmount.String(), amount.String())
-		return nil, errMsg
-	}
-
-	if cAsset.MinimumLoanSize.GT(math.ZeroInt()) && amount.LT(cAsset.MinimumLoanSize.ToLegacyDec()) {
-		return nil, types.ErrLoanSizeTooSmall
-	}
-
-	if k.checkBorrowLimitExceeded(ctx, cAsset, amount) {
-		return nil, types.ErrBorrowLimitExceeded
-	}
-
-	loanIndex, _ := k.updateLoan(ctx, msg.Denom, msg.Creator, amount)
-
-	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount.Ceil().TruncateInt()))
-	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
-		return nil, err
-	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("funds_borrowed",
-			sdk.Attribute{Key: "address", Value: msg.Creator},
-			sdk.Attribute{Key: "denom", Value: msg.Denom},
-			sdk.Attribute{Key: "amount", Value: msg.Amount},
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loanIndex))},
-		),
-	)
 
 	return &types.Void{}, nil
 }
 
-func (k msgServer) RepayLoan(goCtx context.Context, msg *types.MsgRepayLoan) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) Borrow(ctx context.Context, address sdk.AccAddress, denom string, borrowAmount math.Int) (math.Int, math.Int, error) {
+	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, denom)
+	if err != nil {
+		return math.Int{}, math.Int{}, types.ErrInvalidDepositDenom
+	}
 
+	if borrowAmount.LT(math.ZeroInt()) {
+		return math.Int{}, math.Int{}, types.ErrNegativeAmount
+	}
+
+	if borrowAmount.IsZero() {
+		return math.Int{}, math.Int{}, types.ErrZeroAmount
+	}
+
+	vaultAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+	vaultBalance := k.BankKeeper.SpendableCoin(ctx, vaultAcc.GetAddress(), cAsset.BaseDexDenom).Amount
+
+	if vaultBalance.LT(borrowAmount) {
+		k.Logger().Error(fmt.Sprintf("%v < %v %v", vaultBalance.String(), borrowAmount.String(), cAsset.BaseDexDenom))
+		return math.Int{}, math.Int{}, types.ErrNotEnoughFundsInVault
+	}
+
+	borrowableAmount, err := k.CalculateBorrowableAmount(ctx, address.String(), denom)
+	if err != nil {
+		return math.Int{}, math.Int{}, err
+	}
+
+	if borrowableAmount.TruncateInt().LT(borrowAmount) {
+		return math.Int{}, math.Int{}, types.ErrCollateralBorrowLimitExceeded
+	}
+
+	if cAsset.MinimumLoanSize.GT(math.ZeroInt()) && borrowAmount.LT(cAsset.MinimumLoanSize) {
+		return math.Int{}, math.Int{}, types.ErrLoanSizeTooSmall
+	}
+
+	if k.checkBorrowLimitExceeded(ctx, cAsset, borrowAmount) {
+		return math.Int{}, math.Int{}, types.ErrBorrowLimitExceeded
+	}
+
+	loanIndex, _ := k.updateLoan(ctx, denom, address.String(), borrowAmount.ToLegacyDec())
+
+	coins := sdk.NewCoins(sdk.NewCoin(denom, borrowAmount))
+	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
+		return math.Int{}, math.Int{}, err
+	}
+
+	loanValue := k.GetLoanValue(ctx, denom, address.String()).TruncateInt()
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("funds_borrowed",
+			sdk.Attribute{Key: "address", Value: address.String()},
+			sdk.Attribute{Key: "denom", Value: denom},
+			sdk.Attribute{Key: "amount", Value: borrowAmount.String()},
+			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loanIndex))},
+			sdk.Attribute{Key: "borrowed_amount", Value: loanValue.String()},
+		),
+	)
+
+	return borrowAmount, loanValue, nil
+}
+
+func (k msgServer) RepayLoan(ctx context.Context, msg *types.MsgRepayLoan) (*types.Void, error) {
 	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
 	if loanValue.IsZero() {
 		return nil, types.ErrNoLoanFound
 	}
 
-	if err := k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, loanValue); err != nil {
+	if err := k.Repay(ctx, msg.Denom, msg.Creator, loanValue.Ceil().TruncateInt()); err != nil {
 		return nil, err
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgPartiallyRepayLoan) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) PartiallyRepayLoan(ctx context.Context, msg *types.MsgPartiallyRepayLoan) (*types.Void, error) {
 	if _, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); err != nil {
 		return nil, types.ErrInvalidDepositDenom
 	}
@@ -112,12 +125,12 @@ func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgParti
 	}
 
 	amountStr := strings.ReplaceAll(msg.Amount, ",", "")
-	repayAmount, err := math.LegacyNewDecFromStr(amountStr)
-	if err != nil {
+	repayAmount, ok := math.NewIntFromString(amountStr)
+	if !ok {
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if repayAmount.LT(math.LegacyZeroDec()) {
+	if repayAmount.LT(math.ZeroInt()) {
 		return nil, types.ErrNegativeAmount
 	}
 
@@ -125,30 +138,34 @@ func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgParti
 		return nil, types.ErrZeroAmount
 	}
 
-	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
-	repayAmount = math.LegacyMinDec(loanValue, repayAmount)
-
-	if err = k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, repayAmount); err != nil {
+	if err := k.Repay(ctx, msg.Denom, msg.Creator, repayAmount); err != nil {
 		return nil, err
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom, address string, repayAmount math.LegacyDec) error {
+func (k Keeper) Repay(ctx context.Context, denom, address string, repayAmount math.Int) error {
 	acc, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return types.ErrInvalidAddress
 	}
 
-	loanIndex, removed := k.updateLoan(ctx, denom, address, repayAmount.Neg())
+	loanValue := k.GetLoanValue(ctx, denom, address)
+	repayAmount = math.MinInt(loanValue.Ceil().TruncateInt(), repayAmount)
 
-	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount.TruncateInt()))
+	if k.BankKeeper.SpendableCoin(ctx, acc, denom).Amount.LT(repayAmount) {
+		return types.ErrNotEnoughFunds
+	}
+
+	loanIndex, removed := k.updateLoan(ctx, denom, address, repayAmount.ToLegacyDec().Neg())
+
+	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {
 		return err
 	}
 
-	eventManager.EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("loan_repaid",
 			sdk.Attribute{Key: "address", Value: address},
 			sdk.Attribute{Key: "denom", Value: denom},
@@ -158,7 +175,7 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 	)
 
 	if removed {
-		eventManager.EmitEvent(
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 			sdk.NewEvent("loan_removed",
 				sdk.Attribute{Key: "address", Value: address},
 				sdk.Attribute{Key: "denom", Value: denom},

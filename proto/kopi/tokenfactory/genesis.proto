@@ -5,6 +5,7 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "kopi/tokenfactory/params.proto";
 import "kopi/tokenfactory/denoms.proto";
+import "kopi/tokenfactory/pool.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
@@ -18,6 +19,11 @@ message GenesisState {
 
   repeated FactoryDenom factory_denoms = 2 [
     (gogoproto.moretags) = "yaml:\"factory_denoms\"",
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisLiquidityPool liquidityPools = 3 [
+    (gogoproto.moretags) = "yaml:\"liquidity_pools\"",
     (gogoproto.nullable) = false
   ];
 }

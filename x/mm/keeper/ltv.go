@@ -2,12 +2,13 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/utils"
+	"github.com/kopi-money/kopi/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func (k Keeper) calculateBorrowableAmount(ctx context.Context, address, borrowDenom string) (math.LegacyDec, error) {
+func (k Keeper) CalculateBorrowableAmount(ctx context.Context, address, borrowDenom string) (math.LegacyDec, error) {
 	collateralBaseValue, err := k.calculateCollateralBaseValue(ctx, address)
 	if err != nil {
 		return math.LegacyDec{}, err
@@ -21,7 +22,7 @@ func (k Keeper) calculateBorrowableAmount(ctx context.Context, address, borrowDe
 	borrowableBaseValue := collateralBaseValue.Sub(loanBaseValue)
 	borrowableBaseValue = math.LegacyMaxDec(math.LegacyZeroDec(), borrowableBaseValue)
 
-	borrowableValue, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, borrowDenom, borrowableBaseValue)
+	borrowableValue, err := k.DexKeeper.GetValueIn(ctx, constants.BaseCurrency, borrowDenom, borrowableBaseValue)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -44,12 +45,12 @@ func (k Keeper) calculateCollateralBaseValue(ctx context.Context, address string
 }
 
 func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateralDenom *denomtypes.CollateralDenom, address string) (math.LegacyDec, error) {
-	collateral, found := k.collateral.Get(ctx, collateralDenom.Denom, address)
+	collateral, found := k.collateral.Get(ctx, collateralDenom.DexDenom, address)
 	if !found {
 		return math.LegacyZeroDec(), nil
 	}
 
-	price, err := k.DexKeeper.CalculatePrice(ctx, collateralDenom.Denom, utils.BaseCurrency)
+	price, err := k.DexKeeper.CalculatePrice(ctx, collateralDenom.DexDenom, constants.BaseCurrency)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -61,9 +62,9 @@ func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (mat
 	loanSum := math.LegacyZeroDec()
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
+		loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, address)
 
-		loanValueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loanValue)
+		loanValueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDexDenom, loanValue)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}

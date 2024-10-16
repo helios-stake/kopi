@@ -14,54 +14,54 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Params_7_list)(nil)
+var _ protoreflect.List = (*_Params_6_list)(nil)
 
-type _Params_7_list struct {
+type _Params_6_list struct {
 	list *[]*DiscountLevel
 }
 
-func (x *_Params_7_list) Len() int {
+func (x *_Params_6_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Params_7_list) Get(i int) protoreflect.Value {
+func (x *_Params_6_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_Params_7_list) Set(i int, value protoreflect.Value) {
+func (x *_Params_6_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*DiscountLevel)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Params_7_list) Append(value protoreflect.Value) {
+func (x *_Params_6_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*DiscountLevel)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Params_7_list) AppendMutable() protoreflect.Value {
+func (x *_Params_6_list) AppendMutable() protoreflect.Value {
 	v := new(DiscountLevel)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Params_7_list) Truncate(n int) {
+func (x *_Params_6_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Params_7_list) NewElement() protoreflect.Value {
+func (x *_Params_6_list) NewElement() protoreflect.Value {
 	v := new(DiscountLevel)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Params_7_list) IsValid() bool {
+func (x *_Params_6_list) IsValid() bool {
 	return x.list != nil
 }
 
@@ -71,7 +71,6 @@ var (
 	fd_Params_order_fee               protoreflect.FieldDescriptor
 	fd_Params_reserve_share           protoreflect.FieldDescriptor
 	fd_Params_virtual_liquidity_decay protoreflect.FieldDescriptor
-	fd_Params_fee_reimbursement       protoreflect.FieldDescriptor
 	fd_Params_trade_amount_decay      protoreflect.FieldDescriptor
 	fd_Params_discount_levels         protoreflect.FieldDescriptor
 	fd_Params_max_order_life          protoreflect.FieldDescriptor
@@ -84,7 +83,6 @@ func init() {
 	fd_Params_order_fee = md_Params.Fields().ByName("order_fee")
 	fd_Params_reserve_share = md_Params.Fields().ByName("reserve_share")
 	fd_Params_virtual_liquidity_decay = md_Params.Fields().ByName("virtual_liquidity_decay")
-	fd_Params_fee_reimbursement = md_Params.Fields().ByName("fee_reimbursement")
 	fd_Params_trade_amount_decay = md_Params.Fields().ByName("trade_amount_decay")
 	fd_Params_discount_levels = md_Params.Fields().ByName("discount_levels")
 	fd_Params_max_order_life = md_Params.Fields().ByName("max_order_life")
@@ -179,12 +177,6 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if len(x.FeeReimbursement) != 0 {
-		value := protoreflect.ValueOfBytes(x.FeeReimbursement)
-		if !f(fd_Params_fee_reimbursement, value) {
-			return
-		}
-	}
 	if len(x.TradeAmountDecay) != 0 {
 		value := protoreflect.ValueOfBytes(x.TradeAmountDecay)
 		if !f(fd_Params_trade_amount_decay, value) {
@@ -192,7 +184,7 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 		}
 	}
 	if len(x.DiscountLevels) != 0 {
-		value := protoreflect.ValueOfList(&_Params_7_list{list: &x.DiscountLevels})
+		value := protoreflect.ValueOfList(&_Params_6_list{list: &x.DiscountLevels})
 		if !f(fd_Params_discount_levels, value) {
 			return
 		}
@@ -226,8 +218,6 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.ReserveShare) != 0
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		return len(x.VirtualLiquidityDecay) != 0
-	case "kopi.dex.Params.fee_reimbursement":
-		return len(x.FeeReimbursement) != 0
 	case "kopi.dex.Params.trade_amount_decay":
 		return len(x.TradeAmountDecay) != 0
 	case "kopi.dex.Params.discount_levels":
@@ -258,8 +248,6 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.ReserveShare = nil
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		x.VirtualLiquidityDecay = nil
-	case "kopi.dex.Params.fee_reimbursement":
-		x.FeeReimbursement = nil
 	case "kopi.dex.Params.trade_amount_decay":
 		x.TradeAmountDecay = nil
 	case "kopi.dex.Params.discount_levels":
@@ -294,17 +282,14 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		value := x.VirtualLiquidityDecay
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.dex.Params.fee_reimbursement":
-		value := x.FeeReimbursement
-		return protoreflect.ValueOfBytes(value)
 	case "kopi.dex.Params.trade_amount_decay":
 		value := x.TradeAmountDecay
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.dex.Params.discount_levels":
 		if len(x.DiscountLevels) == 0 {
-			return protoreflect.ValueOfList(&_Params_7_list{})
+			return protoreflect.ValueOfList(&_Params_6_list{})
 		}
-		listValue := &_Params_7_list{list: &x.DiscountLevels}
+		listValue := &_Params_6_list{list: &x.DiscountLevels}
 		return protoreflect.ValueOfList(listValue)
 	case "kopi.dex.Params.max_order_life":
 		value := x.MaxOrderLife
@@ -337,13 +322,11 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.ReserveShare = value.Bytes()
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		x.VirtualLiquidityDecay = value.Bytes()
-	case "kopi.dex.Params.fee_reimbursement":
-		x.FeeReimbursement = value.Bytes()
 	case "kopi.dex.Params.trade_amount_decay":
 		x.TradeAmountDecay = value.Bytes()
 	case "kopi.dex.Params.discount_levels":
 		lv := value.List()
-		clv := lv.(*_Params_7_list)
+		clv := lv.(*_Params_6_list)
 		x.DiscountLevels = *clv.list
 	case "kopi.dex.Params.max_order_life":
 		x.MaxOrderLife = value.Uint()
@@ -371,7 +354,7 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		if x.DiscountLevels == nil {
 			x.DiscountLevels = []*DiscountLevel{}
 		}
-		value := &_Params_7_list{list: &x.DiscountLevels}
+		value := &_Params_6_list{list: &x.DiscountLevels}
 		return protoreflect.ValueOfList(value)
 	case "kopi.dex.Params.trade_fee":
 		panic(fmt.Errorf("field trade_fee of message kopi.dex.Params is not mutable"))
@@ -381,8 +364,6 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field reserve_share of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		panic(fmt.Errorf("field virtual_liquidity_decay of message kopi.dex.Params is not mutable"))
-	case "kopi.dex.Params.fee_reimbursement":
-		panic(fmt.Errorf("field fee_reimbursement of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.trade_amount_decay":
 		panic(fmt.Errorf("field trade_amount_decay of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.max_order_life":
@@ -408,13 +389,11 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Params.virtual_liquidity_decay":
 		return protoreflect.ValueOfBytes(nil)
-	case "kopi.dex.Params.fee_reimbursement":
-		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Params.trade_amount_decay":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Params.discount_levels":
 		list := []*DiscountLevel{}
-		return protoreflect.ValueOfList(&_Params_7_list{list: &list})
+		return protoreflect.ValueOfList(&_Params_6_list{list: &list})
 	case "kopi.dex.Params.max_order_life":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
@@ -502,10 +481,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.FeeReimbursement)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		l = len(x.TradeAmountDecay)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -551,7 +526,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.MaxOrderLife != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaxOrderLife))
 			i--
-			dAtA[i] = 0x40
+			dAtA[i] = 0x38
 		}
 		if len(x.DiscountLevels) > 0 {
 			for iNdEx := len(x.DiscountLevels) - 1; iNdEx >= 0; iNdEx-- {
@@ -566,20 +541,13 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x3a
+				dAtA[i] = 0x32
 			}
 		}
 		if len(x.TradeAmountDecay) > 0 {
 			i -= len(x.TradeAmountDecay)
 			copy(dAtA[i:], x.TradeAmountDecay)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradeAmountDecay)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if len(x.FeeReimbursement) > 0 {
-			i -= len(x.FeeReimbursement)
-			copy(dAtA[i:], x.FeeReimbursement)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FeeReimbursement)))
 			i--
 			dAtA[i] = 0x2a
 		}
@@ -798,40 +766,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 5:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeeReimbursement", wireType)
-				}
-				var byteLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					byteLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if byteLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + byteLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.FeeReimbursement = append(x.FeeReimbursement[:0], dAtA[iNdEx:postIndex]...)
-				if x.FeeReimbursement == nil {
-					x.FeeReimbursement = []byte{}
-				}
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradeAmountDecay", wireType)
 				}
 				var byteLen int
@@ -864,7 +798,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					x.TradeAmountDecay = []byte{}
 				}
 				iNdEx = postIndex
-			case 7:
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DiscountLevels", wireType)
 				}
@@ -898,7 +832,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 8:
+			case 7:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxOrderLife", wireType)
 				}
@@ -975,10 +909,9 @@ type Params struct {
 	OrderFee              []byte           `protobuf:"bytes,2,opt,name=order_fee,json=orderFee,proto3" json:"order_fee,omitempty"`
 	ReserveShare          []byte           `protobuf:"bytes,3,opt,name=reserve_share,json=reserveShare,proto3" json:"reserve_share,omitempty"`
 	VirtualLiquidityDecay []byte           `protobuf:"bytes,4,opt,name=virtual_liquidity_decay,json=virtualLiquidityDecay,proto3" json:"virtual_liquidity_decay,omitempty"`
-	FeeReimbursement      []byte           `protobuf:"bytes,5,opt,name=fee_reimbursement,json=feeReimbursement,proto3" json:"fee_reimbursement,omitempty"`
-	TradeAmountDecay      []byte           `protobuf:"bytes,6,opt,name=trade_amount_decay,json=tradeAmountDecay,proto3" json:"trade_amount_decay,omitempty"`
-	DiscountLevels        []*DiscountLevel `protobuf:"bytes,7,rep,name=discount_levels,json=discountLevels,proto3" json:"discount_levels,omitempty"`
-	MaxOrderLife          uint64           `protobuf:"varint,8,opt,name=max_order_life,json=maxOrderLife,proto3" json:"max_order_life,omitempty"`
+	TradeAmountDecay      []byte           `protobuf:"bytes,5,opt,name=trade_amount_decay,json=tradeAmountDecay,proto3" json:"trade_amount_decay,omitempty"`
+	DiscountLevels        []*DiscountLevel `protobuf:"bytes,6,rep,name=discount_levels,json=discountLevels,proto3" json:"discount_levels,omitempty"`
+	MaxOrderLife          uint64           `protobuf:"varint,7,opt,name=max_order_life,json=maxOrderLife,proto3" json:"max_order_life,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1029,13 +962,6 @@ func (x *Params) GetVirtualLiquidityDecay() []byte {
 	return nil
 }
 
-func (x *Params) GetFeeReimbursement() []byte {
-	if x != nil {
-		return x.FeeReimbursement
-	}
-	return nil
-}
-
 func (x *Params) GetTradeAmountDecay() []byte {
 	if x != nil {
 		return x.TradeAmountDecay
@@ -1066,7 +992,7 @@ var file_kopi_dex_params_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
 	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d, 0x6b, 0x6f, 0x70, 0x69,
 	0x2f, 0x64, 0x65, 0x78, 0x2f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6c, 0x65,
-	0x76, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdc, 0x04, 0x0a, 0x06, 0x50, 0x61,
+	0x76, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8a, 0x04, 0x0a, 0x06, 0x50, 0x61,
 	0x72, 0x61, 0x6d, 0x73, 0x12, 0x40, 0x0a, 0x09, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x66, 0x65,
 	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
 	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
@@ -1086,33 +1012,28 @@ var file_kopi_dex_params_proto_rawDesc = []byte{
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
 	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x15, 0x76, 0x69, 0x72, 0x74, 0x75, 0x61,
 	0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x44, 0x65, 0x63, 0x61, 0x79, 0x12,
-	0x50, 0x0a, 0x11, 0x66, 0x65, 0x65, 0x5f, 0x72, 0x65, 0x69, 0x6d, 0x62, 0x75, 0x72, 0x73, 0x65,
-	0x6d, 0x65, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00,
-	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
-	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52,
-	0x10, 0x66, 0x65, 0x65, 0x52, 0x65, 0x69, 0x6d, 0x62, 0x75, 0x72, 0x73, 0x65, 0x6d, 0x65, 0x6e,
-	0x74, 0x12, 0x51, 0x0a, 0x12, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x5f, 0x64, 0x65, 0x63, 0x61, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0x52, 0x10, 0x74, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x44,
-	0x65, 0x63, 0x61, 0x79, 0x12, 0x40, 0x0a, 0x0f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e,
-	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x52, 0x0e, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x4c, 0x65, 0x76, 0x65, 0x6c, 0x73, 0x12, 0x24, 0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x6f, 0x72,
-	0x64, 0x65, 0x72, 0x5f, 0x6c, 0x69, 0x66, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c,
-	0x6d, 0x61, 0x78, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x66, 0x65, 0x3a, 0x1a, 0xe8, 0xa0,
-	0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x11, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x64, 0x65,
-	0x78, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x77, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e,
-	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64,
-	0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e,
-	0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02,
-	0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65,
-	0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x51, 0x0a, 0x12, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x64, 0x65, 0x63, 0x61, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0x52, 0x10, 0x74, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x44, 0x65, 0x63,
+	0x61, 0x79, 0x12, 0x40, 0x0a, 0x0f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6c,
+	0x65, 0x76, 0x65, 0x6c, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x4c,
+	0x65, 0x76, 0x65, 0x6c, 0x52, 0x0e, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x4c, 0x65,
+	0x76, 0x65, 0x6c, 0x73, 0x12, 0x24, 0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x6f, 0x72, 0x64, 0x65,
+	0x72, 0x5f, 0x6c, 0x69, 0x66, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x6d, 0x61,
+	0x78, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x66, 0x65, 0x3a, 0x1a, 0xe8, 0xa0, 0x1f, 0x01,
+	0x8a, 0xe7, 0xb0, 0x2a, 0x11, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x64, 0x65, 0x78, 0x2f,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x77, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78,
+	0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65,
+	0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b,
+	0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

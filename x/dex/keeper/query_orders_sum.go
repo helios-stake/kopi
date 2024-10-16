@@ -2,61 +2,49 @@ package keeper
 
 import (
 	"context"
-	"github.com/pkg/errors"
+	"fmt"
 
 	"cosmossdk.io/math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumRequest) (*types.QueryOrdersSumResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) OrdersSum(ctx context.Context, _ *types.QueryOrdersSumRequest) (*types.QueryOrdersSumResponse, error) {
 	denomSums := make(map[string]math.Int)
 
 	iterator := k.OrderIterator(ctx)
 	for iterator.Valid() {
 		order := iterator.GetNext()
-		sum, has := denomSums[order.DenomFrom]
+		sum, has := denomSums[order.DenomGiving]
 		if !has {
 			sum = math.ZeroInt()
 		}
 
-		denomSums[order.DenomFrom] = sum.Add(order.AmountLeft)
+		denomSums[order.DenomGiving] = sum.Add(order.AmountLeft)
 	}
 
 	sum := math.LegacyZeroDec()
 	for denom, denomSum := range denomSums {
 		value, err := k.GetValueInUSD(ctx, denom, denomSum.ToLegacyDec())
 		if err != nil {
-			return nil, errors.Wrap(err, "could not get order value in usd")
+			return nil, fmt.Errorf("could not get order value in usd: %w", err)
 		}
 
 		sum = sum.Add(value)
 	}
 
-	return &types.QueryOrdersSumResponse{Sum: sum.String()}, nil
+	return &types.QueryOrdersSumResponse{
+		Sum: sum.String(),
+	}, nil
 }
 
-func (k Keeper) OrdersDenomSum(goCtx context.Context, req *types.QueryOrdersDenomSumRequest) (*types.QueryOrdersDenomSumResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) OrdersDenomSum(ctx context.Context, _ *types.QueryOrdersDenomSumRequest) (*types.QueryOrdersDenomSumResponse, error) {
 	ordersMap := make(map[string]math.Int)
 
 	iterator := k.OrderIterator(ctx)
 	for iterator.Valid() {
 		order := iterator.GetNext()
-		ordersMap[order.DenomFrom] = ordersMap[order.DenomFrom].Add(order.AmountLeft)
+		ordersMap[order.DenomGiving] = ordersMap[order.DenomGiving].Add(order.AmountLeft)
 	}
 
 	orderSums := []*types.OrdersSum{}
@@ -68,10 +56,12 @@ func (k Keeper) OrdersDenomSum(goCtx context.Context, req *types.QueryOrdersDeno
 		}
 
 		orderSums = append(orderSums, &types.OrdersSum{
-			DenomFrom: denom,
-			Sum:       sum,
+			DenomGiving: denom,
+			Sum:         sum,
 		})
 	}
 
-	return &types.QueryOrdersDenomSumResponse{Denoms: orderSums}, nil
+	return &types.QueryOrdersDenomSumResponse{
+		Denoms: orderSums,
+	}, nil
 }

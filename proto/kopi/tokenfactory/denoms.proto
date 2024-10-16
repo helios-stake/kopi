@@ -8,6 +8,10 @@ option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 message FactoryDenom {
   option (gogoproto.equal) = true;
 
-  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
-  string admin = 2 [(gogoproto.moretags) = "yaml:\"admin\""];
+  string admin = 1 [(gogoproto.moretags) = "yaml:\"admin\""];
+  string display_name = 2 [(gogoproto.moretags) = "yaml:\"display_name\""];
+  string full_name = 3 [(gogoproto.moretags) = "yaml:\"full_name\""];
+  string icon_hash = 4 [(gogoproto.moretags) = "yaml:\"icon_hash\""];
+
+  uint64 exponent = 5;
 }

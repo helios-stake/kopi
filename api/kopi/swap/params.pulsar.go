@@ -15,13 +15,17 @@ import (
 )
 
 var (
-	md_Params               protoreflect.MessageDescriptor
-	fd_Params_staking_share protoreflect.FieldDescriptor
+	md_Params                protoreflect.MessageDescriptor
+	fd_Params_burn_threshold protoreflect.FieldDescriptor
+	fd_Params_mint_threshold protoreflect.FieldDescriptor
+	fd_Params_staking_share  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_swap_params_proto_init()
 	md_Params = File_kopi_swap_params_proto.Messages().ByName("Params")
+	fd_Params_burn_threshold = md_Params.Fields().ByName("burn_threshold")
+	fd_Params_mint_threshold = md_Params.Fields().ByName("mint_threshold")
 	fd_Params_staking_share = md_Params.Fields().ByName("staking_share")
 }
 
@@ -90,6 +94,18 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.BurnThreshold) != 0 {
+		value := protoreflect.ValueOfBytes(x.BurnThreshold)
+		if !f(fd_Params_burn_threshold, value) {
+			return
+		}
+	}
+	if len(x.MintThreshold) != 0 {
+		value := protoreflect.ValueOfBytes(x.MintThreshold)
+		if !f(fd_Params_mint_threshold, value) {
+			return
+		}
+	}
 	if len(x.StakingShare) != 0 {
 		value := protoreflect.ValueOfBytes(x.StakingShare)
 		if !f(fd_Params_staking_share, value) {
@@ -111,6 +127,10 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		return len(x.BurnThreshold) != 0
+	case "kopi.swap.Params.mint_threshold":
+		return len(x.MintThreshold) != 0
 	case "kopi.swap.Params.staking_share":
 		return len(x.StakingShare) != 0
 	default:
@@ -129,6 +149,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		x.BurnThreshold = nil
+	case "kopi.swap.Params.mint_threshold":
+		x.MintThreshold = nil
 	case "kopi.swap.Params.staking_share":
 		x.StakingShare = nil
 	default:
@@ -147,6 +171,12 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		value := x.BurnThreshold
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.swap.Params.mint_threshold":
+		value := x.MintThreshold
+		return protoreflect.ValueOfBytes(value)
 	case "kopi.swap.Params.staking_share":
 		value := x.StakingShare
 		return protoreflect.ValueOfBytes(value)
@@ -170,6 +200,10 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		x.BurnThreshold = value.Bytes()
+	case "kopi.swap.Params.mint_threshold":
+		x.MintThreshold = value.Bytes()
 	case "kopi.swap.Params.staking_share":
 		x.StakingShare = value.Bytes()
 	default:
@@ -192,6 +226,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		panic(fmt.Errorf("field burn_threshold of message kopi.swap.Params is not mutable"))
+	case "kopi.swap.Params.mint_threshold":
+		panic(fmt.Errorf("field mint_threshold of message kopi.swap.Params is not mutable"))
 	case "kopi.swap.Params.staking_share":
 		panic(fmt.Errorf("field staking_share of message kopi.swap.Params is not mutable"))
 	default:
@@ -207,6 +245,10 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "kopi.swap.Params.burn_threshold":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.swap.Params.mint_threshold":
+		return protoreflect.ValueOfBytes(nil)
 	case "kopi.swap.Params.staking_share":
 		return protoreflect.ValueOfBytes(nil)
 	default:
@@ -278,6 +320,14 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		l = len(x.BurnThreshold)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MintThreshold)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		l = len(x.StakingShare)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -315,6 +365,20 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.StakingShare)
 			copy(dAtA[i:], x.StakingShare)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StakingShare)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.MintThreshold) > 0 {
+			i -= len(x.MintThreshold)
+			copy(dAtA[i:], x.MintThreshold)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MintThreshold)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.BurnThreshold) > 0 {
+			i -= len(x.BurnThreshold)
+			copy(dAtA[i:], x.BurnThreshold)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BurnThreshold)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -368,6 +432,74 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BurnThreshold", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BurnThreshold = append(x.BurnThreshold[:0], dAtA[iNdEx:postIndex]...)
+				if x.BurnThreshold == nil {
+					x.BurnThreshold = []byte{}
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MintThreshold", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MintThreshold = append(x.MintThreshold[:0], dAtA[iNdEx:postIndex]...)
+				if x.MintThreshold == nil {
+					x.MintThreshold = []byte{}
+				}
+				iNdEx = postIndex
+			case 3:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StakingShare", wireType)
 				}
@@ -455,7 +587,9 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StakingShare []byte `protobuf:"bytes,1,opt,name=staking_share,json=stakingShare,proto3" json:"staking_share,omitempty"`
+	BurnThreshold []byte `protobuf:"bytes,1,opt,name=burn_threshold,json=burnThreshold,proto3" json:"burn_threshold,omitempty"`
+	MintThreshold []byte `protobuf:"bytes,2,opt,name=mint_threshold,json=mintThreshold,proto3" json:"mint_threshold,omitempty"`
+	StakingShare  []byte `protobuf:"bytes,3,opt,name=staking_share,json=stakingShare,proto3" json:"staking_share,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -478,6 +612,20 @@ func (*Params) Descriptor() ([]byte, []int) {
 	return file_kopi_swap_params_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *Params) GetBurnThreshold() []byte {
+	if x != nil {
+		return x.BurnThreshold
+	}
+	return nil
+}
+
+func (x *Params) GetMintThreshold() []byte {
+	if x != nil {
+		return x.MintThreshold
+	}
+	return nil
+}
+
 func (x *Params) GetStakingShare() []byte {
 	if x != nil {
 		return x.StakingShare
@@ -492,23 +640,32 @@ var file_kopi_swap_params_proto_rawDesc = []byte{
 	0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73,
 	0x77, 0x61, 0x70, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x6f, 0x0a, 0x06,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x48, 0x0a, 0x0d, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0x52, 0x0c, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x53, 0x68, 0x61, 0x72, 0x65,
-	0x3a, 0x1b, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x12, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
-	0x78, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x7d, 0x0a,
-	0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x77, 0x61, 0x70, 0x42, 0x0b,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x1a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x77, 0x61, 0x70, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa,
-	0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x53, 0x77, 0x61, 0x70, 0xca, 0x02, 0x09, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x53, 0x77, 0x61, 0x70, 0xe2, 0x02, 0x15, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53,
-	0x77, 0x61, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
-	0x02, 0x0a, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x53, 0x77, 0x61, 0x70, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x87, 0x02, 0x0a,
+	0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x4a, 0x0a, 0x0e, 0x62, 0x75, 0x72, 0x6e, 0x5f,
+	0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x42,
+	0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x62, 0x75, 0x72, 0x6e, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68,
+	0x6f, 0x6c, 0x64, 0x12, 0x4a, 0x0a, 0x0e, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x74, 0x68, 0x72, 0x65,
+	0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0x52, 0x0d, 0x6d, 0x69, 0x6e, 0x74, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12,
+	0x48, 0x0a, 0x0d, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x73, 0x74, 0x61,
+	0x6b, 0x69, 0x6e, 0x67, 0x53, 0x68, 0x61, 0x72, 0x65, 0x3a, 0x1b, 0xe8, 0xa0, 0x1f, 0x01, 0x8a,
+	0xe7, 0xb0, 0x2a, 0x12, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x73, 0x77, 0x61, 0x70, 0x2f,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x7d, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x73, 0x77, 0x61, 0x70, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x1a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x77,
+	0x61, 0x70, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x2e,
+	0x53, 0x77, 0x61, 0x70, 0xca, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53, 0x77, 0x61, 0x70,
+	0xe2, 0x02, 0x15, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53, 0x77, 0x61, 0x70, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x4b, 0x6f, 0x70, 0x69, 0x3a,
+	0x3a, 0x53, 0x77, 0x61, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

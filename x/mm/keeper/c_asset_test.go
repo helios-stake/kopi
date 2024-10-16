@@ -1,10 +1,13 @@
 package keeper_test
 
 import (
-	"github.com/kopi-money/kopi/cache"
-	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
+	"context"
+	"github.com/kopi-money/kopi/constants"
 	"strconv"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
+	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,7 +21,7 @@ func TestDeposit1(t *testing.T) {
 
 	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukopi",
+		Denom:   constants.BaseCurrency,
 		Amount:  "100",
 	})
 
@@ -30,7 +33,7 @@ func TestDeposit2(t *testing.T) {
 
 	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	})
 
@@ -50,7 +53,7 @@ func TestDeposit3(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
@@ -58,10 +61,10 @@ func TestDeposit3(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "100",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	redemptions := iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 	require.Equal(t, keepertest.Alice, redemptions[0].Address)
@@ -69,16 +72,16 @@ func TestDeposit3(t *testing.T) {
 
 	require.NoError(t, handleRedemptions(ctx, k))
 
-	iterator = k.RedemptionIterator(ctx, "ukusd")
+	iterator = k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 0, len(iterator.GetAll()))
 
 	supply := k.BankKeeper.GetSupply(ctx, "uckusd")
 	require.Equal(t, supply.Amount, math.NewInt(0))
 }
 
-func handleRedemptions(ctx sdk.Context, k mmkeeper.Keeper) error {
-	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
-		return k.HandleRedemptions(innerCtx, ctx.EventManager())
+func handleRedemptions(ctx context.Context, k mmkeeper.Keeper) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.HandleRedemptions(innerCtx)
 	})
 }
 
@@ -87,7 +90,7 @@ func TestDeposit4(t *testing.T) {
 
 	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	})
 
@@ -95,10 +98,10 @@ func TestDeposit4(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "50",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	redemptions := iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 
@@ -107,7 +110,7 @@ func TestDeposit4(t *testing.T) {
 
 	require.NoError(t, handleRedemptions(ctx, k))
 
-	iterator = k.RedemptionIterator(ctx, "ukusd")
+	iterator = k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 0, len(iterator.GetAll()))
 
 	supply := k.BankKeeper.GetSupply(ctx, "uckusd")
@@ -119,13 +122,13 @@ func TestDeposit5(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
 	require.Error(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Alice,
-		Denom:        "ukusd",
+		Denom:        constants.KUSD,
 		CAssetAmount: "200",
 		Fee:          "0.1",
 	}))
@@ -136,7 +139,7 @@ func TestDeposit6(t *testing.T) {
 
 	_, err := msg.CancelRedemptionRequest(ctx, &types.MsgCancelRedemptionRequest{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 	})
 
 	require.Error(t, err)
@@ -147,7 +150,7 @@ func TestDeposit7(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
@@ -155,7 +158,7 @@ func TestDeposit7(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "100",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
 	require.NoError(t, keepertest.CancelRedemptionRequest(ctx, msg, &types.MsgCancelRedemptionRequest{
@@ -163,7 +166,7 @@ func TestDeposit7(t *testing.T) {
 		Denom:   "uckusd",
 	}))
 
-	iterator := k.RedemptionIterator(ctx, "ukusd")
+	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 0, len(iterator.GetAll()))
 }
 
@@ -172,13 +175,13 @@ func TestDeposit8(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
 	_, err := msg.UpdateRedemptionRequest(ctx, &types.MsgUpdateRedemptionRequest{
 		Creator:      keepertest.Alice,
-		Denom:        "ukusd",
+		Denom:        constants.KUSD,
 		Fee:          "0",
 		CAssetAmount: "50",
 	})
@@ -191,7 +194,7 @@ func TestDeposit9(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
@@ -199,19 +202,19 @@ func TestDeposit9(t *testing.T) {
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "100",
-		Fee:          "0.1",
+		Fee:          "0.05",
 	}))
 
 	require.NoError(t, keepertest.UpdateRedemptionRequest(ctx, msg, &types.MsgUpdateRedemptionRequest{
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
-		Fee:          "0.5",
+		Fee:          "0.04",
 		CAssetAmount: "50",
 	}))
 
-	redReq, found := k.LoadRedemptionRequest(ctx, "ukusd", keepertest.Alice)
+	redReq, found := k.LoadRedemptionRequest(ctx, constants.KUSD, keepertest.Alice)
 	require.True(t, found)
-	require.Equal(t, redReq.Fee, math.LegacyNewDecWithPrec(5, 1))
+	require.Equal(t, redReq.Fee, math.LegacyNewDecWithPrec(4, 2))
 	require.Equal(t, redReq.Amount, math.NewInt(50))
 }
 
@@ -220,20 +223,18 @@ func TestDeposit10(t *testing.T) {
 
 	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
 	}))
 
-	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Bob,
-		Denom:   "ukusd",
+		Denom:   constants.KUSD,
 		Amount:  "100",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	supply := k.BankKeeper.GetSupply(ctx, "uckusd")
-	require.Equal(t, supply.Amount, math.NewInt(200))
+	require.Equal(t, supply.Amount.Int64(), int64(200))
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	found, coin := k.BankKeeper.SpendableCoins(ctx, acc).Find("uckusd")
@@ -255,7 +256,7 @@ func TestDeposit11(t *testing.T) {
 	for range 10 {
 		require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 			Creator: keepertest.Alice,
-			Denom:   "ukusd",
+			Denom:   constants.KUSD,
 			Amount:  strconv.Itoa(depositAmount),
 		}))
 
@@ -268,19 +269,19 @@ func TestDeposit11(t *testing.T) {
 			Amount:  cAssetSupply.Amount.String(),
 		}))
 
-		var availableToBorrow math.LegacyDec
-		availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
+		var availableToBorrow math.Int
+		availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, constants.KUSD)
 		require.NoError(t, err)
-		require.Greater(t, availableToBorrow.TruncateInt().Int64(), int64(0))
+		require.Greater(t, availableToBorrow.Int64(), int64(0))
 
 		require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 			Creator: keepertest.Alice,
-			Denom:   "ukusd",
+			Denom:   constants.KUSD,
 			Amount:  availableToBorrow.String(),
 		}))
 
-		require.Less(t, int(availableToBorrow.TruncateInt().Int64()), depositAmount)
-		depositAmount = int(availableToBorrow.TruncateInt().Int64())
+		require.Less(t, int(availableToBorrow.Int64()), depositAmount)
+		depositAmount = int(availableToBorrow.Int64())
 	}
 
 }
