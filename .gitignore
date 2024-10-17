@@ -8,5 +8,5 @@ release/
 .DS_Store
 *.dot
 *.log
-genesis.json
+genesis*.json
 bin/

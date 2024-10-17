@@ -21,8 +21,8 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.Name); err != nil {
-		return err
+	if len(msg.Name) > 32 {
+		return fmt.Errorf("name must not have more than 32 characters")
 	}
 
 	if !validateHash(msg.IconHash) {

@@ -53,8 +53,8 @@ func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.
 
 func (k Keeper) CreateDenom(ctx context.Context, address, displayName, iconHash string, exponent uint64) (types.FactoryDenom, error) {
 	fullName := ToFullName(displayName)
-	_, exists := k.GetDenomByFullName(ctx, fullName)
-	if exists {
+
+	if _, exists := k.GetDenomByFullName(ctx, fullName); exists {
 		return types.FactoryDenom{}, types.ErrDenomAlreadyExists
 	}
 

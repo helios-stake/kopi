@@ -21,9 +21,6 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 		maxSupply, _ := math.NewIntFromString(req.MaxSupply)
 		maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
 		maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
-		factor, _ := math.LegacyNewDecFromStr(req.Factor)
-		minLiquidity, _ := math.NewIntFromString(req.MinLiquidity)
-		minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
 
 		params.KCoins = append(params.KCoins, &types.KCoin{
 			DexDenom:      req.Name,
@@ -33,14 +30,14 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 			MaxBurnAmount: maxBurnAmount,
 		})
 
-		params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
-			Name:         req.Name,
-			Factor:       &factor,
-			MinLiquidity: minLiquidity,
-			MinOrderSize: minOrderSize,
-		})
+		dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
+		if err != nil {
+			return err
+		}
 
-		if err := k.SetParams(innerCtx, params); err != nil {
+		params.DexDenoms = append(params.DexDenoms, dexDenom)
+
+		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 

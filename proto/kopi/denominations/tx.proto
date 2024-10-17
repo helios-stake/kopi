@@ -87,6 +87,7 @@ message MsgKCoinAddDenom {
   string factor = 7;
   string min_liquidity = 8;
   string min_order_size = 9;
+  uint64 exponent = 10;
 }
 
 message MsgKCoinUpdateSupplyLimit {
