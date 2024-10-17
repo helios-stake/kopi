@@ -40,5 +40,6 @@ func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
 		return decay
 	}
 
+	k.Logger().Info("decay is nil, using default value")
 	return types.VirtualLiquidityDecay
 }

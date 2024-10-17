@@ -26,6 +26,8 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 			return fmt.Errorf("could not set automation funds: %w", err)
 		}
 
+		k.SetAutomationsNextIndex(innerCtx, 1)
+
 		return nil
 	}); err != nil {
 		panic(err)

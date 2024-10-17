@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGenesis(t *testing.T) {
+func TestGenesis1(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
@@ -24,6 +24,8 @@ func TestGenesis(t *testing.T) {
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
+
+	require.False(t, k.GetParams(ctx).BurnThreshold.IsNil())
 
 	// this line is used by starport scaffolding # genesis/test/assert
 }
