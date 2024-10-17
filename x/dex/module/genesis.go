@@ -22,7 +22,6 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 
 		for _, elem := range genState.RatioList {
 			k.SetRatio(innerCtx, elem)
-			//k.SetLiquidityPair(ctx, k.CreateLiquidityPair(ctx, elem))
 		}
 
 		// Set all the order
@@ -32,13 +31,12 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 
 		oni := types.OrderNextIndex{Next: genState.OrderNextIndex}
 		k.SetOrderNextIndex(innerCtx, oni.Next)
+		k.SetLiquidityEntryNextIndex(innerCtx, genState.LiquidityNextIndex)
 		// this line is used by starport scaffolding # genesis/module/init
 
 		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return err
 		}
-
-		k.SetLiquidityEntryNextIndex(innerCtx, genState.LiquidityNextIndex)
 
 		return nil
 	}); err != nil {

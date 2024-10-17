@@ -168,11 +168,12 @@ func (x *_GenesisState_4_list) IsValid() bool {
 }
 
 var (
-	md_GenesisState                  protoreflect.MessageDescriptor
-	fd_GenesisState_params           protoreflect.FieldDescriptor
-	fd_GenesisState_arbitrage_denoms protoreflect.FieldDescriptor
-	fd_GenesisState_automations      protoreflect.FieldDescriptor
-	fd_GenesisState_automation_funds protoreflect.FieldDescriptor
+	md_GenesisState                       protoreflect.MessageDescriptor
+	fd_GenesisState_params                protoreflect.FieldDescriptor
+	fd_GenesisState_arbitrage_denoms      protoreflect.FieldDescriptor
+	fd_GenesisState_automations           protoreflect.FieldDescriptor
+	fd_GenesisState_automation_funds      protoreflect.FieldDescriptor
+	fd_GenesisState_automation_next_index protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -182,6 +183,7 @@ func init() {
 	fd_GenesisState_arbitrage_denoms = md_GenesisState.Fields().ByName("arbitrage_denoms")
 	fd_GenesisState_automations = md_GenesisState.Fields().ByName("automations")
 	fd_GenesisState_automation_funds = md_GenesisState.Fields().ByName("automation_funds")
+	fd_GenesisState_automation_next_index = md_GenesisState.Fields().ByName("automation_next_index")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -273,6 +275,12 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if x.AutomationNextIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.AutomationNextIndex)
+		if !f(fd_GenesisState_automation_next_index, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -296,6 +304,8 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.Automations) != 0
 	case "kopi.strategies.GenesisState.automation_funds":
 		return len(x.AutomationFunds) != 0
+	case "kopi.strategies.GenesisState.automation_next_index":
+		return x.AutomationNextIndex != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -320,6 +330,8 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.Automations = nil
 	case "kopi.strategies.GenesisState.automation_funds":
 		x.AutomationFunds = nil
+	case "kopi.strategies.GenesisState.automation_next_index":
+		x.AutomationNextIndex = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -357,6 +369,9 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_4_list{list: &x.AutomationFunds}
 		return protoreflect.ValueOfList(listValue)
+	case "kopi.strategies.GenesisState.automation_next_index":
+		value := x.AutomationNextIndex
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -391,6 +406,8 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_4_list)
 		x.AutomationFunds = *clv.list
+	case "kopi.strategies.GenesisState.automation_next_index":
+		x.AutomationNextIndex = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -434,6 +451,8 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_4_list{list: &x.AutomationFunds}
 		return protoreflect.ValueOfList(value)
+	case "kopi.strategies.GenesisState.automation_next_index":
+		panic(fmt.Errorf("field automation_next_index of message kopi.strategies.GenesisState is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -459,6 +478,8 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "kopi.strategies.GenesisState.automation_funds":
 		list := []*GenesisAutomationFunds{}
 		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "kopi.strategies.GenesisState.automation_next_index":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.GenesisState"))
@@ -550,6 +571,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		if x.AutomationNextIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.AutomationNextIndex))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -578,6 +602,11 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.AutomationNextIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.AutomationNextIndex))
+			i--
+			dAtA[i] = 0x28
 		}
 		if len(x.AutomationFunds) > 0 {
 			for iNdEx := len(x.AutomationFunds) - 1; iNdEx >= 0; iNdEx-- {
@@ -828,6 +857,25 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 5:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AutomationNextIndex", wireType)
+				}
+				x.AutomationNextIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.AutomationNextIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -883,10 +931,11 @@ type GenesisState struct {
 	unknownFields protoimpl.UnknownFields
 
 	// params defines all the parameters of the module.
-	Params          *Params                   `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	ArbitrageDenoms []*ArbitrageDenom         `protobuf:"bytes,2,rep,name=arbitrage_denoms,json=arbitrageDenoms,proto3" json:"arbitrage_denoms,omitempty"`
-	Automations     []*Automation             `protobuf:"bytes,3,rep,name=automations,proto3" json:"automations,omitempty"`
-	AutomationFunds []*GenesisAutomationFunds `protobuf:"bytes,4,rep,name=automation_funds,json=automationFunds,proto3" json:"automation_funds,omitempty"`
+	Params              *Params                   `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	ArbitrageDenoms     []*ArbitrageDenom         `protobuf:"bytes,2,rep,name=arbitrage_denoms,json=arbitrageDenoms,proto3" json:"arbitrage_denoms,omitempty"`
+	Automations         []*Automation             `protobuf:"bytes,3,rep,name=automations,proto3" json:"automations,omitempty"`
+	AutomationFunds     []*GenesisAutomationFunds `protobuf:"bytes,4,rep,name=automation_funds,json=automationFunds,proto3" json:"automation_funds,omitempty"`
+	AutomationNextIndex uint64                    `protobuf:"varint,5,opt,name=automation_next_index,json=automationNextIndex,proto3" json:"automation_next_index,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -937,6 +986,13 @@ func (x *GenesisState) GetAutomationFunds() []*GenesisAutomationFunds {
 	return nil
 }
 
+func (x *GenesisState) GetAutomationNextIndex() uint64 {
+	if x != nil {
+		return x.AutomationNextIndex
+	}
+	return 0
+}
+
 var File_kopi_strategies_genesis_proto protoreflect.FileDescriptor
 
 var file_kopi_strategies_genesis_proto_rawDesc = []byte{
@@ -951,7 +1007,7 @@ var file_kopi_strategies_genesis_proto_rawDesc = []byte{
 	0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2f, 0x61, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61,
 	0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73,
 	0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x6d, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa9, 0x02, 0x0a, 0x0c,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdd, 0x02, 0x0a, 0x0c,
 	0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3a, 0x0a, 0x06,
 	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6b,
 	0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x50,
@@ -970,18 +1026,21 @@ var file_kopi_strategies_genesis_proto_rawDesc = []byte{
 	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e,
 	0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f,
 	0x6e, 0x46, 0x75, 0x6e, 0x64, 0x73, 0x52, 0x0f, 0x61, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x46, 0x75, 0x6e, 0x64, 0x73, 0x42, 0xa2, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e,
-	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x42,
-	0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
-	0x20, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
-	0x73, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa, 0x02, 0x0f, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x53,
-	0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xca, 0x02, 0x0f, 0x4b, 0x6f, 0x70, 0x69,
-	0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xe2, 0x02, 0x1b, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x5c, 0x47, 0x50,
-	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x4b, 0x6f, 0x70, 0x69,
-	0x3a, 0x3a, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6e, 0x46, 0x75, 0x6e, 0x64, 0x73, 0x12, 0x32, 0x0a, 0x15, 0x61, 0x75, 0x74, 0x6f, 0x6d,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x13, 0x61, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x42, 0xa2, 0x01, 0x0a, 0x13,
+	0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
+	0x69, 0x65, 0x73, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x20, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x72, 0x61, 0x74,
+	0x65, 0x67, 0x69, 0x65, 0x73, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa, 0x02, 0x0f, 0x4b, 0x6f,
+	0x70, 0x69, 0x2e, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xca, 0x02, 0x0f,
+	0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xe2,
+	0x02, 0x1b, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
+	0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10,
+	0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
