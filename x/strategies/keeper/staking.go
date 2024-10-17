@@ -206,3 +206,27 @@ func isRandomStakingStrategy(strategy string) bool {
 		return false
 	}
 }
+
+func checkForStakingStrategy(string1, string2 string) error {
+	if string1 == "" {
+		return fmt.Errorf("string1 is empty")
+	}
+
+	if !isValidStakingStrategy(string1) {
+		return fmt.Errorf("invalid staking strategy: %v", string1)
+	}
+
+	if string2 != "" {
+		return fmt.Errorf("string2 has to be empty")
+	}
+
+	return nil
+}
+
+func getStakingStrategy(string1, string2 string) string {
+	if string1 != "" {
+		return string1
+	} else {
+		return string2
+	}
+}

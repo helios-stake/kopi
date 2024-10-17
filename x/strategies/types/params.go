@@ -1,8 +1,8 @@
 package types
 
 var (
-	automationFeeCondition = uint64(50_000)
-	automationFeeAction    = uint64(200_000)
+	automationFeeCondition = uint64(5_000)
+	automationFeeAction    = uint64(20_000)
 )
 
 func DefaultParams() Params {

@@ -174,8 +174,8 @@ func (k Keeper) RemoveLiquidity(ctx context.Context, denom string, index uint64)
 // 0, it means the pair probably just have been created and will be set to the initial virtual amount. If the amount
 // of actual liquidity is zero and the amount of virtual liquidity is not zero, we slowly decrease the amount of virtual
 // liquidity to increase that denom's price.
-func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) {
-	decay := k.GetParams(ctx).VirtualLiquidityDecay
+func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
+	decay := k.getVirtualLiquidityDecay(ctx)
 	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress())
 
@@ -183,12 +183,18 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) {
 		if denom != constants.BaseCurrency {
 			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
-				ratio, _ := k.GetRatio(ctx, denom)
+				ratio, err := k.GetRatio(ctx, denom)
+				if err != nil {
+					return fmt.Errorf("could not get ratio for %v: %w", denom, err)
+				}
+
 				ratio.Ratio = ratio.Ratio.Mul(decay)
 				k.SetRatio(ctx, ratio)
 			}
 		}
 	}
+
+	return nil
 }
 
 func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error) {

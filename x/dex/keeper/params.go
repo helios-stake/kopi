@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
@@ -33,4 +32,13 @@ func (k Keeper) GetReserveFeeShare(ctx context.Context) math.LegacyDec {
 
 func (k Keeper) getProviderFee(ctx context.Context) math.LegacyDec {
 	return k.GetTradeFee(ctx).Mul(k.GetReserveFeeShare(ctx))
+}
+
+func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
+	decay := k.GetParams(ctx).VirtualLiquidityDecay
+	if !decay.IsNil() {
+		return decay
+	}
+
+	return types.VirtualLiquidityDecay
 }

@@ -16,9 +16,9 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-func isNoAmountAction(actionID int64) bool {
-	for _, noAmountActionID := range types.NoAmountActions {
-		if noAmountActionID == actionID {
+func isNoAmountAction(actionType int64) bool {
+	for _, noAmountActionType := range types.NoAmountActions {
+		if noAmountActionType == actionType {
 			return true
 		}
 	}
@@ -81,16 +81,10 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action *types.A
 		}
 
 	case types.ActionStake:
-		if action.String1 == "" {
-			return fmt.Errorf("string1 is empty")
-		}
-
-		if !isValidStakingStrategy(action.String1) {
-			return fmt.Errorf("invalid staking strategy: %v", action.String1)
-		}
-
-		if action.String2 != "" {
-			return fmt.Errorf("string2 has to be empty")
+		if err := checkForStakingStrategy(action.String1, action.String2); err != nil {
+			if err = checkForStakingStrategy(action.String2, action.String1); err != nil {
+				return fmt.Errorf("either string1 or string2 has  to be valid staking strategy")
+			}
 		}
 
 	case types.ActionWithdrawAutomationFunds, types.ActionDepositAutomationFunds:
@@ -115,9 +109,24 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action *types.A
 			return fmt.Errorf("same denom twice")
 		}
 
+		amount, ok := math.NewIntFromString(action.Amount)
+		if !ok {
+			return fmt.Errorf("given amount was no valid integer, was: %v", action.Amount)
+		}
+
+		if amount.LT(math.ZeroInt()) {
+			return fmt.Errorf("amount cannot be negative")
+		}
+
 		if action.MinimumTradeAmount != "" {
-			if _, err := math.LegacyNewDecFromStr(action.MinimumTradeAmount); err != nil {
+			var minimumTradeAmount math.Int
+			minimumTradeAmount, ok = math.NewIntFromString(action.MinimumTradeAmount)
+			if !ok {
 				return fmt.Errorf("invalid minimum trade amount")
+			}
+
+			if minimumTradeAmount.GT(amount) {
+				return fmt.Errorf("minimum trade amount must not be larger than trade amount")
 			}
 		}
 
@@ -430,9 +439,10 @@ func (k Keeper) executeAction(
 		}
 
 		pseudoRandomNumber := automationIndex + automationExecutionIndex + actionIndex
+		strategy := getStakingStrategy(action.String1, action.String2)
 
 		var validator string
-		validator, err = k.stake(ctx, address, amount1, action.String1, pseudoRandomNumber)
+		validator, err = k.stake(ctx, address, amount1, strategy, pseudoRandomNumber)
 		if err != nil {
 			err = fmt.Errorf("could not stake: %w", err)
 			return

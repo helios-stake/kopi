@@ -167,9 +167,12 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 		return fmt.Errorf("could not initialize dex module: %w", err)
 	}
 
-	return cache.Transact(ctx, func(innerCtx context.Context) error {
+	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
 		am.keeper.ResetTradeFeeTracker(innerCtx)
-		am.keeper.UpdateVirtualLiquidities(innerCtx)
+
+		if err := am.keeper.UpdateVirtualLiquidities(innerCtx); err != nil {
+			return fmt.Errorf("could not update virtual liquidities: %w", err)
+		}
 
 		return nil
 	})

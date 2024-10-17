@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"cosmossdk.io/collections"
@@ -170,6 +171,7 @@ func (ic *ItemCache[V]) loadFromStorage(goCtx context.Context) (Entry[V], bool) 
 	ctx = ctx.WithGasMeter(gasMeter)
 
 	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("%v: %v", ic.name, err.Error()))
 		return Entry[V]{}, false
 	}
 

@@ -2,6 +2,7 @@ package swap
 
 import (
 	"context"
+	"fmt"
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/swap/keeper"
@@ -11,15 +12,9 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
 	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
-
 		// this line is used by starport scaffolding # genesis/module/init
 		if err := k.SetParams(innerCtx, genState.Params); err != nil {
-			return err
-		}
-
-		k.CommitToCache(innerCtx)
-		if err := k.CommitToDB(innerCtx); err != nil {
-			return err
+			return fmt.Errorf("could not set params: %w", err)
 		}
 
 		return nil
