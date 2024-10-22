@@ -232,6 +232,8 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
 
+		value = math.LegacyOneDec().Quo(value)
+
 	case types.ConditionWalletAmount:
 		value = k.BankKeeper.SpendableCoin(ctx, accAddr, condition.String1).Amount.ToLegacyDec()
 
