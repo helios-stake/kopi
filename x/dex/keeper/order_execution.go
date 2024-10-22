@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -10,7 +11,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"github.com/pkg/errors"
 )
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
@@ -113,6 +113,11 @@ func (k Keeper) executeOrder(ctx context.Context, ordersCaches *types.OrdersCach
 	denomPair := types.Pair{DenomFrom: order.DenomGiving, DenomTo: order.DenomReceiving}
 	previousMaxPrice, has := ordersCaches.PriceAmounts[denomPair]
 	if has && order.MaxPrice.LT(previousMaxPrice) {
+		return math.ZeroInt(), false, nil
+	}
+
+	if order.MaxPrice.IsNil() {
+		k.Logger().Error(fmt.Sprintf("max_price for order %v is null", order.Index))
 		return math.ZeroInt(), false, nil
 	}
 

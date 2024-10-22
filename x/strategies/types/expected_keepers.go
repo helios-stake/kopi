@@ -84,6 +84,7 @@ type DenomKeeper interface {
 	GetArbitrageDenomByCAsset(context.Context, string) (*denomtypes.ArbitrageDenom, error)
 	GetArbitrageDenomByName(context.Context, string) (*denomtypes.ArbitrageDenom, error)
 	IsBorrowableDenom(context.Context, string) bool
+	IsCAsset(context.Context, string) bool
 	IsCollateralDenom(context.Context, string) bool
 	IsValidDenom(context.Context, string) bool
 }

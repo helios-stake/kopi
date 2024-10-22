@@ -8,7 +8,11 @@ import (
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx context.Context) types.Params {
-	params, _ := k.params.Get(ctx)
+	params, has := k.params.Get(ctx)
+	if !has {
+		return types.DefaultParams()
+	}
+
 	return params
 }
 
@@ -35,11 +39,5 @@ func (k Keeper) getProviderFee(ctx context.Context) math.LegacyDec {
 }
 
 func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
-	decay := k.GetParams(ctx).VirtualLiquidityDecay
-	if !decay.IsNil() {
-		return decay
-	}
-
-	k.Logger().Info("decay is nil, using default value")
-	return types.VirtualLiquidityDecay
+	return k.GetParams(ctx).VirtualLiquidityDecay
 }

@@ -55,7 +55,7 @@ func (t *transactionHandler) createKey(height int64, finalizing bool) *TXKey {
 	}
 
 	if finalizing && t.finalizing {
-		panic("multiple finalizing!!!")
+		panic("multiple finalizing!")
 	}
 
 	t.count++

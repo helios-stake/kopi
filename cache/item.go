@@ -219,8 +219,8 @@ func (ic *ItemCache[V]) Clear(ctx context.Context) {
 	ic.transactions.remove(*txKey)
 }
 
-func (ic *ItemCache[V]) CommitToDB(goCtx context.Context) error {
-	txKey := getTXKey(goCtx)
+func (ic *ItemCache[V]) CommitToDB(ctx context.Context) error {
+	txKey := getTXKey(ctx)
 	if txKey == nil {
 		panic("CommitToDB without cache transaction")
 	}
@@ -228,11 +228,12 @@ func (ic *ItemCache[V]) CommitToDB(goCtx context.Context) error {
 	itemTransaction := ic.transactions.Get(*txKey)
 	if itemTransaction != nil {
 		if itemTransaction.change.value != nil {
-			if err := ic.collection.Set(goCtx, *itemTransaction.change.value); err != nil {
+			if err := ic.collection.Set(ctx, *itemTransaction.change.value); err != nil {
+				sdk.UnwrapSDKContext(ctx).Logger().Error(fmt.Sprintf("%v: collection set: %w", ic.name, err))
 				return err
 			}
 		} else {
-			if err := ic.collection.Remove(goCtx); err != nil {
+			if err := ic.collection.Remove(ctx); err != nil {
 				return err
 			}
 		}

@@ -55,6 +55,10 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 		},
 	)
 
+	if err != nil {
+		return nil, fmt.Errorf("could not get orders from pagination: %w", err)
+	}
+
 	return &types.QueryOrdersResponse{
 		Orders:     orders,
 		Pagination: pageRes,

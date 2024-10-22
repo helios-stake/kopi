@@ -130,11 +130,43 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action *types.A
 			}
 		}
 
-	case types.ActionDeposit, types.ActionRedeem,
-		types.ActionCollateralAdd, types.ActionCollateralWithdraw,
-		types.ActionLoanBorrow, types.ActionLoanRepay,
-		types.ActionLiquidityAdd, types.ActionLiquidityWithdraw:
+	case types.ActionDeposit:
+		if action.String2 != "" {
+			return fmt.Errorf("string1 has to be empty")
+		}
 
+		if !k.DenomKeeper.IsBorrowableDenom(ctx, action.String1) {
+			return fmt.Errorf("invalid denom: %v", action.String1)
+		}
+
+	case types.ActionRedeem:
+		if action.String2 != "" {
+			return fmt.Errorf("string1 has to be empty")
+		}
+
+		if !k.DenomKeeper.IsCAsset(ctx, action.String1) {
+			return fmt.Errorf("invalid denom: %v", action.String1)
+		}
+
+	case types.ActionCollateralAdd, types.ActionCollateralWithdraw:
+		if action.String2 != "" {
+			return fmt.Errorf("string1 has to be empty")
+		}
+
+		if !k.DenomKeeper.IsCollateralDenom(ctx, action.String1) {
+			return fmt.Errorf("invalid denom: %v", action.String1)
+		}
+
+	case types.ActionLoanBorrow, types.ActionLoanRepay:
+		if action.String2 != "" {
+			return fmt.Errorf("string1 has to be empty")
+		}
+
+		if !k.DenomKeeper.IsBorrowableDenom(ctx, action.String1) {
+			return fmt.Errorf("invalid denom: %v", action.String1)
+		}
+
+	case types.ActionLiquidityAdd, types.ActionLiquidityWithdraw:
 		if action.String2 != "" {
 			return fmt.Errorf("string1 has to be empty")
 		}

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -11,7 +12,6 @@ import (
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/strategies/types"
-	"github.com/pkg/errors"
 )
 
 func (k Keeper) getArbitrageDenom(ctx context.Context, denom string) types.ArbitrageDenom {

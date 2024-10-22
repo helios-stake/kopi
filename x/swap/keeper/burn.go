@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"cosmossdk.io/math"
@@ -11,7 +12,6 @@ import (
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/swap/types"
-	"github.com/pkg/errors"
 )
 
 // Burn is called at the end of each block to check whether the prices of the kCoins are lower than their

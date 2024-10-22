@@ -1,15 +1,13 @@
 package types
 
 import (
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"cosmossdk.io/math"
+	"fmt"
 )
 
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
+var (
+	MovingAverageFactors = math.LegacyNewDecWithPrec(999, 4) // 0.9999
+)
 
 // NewParams creates a new Params instance
 func NewParams() Params {
@@ -18,15 +16,20 @@ func NewParams() Params {
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{}
+	return Params{
+		MovingAverageFactor: MovingAverageFactors,
+	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if p.MovingAverageFactor.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("moving_average_factor must not be larger than 1")
+	}
+
+	if p.MovingAverageFactor.LT(math.LegacyZeroDec()) {
+		return fmt.Errorf("moving_average_factor must not be smaller than 0")
+	}
+
 	return nil
 }

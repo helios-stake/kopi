@@ -44,14 +44,7 @@ func TestActions1(t *testing.T) {
 		Amount:     "0%",
 	}))
 
-	require.NoError(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
-		ActionType: types.ActionSell,
-		String1:    constants.BaseCurrency,
-		String2:    constants.KUSD,
-		Amount:     "100%",
-	}))
-
-	require.NoError(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
+	require.Error(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
 		ActionType: types.ActionDeposit,
 		String1:    constants.BaseCurrency,
 		Amount:     "100%",
@@ -64,7 +57,7 @@ func TestActions1(t *testing.T) {
 		Amount:     "100%",
 	}))
 
-	require.NoError(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
+	require.Error(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
 		ActionType: types.ActionRedeem,
 		String1:    constants.BaseCurrency,
 		Amount:     "100%",

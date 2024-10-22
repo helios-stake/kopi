@@ -2,13 +2,12 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"errors"
 	"fmt"
-	"github.com/kopi-money/kopi/x/dex/constant_product"
-
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/kopi/x/dex/constant_product"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -48,38 +47,6 @@ func (k Keeper) ExecuteSell(ctx types.TradeContext) (types.TradeResult, error) {
 }
 
 func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
-	//acc, _ := sdk.AccAddressFromBech32(ctx.CoinSource)
-	//balance := k.BankKeeper.SpendableCoins(ctx, acc)
-	//k.Logger().Info(fmt.Sprintf("%v %v %v ", ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.TradeAmount.Int64()))
-	//
-	//for _, b := range balance {
-	//	k.Logger().Info(fmt.Sprintf("b %v %v", b.Denom, b.Amount.Int64()))
-	//}
-	//
-	//poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
-	//poolLiq := k.BankKeeper.SpendableCoins(ctx, poolAcc.GetAddress())
-	//for _, coin := range poolLiq {
-	//	k.Logger().Info(fmt.Sprintf("l %v %v", coin.Denom, coin.Amount.Int64()))
-	//}
-	//
-	//for _, ratio := range k.GetAllRatio(ctx) {
-	//	k.Logger().Info(fmt.Sprintf("k %v %v", ratio.Denom, ratio.Ratio.String()))
-	//}
-	//
-	//if ctx.OrdersCaches == nil {
-	//	ctx.OrdersCaches = k.NewOrdersCaches(ctx)
-	//}
-	//
-	//if ctx.TradeDenomGiving != constants.BaseCurrency {
-	//	fullBase, fullOther, poolFrom, poolTo := k.getLiquidities(ctx.GetOrdersCaches(), ctx.TradeDenomGiving, constants.BaseCurrency)
-	//	k.Logger().Info(fmt.Sprintf("1 %v %v %v %v", fullBase.String(), fullOther, poolFrom.String(), poolTo.String()))
-	//}
-	//
-	//if ctx.TradeDenomGiving != constants.BaseCurrency {
-	//	fullBase, fullOther, poolFrom, poolTo := k.getLiquidities(ctx.OrdersCaches, constants.BaseCurrency, ctx.TradeDenomReceiving)
-	//	k.Logger().Info(fmt.Sprintf("2 %v %v %v %v", fullBase.String(), fullOther, poolFrom.String(), poolTo.String()))
-	//}
-
 	ctx.TradeType = types.TradeTypeBuy
 	ctx.CalcMaximumTradableAmount = func(caches *types.OrdersCaches, _, denomTo string) *math.Int {
 		amount := caches.LiquidityPool.Get().AmountOf(denomTo)

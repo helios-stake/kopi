@@ -9,7 +9,11 @@ import (
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx context.Context) types.Params {
-	params, _ := k.params.Get(ctx)
+	params, has := k.params.Get(ctx)
+	if !has {
+		return types.DefaultParams()
+	}
+
 	return params
 }
 
@@ -24,19 +28,9 @@ func (k Keeper) SetParams(ctx context.Context, params types.Params) error {
 }
 
 func (k Keeper) mintThreshold(ctx context.Context) math.LegacyDec {
-	mintThreshold := k.GetParams(ctx).MintThreshold
-	if !mintThreshold.IsNil() {
-		return mintThreshold
-	}
-
-	return types.MintThreshold
+	return k.GetParams(ctx).MintThreshold
 }
 
 func (k Keeper) burnThreshold(ctx context.Context) math.LegacyDec {
-	burnThreshold := k.GetParams(ctx).BurnThreshold
-	if !burnThreshold.IsNil() {
-		return burnThreshold
-	}
-
-	return types.BurnThreshold
+	return k.GetParams(ctx).BurnThreshold
 }

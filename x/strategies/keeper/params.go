@@ -7,7 +7,11 @@ import (
 )
 
 func (k Keeper) GetParams(ctx context.Context) types.Params {
-	params, _ := k.params.Get(ctx)
+	params, has := k.params.Get(ctx)
+	if !has {
+		return types.DefaultParams()
+	}
+
 	return params
 }
 

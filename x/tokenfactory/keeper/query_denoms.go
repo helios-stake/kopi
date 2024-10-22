@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
@@ -13,15 +15,21 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	factoryDenoms := k.GetAllDenoms(ctx)
+	factoryDenoms, pageRes, err := query.CollectionPaginate(
+		ctx,
+		k.factoryDenoms,
+		req.Pagination,
+		func(key string, value types.FactoryDenom) (*types.FactoryDenom, error) {
+			return &value, nil
+		},
+	)
 
-	response := types.QueryDenomsResponse{
-		Denoms: make([]*types.FactoryDenom, len(factoryDenoms)),
+	if err != nil {
+		return nil, fmt.Errorf("could not get factory denoms from pagination: %w", err)
 	}
 
-	for i, factoryDenom := range factoryDenoms {
-		response.Denoms[i] = &factoryDenom
-	}
-
-	return &response, nil
+	return &types.QueryDenomsResponse{
+		Denoms:     factoryDenoms,
+		Pagination: pageRes,
+	}, nil
 }

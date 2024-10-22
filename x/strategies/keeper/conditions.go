@@ -212,6 +212,8 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
 
+		value = math.LegacyOneDec().Quo(value)
+
 	case types.ConditionPriceChangePercentage:
 		var factor math.LegacyDec
 		if condition.Comparison == types.ComparisonIncreasedBy {
