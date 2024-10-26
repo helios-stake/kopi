@@ -291,6 +291,66 @@ func (m *MsgAutomationsActive) GetActive() bool {
 	return false
 }
 
+type MsgAutomationsActiveMultiple struct {
+	Creator string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Indexes []uint64 `protobuf:"varint,2,rep,packed,name=indexes,proto3" json:"indexes,omitempty"`
+	Active  bool     `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+}
+
+func (m *MsgAutomationsActiveMultiple) Reset()         { *m = MsgAutomationsActiveMultiple{} }
+func (m *MsgAutomationsActiveMultiple) String() string { return proto.CompactTextString(m) }
+func (*MsgAutomationsActiveMultiple) ProtoMessage()    {}
+func (*MsgAutomationsActiveMultiple) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4f011fa8d927341b, []int{5}
+}
+func (m *MsgAutomationsActiveMultiple) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAutomationsActiveMultiple) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAutomationsActiveMultiple.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAutomationsActiveMultiple) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAutomationsActiveMultiple.Merge(m, src)
+}
+func (m *MsgAutomationsActiveMultiple) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAutomationsActiveMultiple) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAutomationsActiveMultiple.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAutomationsActiveMultiple proto.InternalMessageInfo
+
+func (m *MsgAutomationsActiveMultiple) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgAutomationsActiveMultiple) GetIndexes() []uint64 {
+	if m != nil {
+		return m.Indexes
+	}
+	return nil
+}
+
+func (m *MsgAutomationsActiveMultiple) GetActive() bool {
+	if m != nil {
+		return m.Active
+	}
+	return false
+}
+
 type MsgAutomationsAdd struct {
 	Creator        string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Title          string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
@@ -306,7 +366,7 @@ func (m *MsgAutomationsAdd) Reset()         { *m = MsgAutomationsAdd{} }
 func (m *MsgAutomationsAdd) String() string { return proto.CompactTextString(m) }
 func (*MsgAutomationsAdd) ProtoMessage()    {}
 func (*MsgAutomationsAdd) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4f011fa8d927341b, []int{5}
+	return fileDescriptor_4f011fa8d927341b, []int{6}
 }
 func (m *MsgAutomationsAdd) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -407,7 +467,7 @@ func (m *MsgAutomationsUpdate) Reset()         { *m = MsgAutomationsUpdate{} }
 func (m *MsgAutomationsUpdate) String() string { return proto.CompactTextString(m) }
 func (*MsgAutomationsUpdate) ProtoMessage()    {}
 func (*MsgAutomationsUpdate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4f011fa8d927341b, []int{6}
+	return fileDescriptor_4f011fa8d927341b, []int{7}
 }
 func (m *MsgAutomationsUpdate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -508,7 +568,7 @@ func (m *MsgAutomationsRemove) Reset()         { *m = MsgAutomationsRemove{} }
 func (m *MsgAutomationsRemove) String() string { return proto.CompactTextString(m) }
 func (*MsgAutomationsRemove) ProtoMessage()    {}
 func (*MsgAutomationsRemove) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4f011fa8d927341b, []int{7}
+	return fileDescriptor_4f011fa8d927341b, []int{8}
 }
 func (m *MsgAutomationsRemove) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -551,6 +611,58 @@ func (m *MsgAutomationsRemove) GetIndex() uint64 {
 	return 0
 }
 
+type MsgAutomationsRemoveMultiple struct {
+	Creator string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Indexes []uint64 `protobuf:"varint,2,rep,packed,name=indexes,proto3" json:"indexes,omitempty"`
+}
+
+func (m *MsgAutomationsRemoveMultiple) Reset()         { *m = MsgAutomationsRemoveMultiple{} }
+func (m *MsgAutomationsRemoveMultiple) String() string { return proto.CompactTextString(m) }
+func (*MsgAutomationsRemoveMultiple) ProtoMessage()    {}
+func (*MsgAutomationsRemoveMultiple) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4f011fa8d927341b, []int{9}
+}
+func (m *MsgAutomationsRemoveMultiple) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAutomationsRemoveMultiple) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAutomationsRemoveMultiple.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAutomationsRemoveMultiple) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAutomationsRemoveMultiple.Merge(m, src)
+}
+func (m *MsgAutomationsRemoveMultiple) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAutomationsRemoveMultiple) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAutomationsRemoveMultiple.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAutomationsRemoveMultiple proto.InternalMessageInfo
+
+func (m *MsgAutomationsRemoveMultiple) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgAutomationsRemoveMultiple) GetIndexes() []uint64 {
+	if m != nil {
+		return m.Indexes
+	}
+	return nil
+}
+
 type MsgArbitrageDeposit struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Denom   string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
@@ -561,7 +673,7 @@ func (m *MsgArbitrageDeposit) Reset()         { *m = MsgArbitrageDeposit{} }
 func (m *MsgArbitrageDeposit) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageDeposit) ProtoMessage()    {}
 func (*MsgArbitrageDeposit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4f011fa8d927341b, []int{8}
+	return fileDescriptor_4f011fa8d927341b, []int{10}
 }
 func (m *MsgArbitrageDeposit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -622,7 +734,7 @@ func (m *MsgArbitrageRedeem) Reset()         { *m = MsgArbitrageRedeem{} }
 func (m *MsgArbitrageRedeem) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageRedeem) ProtoMessage()    {}
 func (*MsgArbitrageRedeem) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4f011fa8d927341b, []int{9}
+	return fileDescriptor_4f011fa8d927341b, []int{11}
 }
 func (m *MsgArbitrageRedeem) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -685,9 +797,11 @@ func init() {
 	proto.RegisterType((*MsgAutomationsWidthrawFunds)(nil), "kopi.strategies.MsgAutomationsWidthrawFunds")
 	proto.RegisterType((*MsgAutomationsAddFunds)(nil), "kopi.strategies.MsgAutomationsAddFunds")
 	proto.RegisterType((*MsgAutomationsActive)(nil), "kopi.strategies.MsgAutomationsActive")
+	proto.RegisterType((*MsgAutomationsActiveMultiple)(nil), "kopi.strategies.MsgAutomationsActiveMultiple")
 	proto.RegisterType((*MsgAutomationsAdd)(nil), "kopi.strategies.MsgAutomationsAdd")
 	proto.RegisterType((*MsgAutomationsUpdate)(nil), "kopi.strategies.MsgAutomationsUpdate")
 	proto.RegisterType((*MsgAutomationsRemove)(nil), "kopi.strategies.MsgAutomationsRemove")
+	proto.RegisterType((*MsgAutomationsRemoveMultiple)(nil), "kopi.strategies.MsgAutomationsRemoveMultiple")
 	proto.RegisterType((*MsgArbitrageDeposit)(nil), "kopi.strategies.MsgArbitrageDeposit")
 	proto.RegisterType((*MsgArbitrageRedeem)(nil), "kopi.strategies.MsgArbitrageRedeem")
 }
@@ -695,58 +809,62 @@ func init() {
 func init() { proto.RegisterFile("kopi/strategies/tx.proto", fileDescriptor_4f011fa8d927341b) }
 
 var fileDescriptor_4f011fa8d927341b = []byte{
-	// 805 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x4f, 0x13, 0x4d,
-	0x18, 0xc7, 0x59, 0xfa, 0x83, 0x76, 0xc2, 0x4b, 0x61, 0xe9, 0xcb, 0xbb, 0xf4, 0xd5, 0x86, 0x14,
-	0x09, 0xd8, 0x48, 0x37, 0x6a, 0xe2, 0x81, 0xc4, 0x03, 0x68, 0x30, 0x46, 0x1b, 0xe3, 0x0a, 0x68,
-	0x34, 0xa6, 0x19, 0x3a, 0xe3, 0x76, 0xc2, 0xee, 0xce, 0x66, 0x67, 0x5a, 0xe8, 0xcd, 0x78, 0x31,
-	0xf1, 0xe4, 0xc5, 0x3f, 0xc1, 0x3b, 0x07, 0xcf, 0x9e, 0x3d, 0x12, 0x0f, 0xc6, 0xa3, 0x81, 0x03,
-	0xff, 0x86, 0xd9, 0x99, 0xed, 0xd2, 0x6e, 0xdb, 0x6d, 0x49, 0xb8, 0x40, 0x9f, 0x67, 0xbe, 0xfb,
-	0x79, 0xe6, 0xf9, 0xee, 0xb3, 0x3b, 0x0b, 0xb4, 0x03, 0xea, 0x12, 0x9d, 0x71, 0x0f, 0x72, 0x6c,
-	0x12, 0xcc, 0x74, 0x7e, 0x54, 0x71, 0x3d, 0xca, 0xa9, 0x9a, 0xf3, 0x57, 0x2a, 0x17, 0x2b, 0x85,
-	0x39, 0x68, 0x13, 0x87, 0xea, 0xe2, 0xaf, 0xd4, 0x14, 0xfe, 0xab, 0x53, 0x66, 0x53, 0xa6, 0xdb,
-	0xcc, 0xd4, 0x5b, 0xb7, 0xfd, 0x7f, 0xc1, 0xc2, 0xa2, 0x5c, 0xa8, 0x89, 0x48, 0x97, 0x41, 0xb0,
-	0x94, 0x37, 0xa9, 0x49, 0x65, 0xde, 0xff, 0x15, 0x64, 0xaf, 0x45, 0xf7, 0xe1, 0x42, 0x0f, 0xda,
-	0xc1, 0x35, 0xa5, 0x34, 0x48, 0xee, 0x51, 0x82, 0x4a, 0xbf, 0x14, 0xb0, 0x58, 0x65, 0xe6, 0xae,
-	0x8b, 0x20, 0xc7, 0x9b, 0x4d, 0x4e, 0x6d, 0xc8, 0x09, 0x75, 0xd8, 0x03, 0xca, 0x38, 0x53, 0xef,
-	0x81, 0x2c, 0x6c, 0xf2, 0x06, 0xf5, 0x08, 0x6f, 0x6b, 0xca, 0x92, 0xb2, 0x96, 0xdd, 0xd2, 0x7e,
-	0x7e, 0x5b, 0xcf, 0x07, 0xe5, 0x37, 0x11, 0xf2, 0x30, 0x63, 0x2f, 0xb8, 0x47, 0x1c, 0xd3, 0xb8,
-	0x90, 0xaa, 0xcb, 0xe0, 0x9f, 0x3a, 0x75, 0x10, 0xf1, 0x51, 0xb5, 0x77, 0x18, 0x6b, 0x93, 0x4b,
-	0xca, 0x5a, 0xd2, 0x98, 0x0e, 0x93, 0xdb, 0x18, 0xab, 0xd7, 0x01, 0x80, 0xf5, 0x50, 0x91, 0x10,
-	0x8a, 0xac, 0xcc, 0x6c, 0x63, 0xbc, 0x71, 0xff, 0xc3, 0xf9, 0x71, 0xf9, 0x82, 0xf9, 0xe9, 0xfc,
-	0xb8, 0x5c, 0x16, 0x2d, 0x1d, 0x75, 0x37, 0x35, 0x60, 0xef, 0x62, 0xeb, 0xa5, 0xb7, 0xe0, 0xff,
-	0x2a, 0x33, 0xbb, 0x3a, 0x7a, 0x49, 0x10, 0x6f, 0x78, 0xf0, 0x70, 0xbb, 0xe9, 0x20, 0xa6, 0x6a,
-	0x60, 0xaa, 0xee, 0x61, 0xc8, 0xa9, 0x27, 0xfb, 0x32, 0x3a, 0xa1, 0xba, 0x00, 0xd2, 0xd0, 0xa6,
-	0x4d, 0x87, 0x8b, 0x4d, 0x67, 0x8d, 0x20, 0xda, 0x98, 0xf6, 0xf7, 0xd3, 0x51, 0x95, 0x5e, 0x81,
-	0x85, 0x5e, 0xfc, 0x26, 0x42, 0x57, 0x43, 0xb6, 0x40, 0x3e, 0x42, 0xae, 0x73, 0xd2, 0xc2, 0x31,
-	0xdc, 0x3c, 0x48, 0x11, 0x07, 0xe1, 0xa3, 0xc0, 0x65, 0x19, 0x88, 0x6a, 0xe2, 0x4a, 0x61, 0x6d,
-	0xc6, 0x08, 0xa2, 0x48, 0xb5, 0xaf, 0x93, 0x60, 0xae, 0xaf, 0x91, 0xf8, 0x5a, 0x9c, 0x70, 0x0b,
-	0x07, 0x2d, 0xc8, 0xc0, 0xbf, 0xdf, 0xc4, 0xe1, 0xd8, 0x6b, 0x41, 0xab, 0xc6, 0xdb, 0xae, 0x2c,
-	0x99, 0x35, 0xa6, 0x3b, 0xc9, 0x9d, 0xb6, 0x8b, 0xd5, 0x55, 0x90, 0x0b, 0x45, 0x16, 0x76, 0x4c,
-	0xde, 0xd0, 0x92, 0x42, 0x36, 0xd3, 0x49, 0x3f, 0x15, 0x59, 0x9f, 0xd6, 0x82, 0x16, 0x41, 0x84,
-	0xb7, 0x25, 0x2d, 0x25, 0x69, 0x9d, 0xa4, 0xa0, 0xad, 0x80, 0x99, 0x50, 0xd4, 0x82, 0x56, 0x13,
-	0x6b, 0x69, 0xa1, 0x0a, 0x2f, 0xdd, 0xf3, 0x93, 0x6a, 0x11, 0x80, 0x70, 0xe8, 0x98, 0x36, 0x25,
-	0x24, 0x5d, 0x19, 0xbf, 0x53, 0x39, 0x72, 0x4c, 0xcb, 0xc8, 0x4e, 0x83, 0x30, 0xe2, 0xd3, 0xf7,
-	0xc9, 0xe8, 0x6d, 0x91, 0x63, 0x77, 0xe9, 0xdb, 0x12, 0x1a, 0x98, 0x88, 0x35, 0x30, 0x39, 0x9e,
-	0x81, 0xa9, 0xf1, 0x0c, 0x4c, 0x8f, 0x65, 0xe0, 0xd4, 0x68, 0x03, 0x33, 0x71, 0x06, 0x66, 0xe3,
-	0x0c, 0xdc, 0x89, 0xfa, 0x67, 0x60, 0x9b, 0x5e, 0x7e, 0xac, 0x23, 0xd4, 0x03, 0x30, 0xef, 0x53,
-	0xbd, 0x7d, 0xc2, 0x3d, 0x68, 0xe2, 0x87, 0xd8, 0xa5, 0x8c, 0xf0, 0x78, 0x28, 0xc2, 0x0e, 0xb5,
-	0x3b, 0xf3, 0x2b, 0x82, 0xae, 0x27, 0x33, 0x11, 0xf3, 0x64, 0x7e, 0x51, 0x80, 0xda, 0x5d, 0xcd,
-	0xc0, 0x08, 0x63, 0xfb, 0xaa, 0x8a, 0xa9, 0x37, 0xc1, 0x2c, 0xb4, 0x2c, 0x7a, 0x58, 0x23, 0x4e,
-	0x9d, 0xda, 0xae, 0x85, 0xb9, 0x1c, 0x83, 0x8c, 0x91, 0x13, 0xf9, 0xc7, 0x61, 0xba, 0x77, 0x5f,
-	0x77, 0x3e, 0xa6, 0x41, 0xa2, 0xca, 0x4c, 0xf5, 0x19, 0x98, 0xed, 0x73, 0xe2, 0x46, 0x25, 0x72,
-	0xe8, 0x54, 0x06, 0xf8, 0x55, 0xf8, 0xb7, 0x4f, 0xe5, 0x1f, 0x0e, 0x6a, 0x15, 0xe4, 0xa2, 0xcd,
-	0x2e, 0xc7, 0xf2, 0xa4, 0x68, 0x18, 0xee, 0x09, 0x98, 0x89, 0xbc, 0x67, 0x4a, 0x03, 0x69, 0x3d,
-	0x9a, 0x61, 0xb0, 0xe7, 0x60, 0xae, 0xff, 0x61, 0x5c, 0x19, 0xc1, 0x93, 0xb2, 0xf1, 0x90, 0xc1,
-	0x7c, 0x8e, 0x42, 0x4a, 0xd9, 0x78, 0xc8, 0xe0, 0x4d, 0x3e, 0x0a, 0x29, 0x65, 0xc3, 0x90, 0xbb,
-	0x60, 0x7e, 0xd0, 0xb1, 0xb3, 0x3a, 0xda, 0x4a, 0x21, 0x1c, 0x86, 0xad, 0x01, 0xad, 0xe7, 0xb0,
-	0xe4, 0x0d, 0x14, 0x1e, 0x96, 0xb7, 0x46, 0xb0, 0x7b, 0x8e, 0xd6, 0x61, 0x05, 0xde, 0x80, 0x85,
-	0x21, 0x5f, 0x19, 0xe5, 0x41, 0xf8, 0xc1, 0xda, 0x21, 0xf0, 0x42, 0xea, 0xfd, 0xf9, 0x71, 0x59,
-	0xd9, 0x7a, 0xf4, 0xe3, 0xb4, 0xa8, 0x9c, 0x9c, 0x16, 0x95, 0x3f, 0xa7, 0x45, 0xe5, 0xf3, 0x59,
-	0x71, 0xe2, 0xe4, 0xac, 0x38, 0xf1, 0xfb, 0xac, 0x38, 0xf1, 0x7a, 0xdd, 0x24, 0xbc, 0xd1, 0xdc,
-	0xaf, 0xd4, 0xa9, 0xad, 0xfb, 0x84, 0x75, 0x9b, 0x3a, 0xb8, 0xad, 0xf7, 0x7f, 0x50, 0xf8, 0xef,
-	0x4b, 0xb6, 0x9f, 0x16, 0x5f, 0x49, 0x77, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0xb3, 0x52, 0x5b,
-	0x83, 0xcd, 0x09, 0x00, 0x00,
+	// 865 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xae, 0xf3, 0x3b, 0x4f, 0xa5, 0xd9, 0x7a, 0x43, 0x71, 0xc3, 0x12, 0x55, 0x59, 0x56, 0x5b,
+	0x22, 0x12, 0x0b, 0x90, 0x38, 0xac, 0xc4, 0xa1, 0x0b, 0x2a, 0x42, 0x10, 0x21, 0xcc, 0xee, 0x82,
+	0x40, 0x28, 0x4c, 0xe3, 0xc1, 0x19, 0xd5, 0xf6, 0x58, 0x9e, 0x49, 0x9a, 0xdc, 0x10, 0x47, 0x4e,
+	0x5c, 0xf8, 0x13, 0xb8, 0xf7, 0xc0, 0x99, 0x33, 0x17, 0xa4, 0x8a, 0x03, 0xe2, 0x88, 0xda, 0x43,
+	0xff, 0x0d, 0xe4, 0x19, 0xdb, 0x4d, 0x9c, 0xd8, 0x71, 0xb5, 0xbd, 0xb4, 0x79, 0x6f, 0x3e, 0x7f,
+	0xdf, 0x7b, 0x9f, 0xde, 0xfc, 0x00, 0xed, 0x94, 0x7a, 0x44, 0x67, 0xdc, 0x47, 0x1c, 0x5b, 0x04,
+	0x33, 0x9d, 0xcf, 0xfa, 0x9e, 0x4f, 0x39, 0x55, 0x1b, 0xc1, 0x4a, 0xff, 0x66, 0xa5, 0xb5, 0x8b,
+	0x1c, 0xe2, 0x52, 0x5d, 0xfc, 0x95, 0x98, 0xd6, 0x6b, 0x23, 0xca, 0x1c, 0xca, 0x74, 0x87, 0x59,
+	0xfa, 0xf4, 0x9d, 0xe0, 0x5f, 0xb8, 0xb0, 0x2f, 0x17, 0x86, 0x22, 0xd2, 0x65, 0x10, 0x2e, 0x35,
+	0x2d, 0x6a, 0x51, 0x99, 0x0f, 0x7e, 0x85, 0xd9, 0x07, 0xc9, 0x3a, 0x3c, 0xe4, 0x23, 0x27, 0xfc,
+	0xa6, 0x53, 0x81, 0xd2, 0x0b, 0x4a, 0xcc, 0xce, 0x3f, 0x0a, 0xec, 0x0f, 0x98, 0xf5, 0xdc, 0x33,
+	0x11, 0xc7, 0x47, 0x13, 0x4e, 0x1d, 0xc4, 0x09, 0x75, 0xd9, 0x87, 0x94, 0x71, 0xa6, 0xbe, 0x0f,
+	0x75, 0x34, 0xe1, 0x63, 0xea, 0x13, 0x3e, 0xd7, 0x94, 0x03, 0xe5, 0xb0, 0xfe, 0x54, 0xfb, 0xfb,
+	0xf7, 0x5e, 0x33, 0x94, 0x3f, 0x32, 0x4d, 0x1f, 0x33, 0xf6, 0x25, 0xf7, 0x89, 0x6b, 0x19, 0x37,
+	0x50, 0xf5, 0x21, 0xbc, 0x32, 0xa2, 0xae, 0x49, 0x02, 0xaa, 0xe1, 0x0f, 0x18, 0x6b, 0x85, 0x03,
+	0xe5, 0xb0, 0x64, 0x6c, 0xc7, 0xc9, 0x63, 0x8c, 0xd5, 0x37, 0x00, 0xd0, 0x28, 0x46, 0x14, 0x05,
+	0xa2, 0x2e, 0x33, 0xc7, 0x18, 0x3f, 0xf9, 0xe0, 0xa7, 0xeb, 0xf3, 0xee, 0x0d, 0xe7, 0xcf, 0xd7,
+	0xe7, 0xdd, 0xae, 0x68, 0x69, 0xb6, 0xd8, 0xd4, 0x9a, 0xda, 0x45, 0xe9, 0x9d, 0xef, 0xe0, 0xf5,
+	0x01, 0xb3, 0x16, 0x3a, 0xfa, 0x8a, 0x98, 0x7c, 0xec, 0xa3, 0xb3, 0xe3, 0x89, 0x6b, 0x32, 0x55,
+	0x83, 0xea, 0xc8, 0xc7, 0x88, 0x53, 0x5f, 0xf6, 0x65, 0x44, 0xa1, 0xba, 0x07, 0x15, 0xe4, 0xd0,
+	0x89, 0xcb, 0x45, 0xd1, 0x75, 0x23, 0x8c, 0x9e, 0x6c, 0x07, 0xf5, 0x44, 0xa8, 0xce, 0xd7, 0xb0,
+	0xb7, 0x4c, 0x7f, 0x64, 0x9a, 0x77, 0xc3, 0x6c, 0x43, 0x33, 0xc1, 0x3c, 0xe2, 0x64, 0x8a, 0x33,
+	0x78, 0x9b, 0x50, 0x26, 0xae, 0x89, 0x67, 0xa1, 0xcb, 0x32, 0x10, 0x6a, 0xe2, 0x4b, 0x61, 0x6d,
+	0xcd, 0x08, 0xa3, 0x84, 0xda, 0x0c, 0x1e, 0xac, 0x53, 0x1b, 0x4c, 0x6c, 0x4e, 0x3c, 0x3b, 0x4b,
+	0x55, 0x83, 0xaa, 0x10, 0xc2, 0x4c, 0x2b, 0x1c, 0x14, 0x0f, 0x4b, 0x46, 0x14, 0xe6, 0x54, 0xfe,
+	0xad, 0x00, 0xbb, 0x2b, 0x16, 0x66, 0x77, 0xc9, 0x09, 0xb7, 0x71, 0x68, 0x9e, 0x0c, 0x82, 0x49,
+	0x23, 0x2e, 0xc7, 0xfe, 0x14, 0xd9, 0x43, 0x3e, 0xf7, 0xa4, 0x64, 0xdd, 0xd8, 0x8e, 0x92, 0xcf,
+	0xe6, 0x1e, 0x56, 0x1f, 0x43, 0x23, 0x06, 0xd9, 0xd8, 0xb5, 0xf8, 0x58, 0x2b, 0x09, 0xd8, 0x4e,
+	0x94, 0xfe, 0x4c, 0x64, 0x03, 0xb6, 0x29, 0xb2, 0x89, 0x49, 0xf8, 0x5c, 0xb2, 0x95, 0x25, 0x5b,
+	0x94, 0x14, 0x6c, 0x8f, 0x60, 0x27, 0x06, 0x4d, 0x91, 0x3d, 0xc1, 0x5a, 0x45, 0xa0, 0xe2, 0x4f,
+	0x5f, 0x04, 0x49, 0xb5, 0x0d, 0x10, 0x8f, 0x3b, 0xd3, 0xaa, 0x02, 0xb2, 0x90, 0x09, 0x3a, 0x95,
+	0xc3, 0xce, 0xb4, 0x9a, 0xec, 0x34, 0x0c, 0x13, 0x3e, 0xfd, 0x51, 0x48, 0x0e, 0x84, 0x1c, 0xf8,
+	0x5b, 0x0f, 0x44, 0x6c, 0x60, 0x31, 0xd3, 0xc0, 0x52, 0x3e, 0x03, 0xcb, 0xf9, 0x0c, 0xac, 0xe4,
+	0x32, 0xb0, 0xba, 0xd9, 0xc0, 0x5a, 0x96, 0x81, 0xf5, 0x2c, 0x03, 0x9f, 0x25, 0xfd, 0x33, 0xb0,
+	0x43, 0x6f, 0xbf, 0xa1, 0x12, 0xac, 0xdf, 0x27, 0x37, 0x8e, 0x64, 0x7d, 0x99, 0x8d, 0x93, 0x50,
+	0x38, 0x85, 0xfb, 0x81, 0x82, 0x7f, 0x42, 0xb8, 0x8f, 0x2c, 0xfc, 0x11, 0xf6, 0x28, 0x23, 0x3c,
+	0xbb, 0x6c, 0x13, 0xbb, 0xd4, 0x89, 0x76, 0x88, 0x08, 0x16, 0x4e, 0x9d, 0x62, 0xc6, 0xa9, 0xf3,
+	0xab, 0x02, 0xea, 0xa2, 0x9a, 0x81, 0x4d, 0x8c, 0x9d, 0xbb, 0x12, 0x53, 0xdf, 0x82, 0x7b, 0xc8,
+	0xb6, 0xe9, 0xd9, 0x90, 0xb8, 0x23, 0xea, 0x78, 0x36, 0xe6, 0x72, 0xd0, 0x6a, 0x46, 0x43, 0xe4,
+	0x3f, 0x89, 0xd3, 0xcb, 0x75, 0xbd, 0xfb, 0x57, 0x15, 0x8a, 0x03, 0x66, 0xa9, 0x9f, 0xc3, 0xbd,
+	0x15, 0x27, 0xde, 0xec, 0x27, 0x2e, 0xd4, 0xfe, 0x1a, 0xbf, 0x5a, 0xaf, 0xae, 0xa0, 0x82, 0x8b,
+	0x4f, 0x1d, 0x40, 0x23, 0xd9, 0xec, 0xc3, 0x4c, 0x3e, 0x09, 0x4a, 0xa3, 0xfb, 0x14, 0x76, 0x12,
+	0x27, 0x59, 0x67, 0x2d, 0xdb, 0x12, 0x26, 0x8d, 0xec, 0x0b, 0xd8, 0x5d, 0xdd, 0xee, 0x8f, 0x36,
+	0xf0, 0x49, 0x58, 0x3e, 0xca, 0x70, 0x07, 0x6c, 0xa2, 0x94, 0xb0, 0x34, 0x4a, 0x04, 0xfb, 0xe9,
+	0xe3, 0xdf, 0xcb, 0x45, 0x1d, 0xc1, 0xf3, 0x55, 0x1d, 0x5e, 0x84, 0x9b, 0xaa, 0x96, 0xb0, 0x7c,
+	0x55, 0x27, 0x6e, 0xbb, 0x5e, 0x2e, 0xea, 0x4d, 0x55, 0x3f, 0x87, 0xfb, 0xeb, 0x1e, 0x06, 0x8f,
+	0x37, 0x0f, 0x84, 0x00, 0xa6, 0xd1, 0x0e, 0x41, 0x5b, 0x7a, 0xce, 0xf0, 0xb1, 0x19, 0x3f, 0x67,
+	0xde, 0xde, 0xc0, 0xbd, 0xf4, 0xf8, 0x49, 0x13, 0xf8, 0x16, 0xf6, 0x52, 0xde, 0x81, 0xdd, 0x75,
+	0xf4, 0xeb, 0xb1, 0x29, 0xe4, 0xad, 0xf2, 0x8f, 0xd7, 0xe7, 0x5d, 0xe5, 0xe9, 0xc7, 0x7f, 0x5e,
+	0xb6, 0x95, 0x8b, 0xcb, 0xb6, 0xf2, 0xdf, 0x65, 0x5b, 0xf9, 0xe5, 0xaa, 0xbd, 0x75, 0x71, 0xd5,
+	0xde, 0xfa, 0xf7, 0xaa, 0xbd, 0xf5, 0x4d, 0xcf, 0x22, 0x7c, 0x3c, 0x39, 0xe9, 0x8f, 0xa8, 0xa3,
+	0x07, 0x0c, 0x3d, 0x87, 0xba, 0x78, 0xae, 0xaf, 0x3e, 0xf9, 0x82, 0x7b, 0x85, 0x9d, 0x54, 0xc4,
+	0x3b, 0xf6, 0xbd, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0x87, 0x15, 0x3b, 0x32, 0x6f, 0x0b, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -766,7 +884,9 @@ type MsgClient interface {
 	AutomationsAdd(ctx context.Context, in *MsgAutomationsAdd, opts ...grpc.CallOption) (*Void, error)
 	AutomationsUpdate(ctx context.Context, in *MsgAutomationsUpdate, opts ...grpc.CallOption) (*Void, error)
 	AutomationsRemove(ctx context.Context, in *MsgAutomationsRemove, opts ...grpc.CallOption) (*Void, error)
+	AutomationsRemoveMultiple(ctx context.Context, in *MsgAutomationsRemoveMultiple, opts ...grpc.CallOption) (*Void, error)
 	AutomationsActive(ctx context.Context, in *MsgAutomationsActive, opts ...grpc.CallOption) (*Void, error)
+	AutomationsActiveMultiple(ctx context.Context, in *MsgAutomationsActiveMultiple, opts ...grpc.CallOption) (*Void, error)
 	AutomationsAddFunds(ctx context.Context, in *MsgAutomationsAddFunds, opts ...grpc.CallOption) (*Void, error)
 	AutomationsWithdrawFunds(ctx context.Context, in *MsgAutomationsWidthrawFunds, opts ...grpc.CallOption) (*Void, error)
 	UpdateAutomationsCosts(ctx context.Context, in *MsgUpdateAutomationsCosts, opts ...grpc.CallOption) (*Void, error)
@@ -825,9 +945,27 @@ func (c *msgClient) AutomationsRemove(ctx context.Context, in *MsgAutomationsRem
 	return out, nil
 }
 
+func (c *msgClient) AutomationsRemoveMultiple(ctx context.Context, in *MsgAutomationsRemoveMultiple, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.strategies.Msg/AutomationsRemoveMultiple", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) AutomationsActive(ctx context.Context, in *MsgAutomationsActive, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, "/kopi.strategies.Msg/AutomationsActive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AutomationsActiveMultiple(ctx context.Context, in *MsgAutomationsActiveMultiple, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.strategies.Msg/AutomationsActiveMultiple", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -868,7 +1006,9 @@ type MsgServer interface {
 	AutomationsAdd(context.Context, *MsgAutomationsAdd) (*Void, error)
 	AutomationsUpdate(context.Context, *MsgAutomationsUpdate) (*Void, error)
 	AutomationsRemove(context.Context, *MsgAutomationsRemove) (*Void, error)
+	AutomationsRemoveMultiple(context.Context, *MsgAutomationsRemoveMultiple) (*Void, error)
 	AutomationsActive(context.Context, *MsgAutomationsActive) (*Void, error)
+	AutomationsActiveMultiple(context.Context, *MsgAutomationsActiveMultiple) (*Void, error)
 	AutomationsAddFunds(context.Context, *MsgAutomationsAddFunds) (*Void, error)
 	AutomationsWithdrawFunds(context.Context, *MsgAutomationsWidthrawFunds) (*Void, error)
 	UpdateAutomationsCosts(context.Context, *MsgUpdateAutomationsCosts) (*Void, error)
@@ -893,8 +1033,14 @@ func (*UnimplementedMsgServer) AutomationsUpdate(ctx context.Context, req *MsgAu
 func (*UnimplementedMsgServer) AutomationsRemove(ctx context.Context, req *MsgAutomationsRemove) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsRemove not implemented")
 }
+func (*UnimplementedMsgServer) AutomationsRemoveMultiple(ctx context.Context, req *MsgAutomationsRemoveMultiple) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationsRemoveMultiple not implemented")
+}
 func (*UnimplementedMsgServer) AutomationsActive(ctx context.Context, req *MsgAutomationsActive) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsActive not implemented")
+}
+func (*UnimplementedMsgServer) AutomationsActiveMultiple(ctx context.Context, req *MsgAutomationsActiveMultiple) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationsActiveMultiple not implemented")
 }
 func (*UnimplementedMsgServer) AutomationsAddFunds(ctx context.Context, req *MsgAutomationsAddFunds) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsAddFunds not implemented")
@@ -1000,6 +1146,24 @@ func _Msg_AutomationsRemove_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AutomationsRemoveMultiple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAutomationsRemoveMultiple)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AutomationsRemoveMultiple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.strategies.Msg/AutomationsRemoveMultiple",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AutomationsRemoveMultiple(ctx, req.(*MsgAutomationsRemoveMultiple))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_AutomationsActive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgAutomationsActive)
 	if err := dec(in); err != nil {
@@ -1014,6 +1178,24 @@ func _Msg_AutomationsActive_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AutomationsActive(ctx, req.(*MsgAutomationsActive))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AutomationsActiveMultiple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAutomationsActiveMultiple)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AutomationsActiveMultiple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.strategies.Msg/AutomationsActiveMultiple",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AutomationsActiveMultiple(ctx, req.(*MsgAutomationsActiveMultiple))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1097,8 +1279,16 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AutomationsRemove_Handler,
 		},
 		{
+			MethodName: "AutomationsRemoveMultiple",
+			Handler:    _Msg_AutomationsRemoveMultiple_Handler,
+		},
+		{
 			MethodName: "AutomationsActive",
 			Handler:    _Msg_AutomationsActive_Handler,
+		},
+		{
+			MethodName: "AutomationsActiveMultiple",
+			Handler:    _Msg_AutomationsActiveMultiple_Handler,
 		},
 		{
 			MethodName: "AutomationsAddFunds",
@@ -1288,6 +1478,64 @@ func (m *MsgAutomationsActive) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(m.Index))
 		i--
 		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAutomationsActiveMultiple) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAutomationsActiveMultiple) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAutomationsActiveMultiple) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Active {
+		i--
+		if m.Active {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Indexes) > 0 {
+		dAtA2 := make([]byte, len(m.Indexes)*10)
+		var j1 int
+		for _, num := range m.Indexes {
+			for num >= 1<<7 {
+				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA2[j1] = uint8(num)
+			j1++
+		}
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
+		i = encodeVarintTx(dAtA, i, uint64(j1))
+		i--
+		dAtA[i] = 0x12
 	}
 	if len(m.Creator) > 0 {
 		i -= len(m.Creator)
@@ -1497,6 +1745,54 @@ func (m *MsgAutomationsRemove) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgAutomationsRemoveMultiple) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAutomationsRemoveMultiple) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAutomationsRemoveMultiple) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Indexes) > 0 {
+		dAtA4 := make([]byte, len(m.Indexes)*10)
+		var j3 int
+		for _, num := range m.Indexes {
+			for num >= 1<<7 {
+				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j3++
+			}
+			dAtA4[j3] = uint8(num)
+			j3++
+		}
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
+		i = encodeVarintTx(dAtA, i, uint64(j3))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgArbitrageDeposit) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1687,6 +1983,29 @@ func (m *MsgAutomationsActive) Size() (n int) {
 	return n
 }
 
+func (m *MsgAutomationsActiveMultiple) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Indexes) > 0 {
+		l = 0
+		for _, e := range m.Indexes {
+			l += sovTx(uint64(e))
+		}
+		n += 1 + sovTx(uint64(l)) + l
+	}
+	if m.Active {
+		n += 2
+	}
+	return n
+}
+
 func (m *MsgAutomationsAdd) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1784,6 +2103,26 @@ func (m *MsgAutomationsRemove) Size() (n int) {
 	}
 	if m.Index != 0 {
 		n += 1 + sovTx(uint64(m.Index))
+	}
+	return n
+}
+
+func (m *MsgAutomationsRemoveMultiple) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Indexes) > 0 {
+		l = 0
+		for _, e := range m.Indexes {
+			l += sovTx(uint64(e))
+		}
+		n += 1 + sovTx(uint64(l)) + l
 	}
 	return n
 }
@@ -2316,6 +2655,184 @@ func (m *MsgAutomationsActive) Unmarshal(dAtA []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Active", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Active = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAutomationsActiveMultiple) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAutomationsActiveMultiple: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAutomationsActiveMultiple: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Indexes = append(m.Indexes, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthTx
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthTx
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Indexes) == 0 {
+					m.Indexes = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Indexes = append(m.Indexes, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
 			}
 		case 3:
 			if wireType != 0 {
@@ -3068,6 +3585,164 @@ func (m *MsgAutomationsRemove) Unmarshal(dAtA []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAutomationsRemoveMultiple) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAutomationsRemoveMultiple: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAutomationsRemoveMultiple: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Indexes = append(m.Indexes, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthTx
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthTx
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Indexes) == 0 {
+					m.Indexes = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Indexes = append(m.Indexes, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
 			}
 		default:
 			iNdEx = preIndex

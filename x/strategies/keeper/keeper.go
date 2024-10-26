@@ -59,10 +59,10 @@ func NewKeeper(
 
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	blockspeedKeeper types.BlockspeedKeeper,
 	distributionKeeper types.DistributionKeeper,
 	stakingKeeper types.StakingKeeper,
 
+	blockspeedKeeper types.BlockspeedKeeper,
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	mmKeeper types.MMKeeper,

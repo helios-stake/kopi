@@ -16,10 +16,12 @@ service Msg {
   rpc ArbitrageDeposit (MsgArbitrageDeposit) returns (Void);
   rpc ArbitrageRedeem  (MsgArbitrageRedeem) returns (Void);
 
-  rpc AutomationsAdd    (MsgAutomationsAdd) returns (Void);
-  rpc AutomationsUpdate (MsgAutomationsUpdate) returns (Void);
-  rpc AutomationsRemove (MsgAutomationsRemove) returns (Void);
-  rpc AutomationsActive (MsgAutomationsActive) returns (Void);
+  rpc AutomationsAdd            (MsgAutomationsAdd) returns (Void);
+  rpc AutomationsUpdate         (MsgAutomationsUpdate) returns (Void);
+  rpc AutomationsRemove         (MsgAutomationsRemove) returns (Void);
+  rpc AutomationsRemoveMultiple (MsgAutomationsRemoveMultiple) returns (Void);
+  rpc AutomationsActive         (MsgAutomationsActive) returns (Void);
+  rpc AutomationsActiveMultiple (MsgAutomationsActiveMultiple) returns (Void);
 
   rpc AutomationsAddFunds (MsgAutomationsAddFunds) returns (Void);
   rpc AutomationsWithdrawFunds (MsgAutomationsWidthrawFunds) returns (Void);
@@ -60,6 +62,14 @@ message MsgAutomationsActive {
   bool active = 3;
 }
 
+message MsgAutomationsActiveMultiple {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  repeated uint64 indexes = 2;
+  bool active = 3;
+}
+
 message MsgAutomationsAdd {
   option (cosmos.msg.v1.signer) = "creator";
 
@@ -96,6 +106,13 @@ message MsgAutomationsRemove {
 
   string creator = 1;
   uint64 index = 2;
+}
+
+message MsgAutomationsRemoveMultiple {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  repeated uint64 indexes = 2;
 }
 
 message MsgArbitrageDeposit {

@@ -19,15 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_ArbitrageDeposit_FullMethodName         = "/kopi.strategies.Msg/ArbitrageDeposit"
-	Msg_ArbitrageRedeem_FullMethodName          = "/kopi.strategies.Msg/ArbitrageRedeem"
-	Msg_AutomationsAdd_FullMethodName           = "/kopi.strategies.Msg/AutomationsAdd"
-	Msg_AutomationsUpdate_FullMethodName        = "/kopi.strategies.Msg/AutomationsUpdate"
-	Msg_AutomationsRemove_FullMethodName        = "/kopi.strategies.Msg/AutomationsRemove"
-	Msg_AutomationsActive_FullMethodName        = "/kopi.strategies.Msg/AutomationsActive"
-	Msg_AutomationsAddFunds_FullMethodName      = "/kopi.strategies.Msg/AutomationsAddFunds"
-	Msg_AutomationsWithdrawFunds_FullMethodName = "/kopi.strategies.Msg/AutomationsWithdrawFunds"
-	Msg_UpdateAutomationsCosts_FullMethodName   = "/kopi.strategies.Msg/UpdateAutomationsCosts"
+	Msg_ArbitrageDeposit_FullMethodName          = "/kopi.strategies.Msg/ArbitrageDeposit"
+	Msg_ArbitrageRedeem_FullMethodName           = "/kopi.strategies.Msg/ArbitrageRedeem"
+	Msg_AutomationsAdd_FullMethodName            = "/kopi.strategies.Msg/AutomationsAdd"
+	Msg_AutomationsUpdate_FullMethodName         = "/kopi.strategies.Msg/AutomationsUpdate"
+	Msg_AutomationsRemove_FullMethodName         = "/kopi.strategies.Msg/AutomationsRemove"
+	Msg_AutomationsRemoveMultiple_FullMethodName = "/kopi.strategies.Msg/AutomationsRemoveMultiple"
+	Msg_AutomationsActive_FullMethodName         = "/kopi.strategies.Msg/AutomationsActive"
+	Msg_AutomationsActiveMultiple_FullMethodName = "/kopi.strategies.Msg/AutomationsActiveMultiple"
+	Msg_AutomationsAddFunds_FullMethodName       = "/kopi.strategies.Msg/AutomationsAddFunds"
+	Msg_AutomationsWithdrawFunds_FullMethodName  = "/kopi.strategies.Msg/AutomationsWithdrawFunds"
+	Msg_UpdateAutomationsCosts_FullMethodName    = "/kopi.strategies.Msg/UpdateAutomationsCosts"
 )
 
 // MsgClient is the client API for Msg service.
@@ -39,7 +41,9 @@ type MsgClient interface {
 	AutomationsAdd(ctx context.Context, in *MsgAutomationsAdd, opts ...grpc.CallOption) (*Void, error)
 	AutomationsUpdate(ctx context.Context, in *MsgAutomationsUpdate, opts ...grpc.CallOption) (*Void, error)
 	AutomationsRemove(ctx context.Context, in *MsgAutomationsRemove, opts ...grpc.CallOption) (*Void, error)
+	AutomationsRemoveMultiple(ctx context.Context, in *MsgAutomationsRemoveMultiple, opts ...grpc.CallOption) (*Void, error)
 	AutomationsActive(ctx context.Context, in *MsgAutomationsActive, opts ...grpc.CallOption) (*Void, error)
+	AutomationsActiveMultiple(ctx context.Context, in *MsgAutomationsActiveMultiple, opts ...grpc.CallOption) (*Void, error)
 	AutomationsAddFunds(ctx context.Context, in *MsgAutomationsAddFunds, opts ...grpc.CallOption) (*Void, error)
 	AutomationsWithdrawFunds(ctx context.Context, in *MsgAutomationsWidthrawFunds, opts ...grpc.CallOption) (*Void, error)
 	UpdateAutomationsCosts(ctx context.Context, in *MsgUpdateAutomationsCosts, opts ...grpc.CallOption) (*Void, error)
@@ -98,9 +102,27 @@ func (c *msgClient) AutomationsRemove(ctx context.Context, in *MsgAutomationsRem
 	return out, nil
 }
 
+func (c *msgClient) AutomationsRemoveMultiple(ctx context.Context, in *MsgAutomationsRemoveMultiple, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AutomationsRemoveMultiple_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) AutomationsActive(ctx context.Context, in *MsgAutomationsActive, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_AutomationsActive_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AutomationsActiveMultiple(ctx context.Context, in *MsgAutomationsActiveMultiple, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AutomationsActiveMultiple_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +165,9 @@ type MsgServer interface {
 	AutomationsAdd(context.Context, *MsgAutomationsAdd) (*Void, error)
 	AutomationsUpdate(context.Context, *MsgAutomationsUpdate) (*Void, error)
 	AutomationsRemove(context.Context, *MsgAutomationsRemove) (*Void, error)
+	AutomationsRemoveMultiple(context.Context, *MsgAutomationsRemoveMultiple) (*Void, error)
 	AutomationsActive(context.Context, *MsgAutomationsActive) (*Void, error)
+	AutomationsActiveMultiple(context.Context, *MsgAutomationsActiveMultiple) (*Void, error)
 	AutomationsAddFunds(context.Context, *MsgAutomationsAddFunds) (*Void, error)
 	AutomationsWithdrawFunds(context.Context, *MsgAutomationsWidthrawFunds) (*Void, error)
 	UpdateAutomationsCosts(context.Context, *MsgUpdateAutomationsCosts) (*Void, error)
@@ -169,8 +193,14 @@ func (UnimplementedMsgServer) AutomationsUpdate(context.Context, *MsgAutomations
 func (UnimplementedMsgServer) AutomationsRemove(context.Context, *MsgAutomationsRemove) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsRemove not implemented")
 }
+func (UnimplementedMsgServer) AutomationsRemoveMultiple(context.Context, *MsgAutomationsRemoveMultiple) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationsRemoveMultiple not implemented")
+}
 func (UnimplementedMsgServer) AutomationsActive(context.Context, *MsgAutomationsActive) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsActive not implemented")
+}
+func (UnimplementedMsgServer) AutomationsActiveMultiple(context.Context, *MsgAutomationsActiveMultiple) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationsActiveMultiple not implemented")
 }
 func (UnimplementedMsgServer) AutomationsAddFunds(context.Context, *MsgAutomationsAddFunds) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsAddFunds not implemented")
@@ -284,6 +314,24 @@ func _Msg_AutomationsRemove_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AutomationsRemoveMultiple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAutomationsRemoveMultiple)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AutomationsRemoveMultiple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AutomationsRemoveMultiple_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AutomationsRemoveMultiple(ctx, req.(*MsgAutomationsRemoveMultiple))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_AutomationsActive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgAutomationsActive)
 	if err := dec(in); err != nil {
@@ -298,6 +346,24 @@ func _Msg_AutomationsActive_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AutomationsActive(ctx, req.(*MsgAutomationsActive))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AutomationsActiveMultiple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAutomationsActiveMultiple)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AutomationsActiveMultiple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AutomationsActiveMultiple_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AutomationsActiveMultiple(ctx, req.(*MsgAutomationsActiveMultiple))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,8 +450,16 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AutomationsRemove_Handler,
 		},
 		{
+			MethodName: "AutomationsRemoveMultiple",
+			Handler:    _Msg_AutomationsRemoveMultiple_Handler,
+		},
+		{
 			MethodName: "AutomationsActive",
 			Handler:    _Msg_AutomationsActive_Handler,
+		},
+		{
+			MethodName: "AutomationsActiveMultiple",
+			Handler:    _Msg_AutomationsActiveMultiple_Handler,
 		},
 		{
 			MethodName: "AutomationsAddFunds",

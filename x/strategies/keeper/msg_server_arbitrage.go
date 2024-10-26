@@ -23,28 +23,27 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 		return nil, err
 	}
 
-	denom := msg.Denom
-	if cAsset, _ := k.DenomKeeper.GetCAsset(ctx, denom); cAsset != nil {
+	var cAsset *denomtypes.CAsset
+	if cAsset, _ = k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); cAsset != nil {
 		var cAssetAmount math.Int
 		cAssetAmount, err = k.MMKeeper.Deposit(ctx, address, cAsset, amount)
 		if err != nil {
 			return nil, fmt.Errorf("could not deposit into c asset: %w", err)
 		}
 
-		m := fmt.Sprintf("%v %v > %v %v", amount.String(), denom, cAssetAmount.String(), cAsset.DexDenom)
+		m := fmt.Sprintf("%v %v > %v %v", amount.String(), msg.Denom, cAssetAmount.String(), cAsset.DexDenom)
 		k.Logger().Info(m)
 
 		amount = cAssetAmount
-		denom = cAsset.DexDenom
+	} else {
+		cAsset, err = k.DenomKeeper.GetCAsset(ctx, msg.Denom)
+		if err != nil {
+			return nil, fmt.Errorf("could not find cAsset by name: %v", msg.Denom)
+		}
 	}
 
 	if amount.IsZero() {
 		return nil, fmt.Errorf("cAsset amount is zero")
-	}
-
-	cAsset, err := k.DenomKeeper.GetCAsset(ctx, denom)
-	if err != nil {
-		return nil, fmt.Errorf("could not find cAsset by name: %v", denom)
 	}
 
 	arbitrageDenom, err := k.DenomKeeper.GetArbitrageDenomByCAsset(ctx, cAsset.DexDenom)

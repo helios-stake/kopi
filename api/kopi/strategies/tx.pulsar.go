@@ -2378,6 +2378,660 @@ func (x *fastReflection_MsgAutomationsActive) ProtoMethods() *protoiface.Methods
 	}
 }
 
+var _ protoreflect.List = (*_MsgAutomationsActiveMultiple_2_list)(nil)
+
+type _MsgAutomationsActiveMultiple_2_list struct {
+	list *[]uint64
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgAutomationsActiveMultiple at list field Indexes as it is not of Message kind"))
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_MsgAutomationsActiveMultiple_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MsgAutomationsActiveMultiple         protoreflect.MessageDescriptor
+	fd_MsgAutomationsActiveMultiple_creator protoreflect.FieldDescriptor
+	fd_MsgAutomationsActiveMultiple_indexes protoreflect.FieldDescriptor
+	fd_MsgAutomationsActiveMultiple_active  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_strategies_tx_proto_init()
+	md_MsgAutomationsActiveMultiple = File_kopi_strategies_tx_proto.Messages().ByName("MsgAutomationsActiveMultiple")
+	fd_MsgAutomationsActiveMultiple_creator = md_MsgAutomationsActiveMultiple.Fields().ByName("creator")
+	fd_MsgAutomationsActiveMultiple_indexes = md_MsgAutomationsActiveMultiple.Fields().ByName("indexes")
+	fd_MsgAutomationsActiveMultiple_active = md_MsgAutomationsActiveMultiple.Fields().ByName("active")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgAutomationsActiveMultiple)(nil)
+
+type fastReflection_MsgAutomationsActiveMultiple MsgAutomationsActiveMultiple
+
+func (x *MsgAutomationsActiveMultiple) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAutomationsActiveMultiple)(x)
+}
+
+func (x *MsgAutomationsActiveMultiple) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_strategies_tx_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgAutomationsActiveMultiple_messageType fastReflection_MsgAutomationsActiveMultiple_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAutomationsActiveMultiple_messageType{}
+
+type fastReflection_MsgAutomationsActiveMultiple_messageType struct{}
+
+func (x fastReflection_MsgAutomationsActiveMultiple_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAutomationsActiveMultiple)(nil)
+}
+func (x fastReflection_MsgAutomationsActiveMultiple_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAutomationsActiveMultiple)
+}
+func (x fastReflection_MsgAutomationsActiveMultiple_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAutomationsActiveMultiple
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAutomationsActiveMultiple
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAutomationsActiveMultiple_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgAutomationsActiveMultiple) New() protoreflect.Message {
+	return new(fastReflection_MsgAutomationsActiveMultiple)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Interface() protoreflect.ProtoMessage {
+	return (*MsgAutomationsActiveMultiple)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Creator != "" {
+		value := protoreflect.ValueOfString(x.Creator)
+		if !f(fd_MsgAutomationsActiveMultiple_creator, value) {
+			return
+		}
+	}
+	if len(x.Indexes) != 0 {
+		value := protoreflect.ValueOfList(&_MsgAutomationsActiveMultiple_2_list{list: &x.Indexes})
+		if !f(fd_MsgAutomationsActiveMultiple_indexes, value) {
+			return
+		}
+	}
+	if x.Active != false {
+		value := protoreflect.ValueOfBool(x.Active)
+		if !f(fd_MsgAutomationsActiveMultiple_active, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		return x.Creator != ""
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		return len(x.Indexes) != 0
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		return x.Active != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		x.Creator = ""
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		x.Indexes = nil
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		x.Active = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		value := x.Creator
+		return protoreflect.ValueOfString(value)
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		if len(x.Indexes) == 0 {
+			return protoreflect.ValueOfList(&_MsgAutomationsActiveMultiple_2_list{})
+		}
+		listValue := &_MsgAutomationsActiveMultiple_2_list{list: &x.Indexes}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		value := x.Active
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		x.Creator = value.Interface().(string)
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		lv := value.List()
+		clv := lv.(*_MsgAutomationsActiveMultiple_2_list)
+		x.Indexes = *clv.list
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		x.Active = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsActiveMultiple) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		if x.Indexes == nil {
+			x.Indexes = []uint64{}
+		}
+		value := &_MsgAutomationsActiveMultiple_2_list{list: &x.Indexes}
+		return protoreflect.ValueOfList(value)
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		panic(fmt.Errorf("field creator of message kopi.strategies.MsgAutomationsActiveMultiple is not mutable"))
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		panic(fmt.Errorf("field active of message kopi.strategies.MsgAutomationsActiveMultiple is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgAutomationsActiveMultiple) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsActiveMultiple.creator":
+		return protoreflect.ValueOfString("")
+	case "kopi.strategies.MsgAutomationsActiveMultiple.indexes":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_MsgAutomationsActiveMultiple_2_list{list: &list})
+	case "kopi.strategies.MsgAutomationsActiveMultiple.active":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsActiveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsActiveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgAutomationsActiveMultiple) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.strategies.MsgAutomationsActiveMultiple", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgAutomationsActiveMultiple) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsActiveMultiple) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgAutomationsActiveMultiple) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgAutomationsActiveMultiple) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgAutomationsActiveMultiple)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Creator)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Indexes) > 0 {
+			l = 0
+			for _, e := range x.Indexes {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if x.Active {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgAutomationsActiveMultiple)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Active {
+			i--
+			if x.Active {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if len(x.Indexes) > 0 {
+			var pksize2 int
+			for _, num := range x.Indexes {
+				pksize2 += runtime.Sov(uint64(num))
+			}
+			i -= pksize2
+			j1 := i
+			for _, num := range x.Indexes {
+				for num >= 1<<7 {
+					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j1++
+				}
+				dAtA[j1] = uint8(num)
+				j1++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Creator) > 0 {
+			i -= len(x.Creator)
+			copy(dAtA[i:], x.Creator)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgAutomationsActiveMultiple)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAutomationsActiveMultiple: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAutomationsActiveMultiple: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Creator = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.Indexes = append(x.Indexes, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.Indexes) == 0 {
+						x.Indexes = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.Indexes = append(x.Indexes, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Active", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Active = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var (
 	md_MsgAutomationsAdd                 protoreflect.MessageDescriptor
 	fd_MsgAutomationsAdd_creator         protoreflect.FieldDescriptor
@@ -2412,7 +3066,7 @@ func (x *MsgAutomationsAdd) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgAutomationsAdd) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_strategies_tx_proto_msgTypes[5]
+	mi := &file_kopi_strategies_tx_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3282,7 +3936,7 @@ func (x *MsgAutomationsUpdate) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgAutomationsUpdate) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_strategies_tx_proto_msgTypes[6]
+	mi := &file_kopi_strategies_tx_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4184,7 +4838,7 @@ func (x *MsgAutomationsRemove) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgAutomationsRemove) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_strategies_tx_proto_msgTypes[7]
+	mi := &file_kopi_strategies_tx_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4630,6 +5284,606 @@ func (x *fastReflection_MsgAutomationsRemove) ProtoMethods() *protoiface.Methods
 	}
 }
 
+var _ protoreflect.List = (*_MsgAutomationsRemoveMultiple_2_list)(nil)
+
+type _MsgAutomationsRemoveMultiple_2_list struct {
+	list *[]uint64
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgAutomationsRemoveMultiple at list field Indexes as it is not of Message kind"))
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_MsgAutomationsRemoveMultiple_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MsgAutomationsRemoveMultiple         protoreflect.MessageDescriptor
+	fd_MsgAutomationsRemoveMultiple_creator protoreflect.FieldDescriptor
+	fd_MsgAutomationsRemoveMultiple_indexes protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_strategies_tx_proto_init()
+	md_MsgAutomationsRemoveMultiple = File_kopi_strategies_tx_proto.Messages().ByName("MsgAutomationsRemoveMultiple")
+	fd_MsgAutomationsRemoveMultiple_creator = md_MsgAutomationsRemoveMultiple.Fields().ByName("creator")
+	fd_MsgAutomationsRemoveMultiple_indexes = md_MsgAutomationsRemoveMultiple.Fields().ByName("indexes")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgAutomationsRemoveMultiple)(nil)
+
+type fastReflection_MsgAutomationsRemoveMultiple MsgAutomationsRemoveMultiple
+
+func (x *MsgAutomationsRemoveMultiple) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAutomationsRemoveMultiple)(x)
+}
+
+func (x *MsgAutomationsRemoveMultiple) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_strategies_tx_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgAutomationsRemoveMultiple_messageType fastReflection_MsgAutomationsRemoveMultiple_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAutomationsRemoveMultiple_messageType{}
+
+type fastReflection_MsgAutomationsRemoveMultiple_messageType struct{}
+
+func (x fastReflection_MsgAutomationsRemoveMultiple_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAutomationsRemoveMultiple)(nil)
+}
+func (x fastReflection_MsgAutomationsRemoveMultiple_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAutomationsRemoveMultiple)
+}
+func (x fastReflection_MsgAutomationsRemoveMultiple_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAutomationsRemoveMultiple
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAutomationsRemoveMultiple
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAutomationsRemoveMultiple_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) New() protoreflect.Message {
+	return new(fastReflection_MsgAutomationsRemoveMultiple)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Interface() protoreflect.ProtoMessage {
+	return (*MsgAutomationsRemoveMultiple)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Creator != "" {
+		value := protoreflect.ValueOfString(x.Creator)
+		if !f(fd_MsgAutomationsRemoveMultiple_creator, value) {
+			return
+		}
+	}
+	if len(x.Indexes) != 0 {
+		value := protoreflect.ValueOfList(&_MsgAutomationsRemoveMultiple_2_list{list: &x.Indexes})
+		if !f(fd_MsgAutomationsRemoveMultiple_indexes, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		return x.Creator != ""
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		return len(x.Indexes) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		x.Creator = ""
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		x.Indexes = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		value := x.Creator
+		return protoreflect.ValueOfString(value)
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		if len(x.Indexes) == 0 {
+			return protoreflect.ValueOfList(&_MsgAutomationsRemoveMultiple_2_list{})
+		}
+		listValue := &_MsgAutomationsRemoveMultiple_2_list{list: &x.Indexes}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		x.Creator = value.Interface().(string)
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		lv := value.List()
+		clv := lv.(*_MsgAutomationsRemoveMultiple_2_list)
+		x.Indexes = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		if x.Indexes == nil {
+			x.Indexes = []uint64{}
+		}
+		value := &_MsgAutomationsRemoveMultiple_2_list{list: &x.Indexes}
+		return protoreflect.ValueOfList(value)
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		panic(fmt.Errorf("field creator of message kopi.strategies.MsgAutomationsRemoveMultiple is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.creator":
+		return protoreflect.ValueOfString("")
+	case "kopi.strategies.MsgAutomationsRemoveMultiple.indexes":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_MsgAutomationsRemoveMultiple_2_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.strategies.MsgAutomationsRemoveMultiple"))
+		}
+		panic(fmt.Errorf("message kopi.strategies.MsgAutomationsRemoveMultiple does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.strategies.MsgAutomationsRemoveMultiple", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgAutomationsRemoveMultiple) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgAutomationsRemoveMultiple)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Creator)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Indexes) > 0 {
+			l = 0
+			for _, e := range x.Indexes {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgAutomationsRemoveMultiple)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Indexes) > 0 {
+			var pksize2 int
+			for _, num := range x.Indexes {
+				pksize2 += runtime.Sov(uint64(num))
+			}
+			i -= pksize2
+			j1 := i
+			for _, num := range x.Indexes {
+				for num >= 1<<7 {
+					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j1++
+				}
+				dAtA[j1] = uint8(num)
+				j1++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Creator) > 0 {
+			i -= len(x.Creator)
+			copy(dAtA[i:], x.Creator)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Creator)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgAutomationsRemoveMultiple)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAutomationsRemoveMultiple: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAutomationsRemoveMultiple: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Creator = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.Indexes = append(x.Indexes, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.Indexes) == 0 {
+						x.Indexes = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.Indexes = append(x.Indexes, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var (
 	md_MsgArbitrageDeposit         protoreflect.MessageDescriptor
 	fd_MsgArbitrageDeposit_creator protoreflect.FieldDescriptor
@@ -4654,7 +5908,7 @@ func (x *MsgArbitrageDeposit) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgArbitrageDeposit) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_strategies_tx_proto_msgTypes[8]
+	mi := &file_kopi_strategies_tx_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5204,7 +6458,7 @@ func (x *MsgArbitrageRedeem) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgArbitrageRedeem) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_strategies_tx_proto_msgTypes[9]
+	mi := &file_kopi_strategies_tx_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6007,6 +7261,57 @@ func (x *MsgAutomationsActive) GetActive() bool {
 	return false
 }
 
+type MsgAutomationsActiveMultiple struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Creator string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Indexes []uint64 `protobuf:"varint,2,rep,packed,name=indexes,proto3" json:"indexes,omitempty"`
+	Active  bool     `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+}
+
+func (x *MsgAutomationsActiveMultiple) Reset() {
+	*x = MsgAutomationsActiveMultiple{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_strategies_tx_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgAutomationsActiveMultiple) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgAutomationsActiveMultiple) ProtoMessage() {}
+
+// Deprecated: Use MsgAutomationsActiveMultiple.ProtoReflect.Descriptor instead.
+func (*MsgAutomationsActiveMultiple) Descriptor() ([]byte, []int) {
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *MsgAutomationsActiveMultiple) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
+}
+
+func (x *MsgAutomationsActiveMultiple) GetIndexes() []uint64 {
+	if x != nil {
+		return x.Indexes
+	}
+	return nil
+}
+
+func (x *MsgAutomationsActiveMultiple) GetActive() bool {
+	if x != nil {
+		return x.Active
+	}
+	return false
+}
+
 type MsgAutomationsAdd struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6025,7 +7330,7 @@ type MsgAutomationsAdd struct {
 func (x *MsgAutomationsAdd) Reset() {
 	*x = MsgAutomationsAdd{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_strategies_tx_proto_msgTypes[5]
+		mi := &file_kopi_strategies_tx_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6039,7 +7344,7 @@ func (*MsgAutomationsAdd) ProtoMessage() {}
 
 // Deprecated: Use MsgAutomationsAdd.ProtoReflect.Descriptor instead.
 func (*MsgAutomationsAdd) Descriptor() ([]byte, []int) {
-	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{5}
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *MsgAutomationsAdd) GetCreator() string {
@@ -6117,7 +7422,7 @@ type MsgAutomationsUpdate struct {
 func (x *MsgAutomationsUpdate) Reset() {
 	*x = MsgAutomationsUpdate{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_strategies_tx_proto_msgTypes[6]
+		mi := &file_kopi_strategies_tx_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6131,7 +7436,7 @@ func (*MsgAutomationsUpdate) ProtoMessage() {}
 
 // Deprecated: Use MsgAutomationsUpdate.ProtoReflect.Descriptor instead.
 func (*MsgAutomationsUpdate) Descriptor() ([]byte, []int) {
-	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{6}
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *MsgAutomationsUpdate) GetCreator() string {
@@ -6209,7 +7514,7 @@ type MsgAutomationsRemove struct {
 func (x *MsgAutomationsRemove) Reset() {
 	*x = MsgAutomationsRemove{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_strategies_tx_proto_msgTypes[7]
+		mi := &file_kopi_strategies_tx_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6223,7 +7528,7 @@ func (*MsgAutomationsRemove) ProtoMessage() {}
 
 // Deprecated: Use MsgAutomationsRemove.ProtoReflect.Descriptor instead.
 func (*MsgAutomationsRemove) Descriptor() ([]byte, []int) {
-	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{7}
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MsgAutomationsRemove) GetCreator() string {
@@ -6240,6 +7545,49 @@ func (x *MsgAutomationsRemove) GetIndex() uint64 {
 	return 0
 }
 
+type MsgAutomationsRemoveMultiple struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Creator string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Indexes []uint64 `protobuf:"varint,2,rep,packed,name=indexes,proto3" json:"indexes,omitempty"`
+}
+
+func (x *MsgAutomationsRemoveMultiple) Reset() {
+	*x = MsgAutomationsRemoveMultiple{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_strategies_tx_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgAutomationsRemoveMultiple) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgAutomationsRemoveMultiple) ProtoMessage() {}
+
+// Deprecated: Use MsgAutomationsRemoveMultiple.ProtoReflect.Descriptor instead.
+func (*MsgAutomationsRemoveMultiple) Descriptor() ([]byte, []int) {
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *MsgAutomationsRemoveMultiple) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
+}
+
+func (x *MsgAutomationsRemoveMultiple) GetIndexes() []uint64 {
+	if x != nil {
+		return x.Indexes
+	}
+	return nil
+}
+
 type MsgArbitrageDeposit struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6253,7 +7601,7 @@ type MsgArbitrageDeposit struct {
 func (x *MsgArbitrageDeposit) Reset() {
 	*x = MsgArbitrageDeposit{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_strategies_tx_proto_msgTypes[8]
+		mi := &file_kopi_strategies_tx_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6267,7 +7615,7 @@ func (*MsgArbitrageDeposit) ProtoMessage() {}
 
 // Deprecated: Use MsgArbitrageDeposit.ProtoReflect.Descriptor instead.
 func (*MsgArbitrageDeposit) Descriptor() ([]byte, []int) {
-	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{8}
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *MsgArbitrageDeposit) GetCreator() string {
@@ -6305,7 +7653,7 @@ type MsgArbitrageRedeem struct {
 func (x *MsgArbitrageRedeem) Reset() {
 	*x = MsgArbitrageRedeem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_strategies_tx_proto_msgTypes[9]
+		mi := &file_kopi_strategies_tx_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6319,7 +7667,7 @@ func (*MsgArbitrageRedeem) ProtoMessage() {}
 
 // Deprecated: Use MsgArbitrageRedeem.ProtoReflect.Descriptor instead.
 func (*MsgArbitrageRedeem) Descriptor() ([]byte, []int) {
-	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{9}
+	return file_kopi_strategies_tx_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *MsgArbitrageRedeem) GetCreator() string {
@@ -6395,127 +7743,153 @@ var file_kopi_strategies_tx_proto_rawDesc = []byte{
 	0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
 	0x76, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65,
-	0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0xa5,
-	0x02, 0x0a, 0x11, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x41, 0x64, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14,
-	0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74,
-	0x69, 0x74, 0x6c, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c,
-	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74,
-	0x65, 0x72, 0x76, 0x61, 0x6c, 0x54, 0x79, 0x70, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x69, 0x6e, 0x74,
-	0x65, 0x72, 0x76, 0x61, 0x6c, 0x5f, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x4c, 0x65, 0x6e, 0x67,
-	0x74, 0x68, 0x12, 0x23, 0x0a, 0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x74,
-	0x79, 0x70, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x76, 0x61, 0x6c, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x25, 0x0a, 0x0e, 0x76, 0x61, 0x6c, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x1e,
-	0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x18,
-	0x0a, 0x07, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63,
-	0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0xbe, 0x02, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x41, 0x75,
-	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12,
-	0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12,
-	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61,
-	0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e,
-	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x54, 0x79, 0x70, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x69, 0x6e,
-	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x5f, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x4c, 0x65, 0x6e,
-	0x67, 0x74, 0x68, 0x12, 0x23, 0x0a, 0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f,
-	0x74, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x76, 0x61, 0x6c, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x25, 0x0a, 0x0e, 0x76, 0x61, 0x6c, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12,
-	0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x08, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12,
-	0x18, 0x0a, 0x07, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07,
-	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x54, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x41, 0x75,
-	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x12,
-	0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x3a,
-	0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x6b, 0x0a,
-	0x13, 0x4d, 0x73, 0x67, 0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x44, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14,
-	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x0c, 0x82, 0xe7,
-	0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x95, 0x01, 0x0a, 0x12, 0x4d,
-	0x73, 0x67, 0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64, 0x65, 0x65,
-	0x6d, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c, 0x6c,
-	0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x0f, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x70,
-	0x6c, 0x65, 0x74, 0x65, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
-	0x6f, 0x72, 0x32, 0x87, 0x06, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x4f, 0x0a, 0x10, 0x41, 0x72,
-	0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x24,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73,
-	0x2e, 0x4d, 0x73, 0x67, 0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x44, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61,
-	0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x4d, 0x0a, 0x0f, 0x41,
-	0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x12, 0x23,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73,
-	0x2e, 0x4d, 0x73, 0x67, 0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64,
-	0x65, 0x65, 0x6d, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74,
-	0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x4b, 0x0a, 0x0e, 0x41, 0x75,
-	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x12, 0x22, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d,
-	0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64,
+	0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x78,
+	0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x69, 0x6e, 0x64, 0x65,
+	0x78, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x07, 0x69, 0x6e, 0x64, 0x65, 0x78,
+	0x65, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0xa5, 0x02, 0x0a, 0x11, 0x4d, 0x73, 0x67,
+	0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x12, 0x18,
+	0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x23,
+	0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x54,
+	0x79, 0x70, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x5f,
+	0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x12, 0x23, 0x0a, 0x0d,
+	0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x54, 0x79, 0x70,
+	0x65, 0x12, 0x25, 0x0a, 0x0e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x64,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f,
+	0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
+	0x22, 0xbe, 0x02, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74,
+	0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12,
+	0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c,
+	0x5f, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x12, 0x23, 0x0a,
+	0x0d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x06,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x25, 0x0a, 0x0e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x76, 0x61, 0x6c, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e,
+	0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63,
+	0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
+	0x72, 0x22, 0x54, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x60, 0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x41, 0x75,
+	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4d,
+	0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
+	0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
+	0x72, 0x12, 0x18, 0x0a, 0x07, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x04, 0x52, 0x07, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x65, 0x73, 0x3a, 0x0c, 0x82, 0xe7, 0xb0,
+	0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x6b, 0x0a, 0x13, 0x4d, 0x73, 0x67,
+	0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x95, 0x01, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x41, 0x72,
+	0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x12, 0x18, 0x0a,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x16, 0x0a,
+	0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x5f, 0x69,
+	0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x0f, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65,
+	0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x32, 0xcd,
+	0x07, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x4f, 0x0a, 0x10, 0x41, 0x72, 0x62, 0x69, 0x74, 0x72,
+	0x61, 0x67, 0x65, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x24, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67,
+	0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
 	0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69,
-	0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a, 0x11, 0x41, 0x75, 0x74, 0x6f, 0x6d,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x25, 0x2e, 0x6b,
+	0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x4d, 0x0a, 0x0f, 0x41, 0x72, 0x62, 0x69, 0x74,
+	0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x12, 0x23, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67,
+	0x41, 0x72, 0x62, 0x69, 0x74, 0x72, 0x61, 0x67, 0x65, 0x52, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x1a,
+	0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
+	0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x4b, 0x0a, 0x0e, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x12, 0x22, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75,
+	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x1a, 0x15, 0x2e, 0x6b,
+	0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56,
+	0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a, 0x11, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75,
+	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x1a,
+	0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
+	0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a, 0x11, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x12, 0x25, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73,
+	0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65,
+	0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x61, 0x0a, 0x19, 0x41, 0x75, 0x74,
+	0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4d, 0x75,
+	0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x12, 0x2d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74,
+	0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f,
+	0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4d, 0x75, 0x6c,
+	0x74, 0x69, 0x70, 0x6c, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72,
+	0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a, 0x11,
+	0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76,
+	0x65, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
+	0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12,
+	0x61, 0x0a, 0x19, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x63,
+	0x74, 0x69, 0x76, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x12, 0x2d, 0x2e, 0x6b,
 	0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d,
-	0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74,
-	0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a, 0x11, 0x41, 0x75,
-	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x12,
-	0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
-	0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74,
-	0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x51, 0x0a,
-	0x11, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x63, 0x74, 0x69,
-	0x76, 0x65, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65,
-	0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
-	0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64,
-	0x12, 0x55, 0x0a, 0x13, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41,
-	0x64, 0x64, 0x46, 0x75, 0x6e, 0x64, 0x73, 0x12, 0x27, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73,
-	0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74,
-	0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x46, 0x75, 0x6e, 0x64, 0x73,
+	0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x63, 0x74,
+	0x69, 0x76, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x1a, 0x15, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f,
+	0x69, 0x64, 0x12, 0x55, 0x0a, 0x13, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x41, 0x64, 0x64, 0x46, 0x75, 0x6e, 0x64, 0x73, 0x12, 0x27, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
+	0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41,
+	0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x64, 0x64, 0x46, 0x75, 0x6e,
+	0x64, 0x73, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65,
+	0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x5f, 0x0a, 0x18, 0x41, 0x75, 0x74,
+	0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77,
+	0x46, 0x75, 0x6e, 0x64, 0x73, 0x12, 0x2c, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72,
+	0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x57, 0x69, 0x64, 0x74, 0x68, 0x72, 0x61, 0x77, 0x46, 0x75,
+	0x6e, 0x64, 0x73, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74,
+	0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x5b, 0x0a, 0x16, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x43,
+	0x6f, 0x73, 0x74, 0x73, 0x12, 0x2a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61,
+	0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x43, 0x6f, 0x73, 0x74, 0x73,
 	0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69,
-	0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x5f, 0x0a, 0x18, 0x41, 0x75, 0x74, 0x6f, 0x6d,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x46, 0x75,
-	0x6e, 0x64, 0x73, 0x12, 0x2c, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74,
-	0x65, 0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x57, 0x69, 0x64, 0x74, 0x68, 0x72, 0x61, 0x77, 0x46, 0x75, 0x6e, 0x64,
-	0x73, 0x1a, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
-	0x69, 0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x12, 0x5b, 0x0a, 0x16, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x41, 0x75, 0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x43, 0x6f, 0x73,
-	0x74, 0x73, 0x12, 0x2a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65,
-	0x67, 0x69, 0x65, 0x73, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75,
-	0x74, 0x6f, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x43, 0x6f, 0x73, 0x74, 0x73, 0x1a, 0x15,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73,
-	0x2e, 0x56, 0x6f, 0x69, 0x64, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x9d, 0x01, 0x0a,
-	0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65,
-	0x67, 0x69, 0x65, 0x73, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
-	0x20, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65,
-	0x73, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa, 0x02, 0x0f, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x53,
-	0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xca, 0x02, 0x0f, 0x4b, 0x6f, 0x70, 0x69,
-	0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xe2, 0x02, 0x1b, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x5c, 0x47, 0x50,
-	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x4b, 0x6f, 0x70, 0x69,
-	0x3a, 0x3a, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x2e, 0x56, 0x6f, 0x69, 0x64, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x9d,
+	0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x73, 0x74, 0x72, 0x61,
+	0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x20, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
+	0x69, 0x65, 0x73, 0xa2, 0x02, 0x03, 0x4b, 0x53, 0x58, 0xaa, 0x02, 0x0f, 0x4b, 0x6f, 0x70, 0x69,
+	0x2e, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xca, 0x02, 0x0f, 0x4b, 0x6f,
+	0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0xe2, 0x02, 0x1b,
+	0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x4b, 0x6f,
+	0x70, 0x69, 0x3a, 0x3a, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x65, 0x73, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -6530,43 +7904,49 @@ func file_kopi_strategies_tx_proto_rawDescGZIP() []byte {
 	return file_kopi_strategies_tx_proto_rawDescData
 }
 
-var file_kopi_strategies_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_kopi_strategies_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_kopi_strategies_tx_proto_goTypes = []interface{}{
-	(*Void)(nil),                        // 0: kopi.strategies.Void
-	(*MsgUpdateAutomationsCosts)(nil),   // 1: kopi.strategies.MsgUpdateAutomationsCosts
-	(*MsgAutomationsWidthrawFunds)(nil), // 2: kopi.strategies.MsgAutomationsWidthrawFunds
-	(*MsgAutomationsAddFunds)(nil),      // 3: kopi.strategies.MsgAutomationsAddFunds
-	(*MsgAutomationsActive)(nil),        // 4: kopi.strategies.MsgAutomationsActive
-	(*MsgAutomationsAdd)(nil),           // 5: kopi.strategies.MsgAutomationsAdd
-	(*MsgAutomationsUpdate)(nil),        // 6: kopi.strategies.MsgAutomationsUpdate
-	(*MsgAutomationsRemove)(nil),        // 7: kopi.strategies.MsgAutomationsRemove
-	(*MsgArbitrageDeposit)(nil),         // 8: kopi.strategies.MsgArbitrageDeposit
-	(*MsgArbitrageRedeem)(nil),          // 9: kopi.strategies.MsgArbitrageRedeem
+	(*Void)(nil),                         // 0: kopi.strategies.Void
+	(*MsgUpdateAutomationsCosts)(nil),    // 1: kopi.strategies.MsgUpdateAutomationsCosts
+	(*MsgAutomationsWidthrawFunds)(nil),  // 2: kopi.strategies.MsgAutomationsWidthrawFunds
+	(*MsgAutomationsAddFunds)(nil),       // 3: kopi.strategies.MsgAutomationsAddFunds
+	(*MsgAutomationsActive)(nil),         // 4: kopi.strategies.MsgAutomationsActive
+	(*MsgAutomationsActiveMultiple)(nil), // 5: kopi.strategies.MsgAutomationsActiveMultiple
+	(*MsgAutomationsAdd)(nil),            // 6: kopi.strategies.MsgAutomationsAdd
+	(*MsgAutomationsUpdate)(nil),         // 7: kopi.strategies.MsgAutomationsUpdate
+	(*MsgAutomationsRemove)(nil),         // 8: kopi.strategies.MsgAutomationsRemove
+	(*MsgAutomationsRemoveMultiple)(nil), // 9: kopi.strategies.MsgAutomationsRemoveMultiple
+	(*MsgArbitrageDeposit)(nil),          // 10: kopi.strategies.MsgArbitrageDeposit
+	(*MsgArbitrageRedeem)(nil),           // 11: kopi.strategies.MsgArbitrageRedeem
 }
 var file_kopi_strategies_tx_proto_depIdxs = []int32{
-	8, // 0: kopi.strategies.Msg.ArbitrageDeposit:input_type -> kopi.strategies.MsgArbitrageDeposit
-	9, // 1: kopi.strategies.Msg.ArbitrageRedeem:input_type -> kopi.strategies.MsgArbitrageRedeem
-	5, // 2: kopi.strategies.Msg.AutomationsAdd:input_type -> kopi.strategies.MsgAutomationsAdd
-	6, // 3: kopi.strategies.Msg.AutomationsUpdate:input_type -> kopi.strategies.MsgAutomationsUpdate
-	7, // 4: kopi.strategies.Msg.AutomationsRemove:input_type -> kopi.strategies.MsgAutomationsRemove
-	4, // 5: kopi.strategies.Msg.AutomationsActive:input_type -> kopi.strategies.MsgAutomationsActive
-	3, // 6: kopi.strategies.Msg.AutomationsAddFunds:input_type -> kopi.strategies.MsgAutomationsAddFunds
-	2, // 7: kopi.strategies.Msg.AutomationsWithdrawFunds:input_type -> kopi.strategies.MsgAutomationsWidthrawFunds
-	1, // 8: kopi.strategies.Msg.UpdateAutomationsCosts:input_type -> kopi.strategies.MsgUpdateAutomationsCosts
-	0, // 9: kopi.strategies.Msg.ArbitrageDeposit:output_type -> kopi.strategies.Void
-	0, // 10: kopi.strategies.Msg.ArbitrageRedeem:output_type -> kopi.strategies.Void
-	0, // 11: kopi.strategies.Msg.AutomationsAdd:output_type -> kopi.strategies.Void
-	0, // 12: kopi.strategies.Msg.AutomationsUpdate:output_type -> kopi.strategies.Void
-	0, // 13: kopi.strategies.Msg.AutomationsRemove:output_type -> kopi.strategies.Void
-	0, // 14: kopi.strategies.Msg.AutomationsActive:output_type -> kopi.strategies.Void
-	0, // 15: kopi.strategies.Msg.AutomationsAddFunds:output_type -> kopi.strategies.Void
-	0, // 16: kopi.strategies.Msg.AutomationsWithdrawFunds:output_type -> kopi.strategies.Void
-	0, // 17: kopi.strategies.Msg.UpdateAutomationsCosts:output_type -> kopi.strategies.Void
-	9, // [9:18] is the sub-list for method output_type
-	0, // [0:9] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	10, // 0: kopi.strategies.Msg.ArbitrageDeposit:input_type -> kopi.strategies.MsgArbitrageDeposit
+	11, // 1: kopi.strategies.Msg.ArbitrageRedeem:input_type -> kopi.strategies.MsgArbitrageRedeem
+	6,  // 2: kopi.strategies.Msg.AutomationsAdd:input_type -> kopi.strategies.MsgAutomationsAdd
+	7,  // 3: kopi.strategies.Msg.AutomationsUpdate:input_type -> kopi.strategies.MsgAutomationsUpdate
+	8,  // 4: kopi.strategies.Msg.AutomationsRemove:input_type -> kopi.strategies.MsgAutomationsRemove
+	9,  // 5: kopi.strategies.Msg.AutomationsRemoveMultiple:input_type -> kopi.strategies.MsgAutomationsRemoveMultiple
+	4,  // 6: kopi.strategies.Msg.AutomationsActive:input_type -> kopi.strategies.MsgAutomationsActive
+	5,  // 7: kopi.strategies.Msg.AutomationsActiveMultiple:input_type -> kopi.strategies.MsgAutomationsActiveMultiple
+	3,  // 8: kopi.strategies.Msg.AutomationsAddFunds:input_type -> kopi.strategies.MsgAutomationsAddFunds
+	2,  // 9: kopi.strategies.Msg.AutomationsWithdrawFunds:input_type -> kopi.strategies.MsgAutomationsWidthrawFunds
+	1,  // 10: kopi.strategies.Msg.UpdateAutomationsCosts:input_type -> kopi.strategies.MsgUpdateAutomationsCosts
+	0,  // 11: kopi.strategies.Msg.ArbitrageDeposit:output_type -> kopi.strategies.Void
+	0,  // 12: kopi.strategies.Msg.ArbitrageRedeem:output_type -> kopi.strategies.Void
+	0,  // 13: kopi.strategies.Msg.AutomationsAdd:output_type -> kopi.strategies.Void
+	0,  // 14: kopi.strategies.Msg.AutomationsUpdate:output_type -> kopi.strategies.Void
+	0,  // 15: kopi.strategies.Msg.AutomationsRemove:output_type -> kopi.strategies.Void
+	0,  // 16: kopi.strategies.Msg.AutomationsRemoveMultiple:output_type -> kopi.strategies.Void
+	0,  // 17: kopi.strategies.Msg.AutomationsActive:output_type -> kopi.strategies.Void
+	0,  // 18: kopi.strategies.Msg.AutomationsActiveMultiple:output_type -> kopi.strategies.Void
+	0,  // 19: kopi.strategies.Msg.AutomationsAddFunds:output_type -> kopi.strategies.Void
+	0,  // 20: kopi.strategies.Msg.AutomationsWithdrawFunds:output_type -> kopi.strategies.Void
+	0,  // 21: kopi.strategies.Msg.UpdateAutomationsCosts:output_type -> kopi.strategies.Void
+	11, // [11:22] is the sub-list for method output_type
+	0,  // [0:11] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_kopi_strategies_tx_proto_init() }
@@ -6637,7 +8017,7 @@ func file_kopi_strategies_tx_proto_init() {
 			}
 		}
 		file_kopi_strategies_tx_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAutomationsAdd); i {
+			switch v := v.(*MsgAutomationsActiveMultiple); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6649,7 +8029,7 @@ func file_kopi_strategies_tx_proto_init() {
 			}
 		}
 		file_kopi_strategies_tx_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAutomationsUpdate); i {
+			switch v := v.(*MsgAutomationsAdd); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6661,7 +8041,7 @@ func file_kopi_strategies_tx_proto_init() {
 			}
 		}
 		file_kopi_strategies_tx_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAutomationsRemove); i {
+			switch v := v.(*MsgAutomationsUpdate); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6673,7 +8053,7 @@ func file_kopi_strategies_tx_proto_init() {
 			}
 		}
 		file_kopi_strategies_tx_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgArbitrageDeposit); i {
+			switch v := v.(*MsgAutomationsRemove); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6685,6 +8065,30 @@ func file_kopi_strategies_tx_proto_init() {
 			}
 		}
 		file_kopi_strategies_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgAutomationsRemoveMultiple); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_strategies_tx_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgArbitrageDeposit); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_strategies_tx_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgArbitrageRedeem); i {
 			case 0:
 				return &v.state
@@ -6703,7 +8107,7 @@ func file_kopi_strategies_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_kopi_strategies_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

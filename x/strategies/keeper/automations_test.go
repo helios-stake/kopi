@@ -68,8 +68,10 @@ func handleAutomation(ctx context.Context, k keeper.Keeper, automation types.Aut
 }
 
 func handleAutomationAtHeight(ctx context.Context, k keeper.Keeper, automation types.Automation) (bool, []bool, error) {
+	p := k.GetParams(ctx)
+
 	var totalConsumption uint64
-	conditionsMatched, successfulActions, err := k.HandleAutomation(ctx, automation, 0, &totalConsumption)
+	conditionsMatched, successfulActions, err := k.HandleAutomation(ctx, p, automation, 0, &totalConsumption)
 	if err != nil {
 		return conditionsMatched, successfulActions, err
 	}

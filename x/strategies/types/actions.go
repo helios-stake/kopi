@@ -55,7 +55,7 @@ var ValidErrors = []error{
 	ErrNonExistingValidator,
 }
 
-// List of errors which will lead to the automation being set to inactive. For example, when a validator does not exist
+// InactiveErrors is a list of errors which will lead to the automation being set to inactive. For example, when a validator does not exist
 // anymore it is unfair to take a consumption fee for the condition when it is known the action will fail.
 var InactiveErrors = []error{
 	ErrNonExistingValidator,

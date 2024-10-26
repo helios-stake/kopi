@@ -81,6 +81,7 @@ type DexKeeper interface {
 type DenomKeeper interface {
 	GetArbitrageDenoms(context.Context) []*denomtypes.ArbitrageDenom
 	GetCAsset(context.Context, string) (*denomtypes.CAsset, error)
+	GetCAssetByBaseName(context.Context, string) (*denomtypes.CAsset, error)
 	GetArbitrageDenomByCAsset(context.Context, string) (*denomtypes.ArbitrageDenom, error)
 	GetArbitrageDenomByName(context.Context, string) (*denomtypes.ArbitrageDenom, error)
 	IsBorrowableDenom(context.Context, string) bool

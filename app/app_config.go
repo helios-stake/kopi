@@ -80,7 +80,7 @@ import (
 	swapmodulev1 "github.com/kopi-money/kopi/api/kopi/swap/module"
 	tokenfactorymodulev1 "github.com/kopi-money/kopi/api/kopi/tokenfactory/module"
 	_ "github.com/kopi-money/kopi/x/blockspeed/module" // import for side-effects
-	blocktimemoduletypes "github.com/kopi-money/kopi/x/blockspeed/types"
+	blockspeedmoduletypes "github.com/kopi-money/kopi/x/blockspeed/types"
 	_ "github.com/kopi-money/kopi/x/denominations/module" // import for side-effects
 	denominationsmoduletypes "github.com/kopi-money/kopi/x/denominations/types"
 	_ "github.com/kopi-money/kopi/x/dex/module" // import for side-effects
@@ -139,7 +139,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		strategiesmoduletypes.ModuleName,
 		reservemoduletypes.ModuleName,
-		blocktimemoduletypes.ModuleName,
+		blockspeedmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -171,7 +171,7 @@ var (
 		mmmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		strategiesmoduletypes.ModuleName,
-		blocktimemoduletypes.ModuleName,
+		blockspeedmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -197,7 +197,7 @@ var (
 		dexmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		reservemoduletypes.ModuleName,
-		blocktimemoduletypes.ModuleName,
+		blockspeedmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -404,7 +404,7 @@ var (
 				Config: appconfig.WrapAny(&reservemodulev1.Module{}),
 			},
 			{
-				Name:   blocktimemoduletypes.ModuleName,
+				Name:   blockspeedmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&blocktimemodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig

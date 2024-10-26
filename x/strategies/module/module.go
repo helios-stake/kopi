@@ -106,31 +106,39 @@ type AppModule struct {
 	keeper             keeper.Keeper
 	accountKeeper      types.AccountKeeper
 	bankKeeper         types.BankKeeper
+	blockspeedKeeper   types.BlockspeedKeeper
 	distributionKeeper types.DistributionKeeper
-	denomKeeper        types.DenomKeeper
-	dexKeeper          types.DexKeeper
-	mmKeeper           types.MMKeeper
+
+	denomKeeper types.DenomKeeper
+	dexKeeper   types.DexKeeper
+	mmKeeper    types.MMKeeper
 }
 
 func NewAppModule(
 	cdc codec.Codec,
+
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	distributionKeeper types.DistributionKeeper,
+
+	blockspeedKeeper types.BlockspeedKeeper,
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	mmKeeper types.MMKeeper,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic:     NewAppModuleBasic(cdc),
+		AppModuleBasic: NewAppModuleBasic(cdc),
+
 		keeper:             keeper,
 		accountKeeper:      accountKeeper,
 		bankKeeper:         bankKeeper,
 		distributionKeeper: distributionKeeper,
-		denomKeeper:        denomKeeper,
-		dexKeeper:          dexKeeper,
-		mmKeeper:           mmKeeper,
+
+		blockspeedKeeper: blockspeedKeeper,
+		denomKeeper:      denomKeeper,
+		dexKeeper:        dexKeeper,
+		mmKeeper:         mmKeeper,
 	}
 }
 
@@ -221,12 +229,13 @@ type ModuleInputs struct {
 
 	AccountKeeper      types.AccountKeeper
 	BankKeeper         types.BankKeeper
-	BlockspeedKeeper   types.BlockspeedKeeper
 	DistributionKeeper types.DistributionKeeper
 	StakingKeeper      types.StakingKeeper
-	DenomKeeper        types.DenomKeeper
-	DexKeeper          types.DexKeeper
-	MMKeeper           types.MMKeeper
+
+	BlockspeedKeeper types.BlockspeedKeeper
+	DenomKeeper      types.DenomKeeper
+	DexKeeper        types.DexKeeper
+	MMKeeper         types.MMKeeper
 }
 
 type ModuleOutputs struct {
@@ -246,11 +255,13 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Cdc,
 		in.StoreService,
 		in.Logger,
+
 		in.AccountKeeper,
 		in.BankKeeper,
-		in.BlockspeedKeeper,
 		in.DistributionKeeper,
 		in.StakingKeeper,
+
+		in.BlockspeedKeeper,
 		in.DenomKeeper,
 		in.DexKeeper,
 		in.MMKeeper,
@@ -258,10 +269,13 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	)
 	m := NewAppModule(
 		in.Cdc,
+
 		k,
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DistributionKeeper,
+
+		in.BlockspeedKeeper,
 		in.DenomKeeper,
 		in.DexKeeper,
 		in.MMKeeper,

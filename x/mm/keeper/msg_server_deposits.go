@@ -13,9 +13,7 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
-func (k msgServer) AddDeposit(goCtx context.Context, msg *types.MsgAddDeposit) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) AddDeposit(ctx context.Context, msg *types.MsgAddDeposit) (*types.Void, error) {
 	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom)
 	if err != nil {
 		return nil, err
@@ -35,7 +33,7 @@ func (k msgServer) AddDeposit(goCtx context.Context, msg *types.MsgAddDeposit) (
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("funds_deposited",
 			sdk.Attribute{Key: "address", Value: msg.Creator},
 			sdk.Attribute{Key: "denom", Value: msg.Denom},

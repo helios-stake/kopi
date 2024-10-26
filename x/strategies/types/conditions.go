@@ -57,10 +57,10 @@ func IsValidComparison(conditionType int64, comp string) bool {
 func ConvertConditions(messageConditions []MessageCondition) ([]*Condition, error) {
 	var conditions []*Condition
 
-	for _, messageCondition := range messageConditions {
+	for index, messageCondition := range messageConditions {
 		condition, err := convertCondition(messageCondition)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("index %v: %w", index, err)
 		}
 
 		conditions = append(conditions, condition)

@@ -88,6 +88,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 
 	blocksPerYear := blocksPerYearDec.RoundInt64()
 	secondsPerBlock := k.BlockspeedKeeper.GetSecondsPerBlock(ctx)
+	params := k.GetParams(ctx)
 
 	var (
 		totalConsumption uint64 = 0
@@ -120,7 +121,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 			continue
 		}
 
-		_, _, err = k.HandleAutomation(ctx, automation, automationExecutionIndex, &totalConsumption)
+		_, _, err = k.HandleAutomation(ctx, params, automation, automationExecutionIndex, &totalConsumption)
 		if err != nil {
 			k.Logger().Error(err.Error())
 			continue
@@ -196,10 +197,10 @@ func (k Keeper) handleTimeValidity(ctx context.Context, automation types.Automat
 	return automation.Active
 }
 
-func (k Keeper) HandleAutomation(ctx context.Context, automation types.Automation, automationExecutionIndex int, totalConsumption *uint64) (bool, []bool, error) {
+func (k Keeper) HandleAutomation(ctx context.Context, params types.Params, automation types.Automation, automationExecutionIndex int, totalConsumption *uint64) (bool, []bool, error) {
 	automation.PeriodTimesChecked++
 
-	conditionsMatched, successfulActions, err := k.handleAutomation(ctx, &automation, automationExecutionIndex, totalConsumption)
+	conditionsMatched, successfulActions, err := k.handleAutomation(ctx, params, &automation, automationExecutionIndex, totalConsumption)
 	if err != nil {
 		k.Logger().Error(fmt.Sprintf("k.handleAutomation: %v", err.Error()))
 	}
@@ -228,7 +229,7 @@ func (k Keeper) HandleAutomation(ctx context.Context, automation types.Automatio
 	return conditionsMatched, successfulActions, nil
 }
 
-func (k Keeper) handleAutomation(ctx context.Context, automation *types.Automation, automationExecutionIndex int, totalConsumption *uint64) (bool, []bool, error) {
+func (k Keeper) handleAutomation(ctx context.Context, params types.Params, automation *types.Automation, automationExecutionIndex int, totalConsumption *uint64) (bool, []bool, error) {
 	acc, _ := sdk.AccAddressFromBech32(automation.Address)
 
 	cost := k.determineAutomationCost(ctx, automation)
@@ -307,7 +308,7 @@ func (k Keeper) handleAutomation(ctx context.Context, automation *types.Automati
 			successfulActions = append(successfulActions, success)
 
 			if executed {
-				actionCost := k.GetAutomationFeeAction(ctx)
+				actionCost := getActionCost(params, action.ActionType)
 				automation.PeriodActionFeesConsumed += actionCost
 				automation.TotalActionFeesConsumed += actionCost
 
@@ -323,6 +324,6 @@ func (k Keeper) handleAutomation(ctx context.Context, automation *types.Automati
 
 func (k Keeper) determineAutomationCost(ctx context.Context, automation *types.Automation) math.Int {
 	cost := int64(k.GetParams(ctx).AutomationFeeCondition) * int64(len(automation.Conditions))
-	cost += int64(k.GetParams(ctx).AutomationFeeAction) * int64(len(automation.Actions))
+	cost += k.getActionsCost(ctx, automation.Actions)
 	return math.NewInt(cost)
 }

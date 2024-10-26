@@ -95,10 +95,10 @@ func StrategiesKeeper(t *testing.T) (keeper.Keeper, dexkeeper.Keeper, mmkeeper.K
 
 		mmKeeper.AccountKeeper,
 		mmKeeper.BankKeeper,
-		DummyBlockspeedKeeper{},
 		DummyDistrubtionKeeper{},
 		DummyStakingKeeper{},
 
+		DummyBlockspeedKeeper{},
 		mmKeeper.DenomKeeper.(types.DenomKeeper),
 		mmKeeper.DexKeeper.(types.DexKeeper),
 		mmKeeper,

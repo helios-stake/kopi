@@ -166,30 +166,40 @@ func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am t
 }
 
 func (k msgServer) AutomationsRemove(ctx context.Context, msg *types.MsgAutomationsRemove) (*types.Void, error) {
-	address, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return nil, types.ErrInvalidAddress
+	err := k.removeAutomation(ctx, msg.Creator, msg.Index)
+	return &types.Void{}, err
+}
+
+func (k msgServer) AutomationsRemoveMultiple(ctx context.Context, msg *types.MsgAutomationsRemoveMultiple) (*types.Void, error) {
+	for _, index := range msg.Indexes {
+		if err := k.removeAutomation(ctx, msg.Creator, index); err != nil {
+			return nil, err
+		}
 	}
 
-	automation, has := k.automations.Get(ctx, msg.Index)
+	return &types.Void{}, nil
+}
+
+func (k Keeper) removeAutomation(ctx context.Context, address string, index uint64) error {
+	automation, has := k.automations.Get(ctx, index)
 	if !has {
-		return nil, types.ErrAutomationNotFound
+		return types.ErrAutomationNotFound
 	}
 
-	if automation.Address != address.String() {
-		return nil, types.ErrAutomationInvalidCreator
+	if automation.Address != address {
+		return types.ErrAutomationInvalidCreator
 	}
 
 	k.automations.Remove(ctx, automation.Index)
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("automation_removed",
-			sdk.Attribute{Key: "address", Value: msg.Creator},
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(msg.Index))},
+			sdk.Attribute{Key: "address", Value: address},
+			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(index))},
 		),
 	)
 
-	return &types.Void{}, nil
+	return nil
 }
 
 func (k Keeper) getAutomationActive(ctx context.Context, index uint64) bool {
@@ -202,23 +212,33 @@ func (k Keeper) getAutomationActive(ctx context.Context, index uint64) bool {
 }
 
 func (k msgServer) AutomationsActive(ctx context.Context, msg *types.MsgAutomationsActive) (*types.Void, error) {
-	address, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return nil, types.ErrInvalidAddress
+	err := k.setAutomationActiveStatus(ctx, msg.Creator, msg.Index, msg.Active)
+	return &types.Void{}, err
+}
+
+func (k msgServer) AutomationsActiveMultiple(ctx context.Context, msg *types.MsgAutomationsActiveMultiple) (*types.Void, error) {
+	for _, index := range msg.Indexes {
+		if err := k.setAutomationActiveStatus(ctx, msg.Creator, index, msg.Active); err != nil {
+			return nil, err
+		}
 	}
 
-	automation, has := k.automations.Get(ctx, msg.Index)
-	if !has {
-		return nil, types.ErrAutomationNotFound
+	return &types.Void{}, nil
+}
+
+func (k Keeper) setAutomationActiveStatus(ctx context.Context, address string, index uint64, active bool) error {
+	automation, exists := k.automations.Get(ctx, index)
+	if !exists {
+		return types.ErrAutomationNotFound
 	}
 
-	if automation.Address != address.String() {
-		return nil, types.ErrAutomationInvalidCreator
+	if automation.Address != address {
+		return types.ErrAutomationInvalidCreator
 	}
 
-	if msg.Active {
-		if k.GetAutomationFunds(ctx, msg.Creator).LTE(math.ZeroInt()) {
-			return nil, types.ErrEmptyAutomationFunds
+	if active {
+		if k.GetAutomationFunds(ctx, address).LTE(math.ZeroInt()) {
+			return types.ErrEmptyAutomationFunds
 		}
 
 		automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
@@ -227,16 +247,16 @@ func (k msgServer) AutomationsActive(ctx context.Context, msg *types.MsgAutomati
 		automation.PeriodActionFeesConsumed = 0
 	}
 
-	automation.Active = msg.Active
+	automation.Active = active
 	k.SetAutomation(ctx, automation)
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("automation_activation",
-			sdk.Attribute{Key: "address", Value: msg.Creator},
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(msg.Index))},
-			sdk.Attribute{Key: "active", Value: strconv.FormatBool(msg.Active)},
+			sdk.Attribute{Key: "address", Value: address},
+			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(index))},
+			sdk.Attribute{Key: "active", Value: strconv.FormatBool(active)},
 		),
 	)
 
-	return &types.Void{}, nil
+	return nil
 }

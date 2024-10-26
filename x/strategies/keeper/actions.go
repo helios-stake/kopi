@@ -590,6 +590,23 @@ func (k Keeper) getAmountLiquidity(ctx context.Context, address sdk.AccAddress, 
 	return liquidityAmount.TruncateInt()
 }
 
+func (k Keeper) getActionsCost(ctx context.Context, actions []*types.Action) (sum int64) {
+	params := k.GetParams(ctx)
+
+	for _, action := range actions {
+		sum += int64(getActionCost(params, action.ActionType))
+	}
+
+	return
+}
+
+func getActionCost(params types.Params, actionType int64) uint64 {
+	switch actionType {
+	default:
+		return params.AutomationFeeAction
+	}
+}
+
 func percentageToFactor(percentage string) math.LegacyDec {
 	percentage = strings.TrimSuffix(percentage, "%")
 	value, _ := strconv.Atoi(percentage)

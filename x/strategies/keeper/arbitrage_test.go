@@ -2,6 +2,8 @@ package keeper_test
 
 import (
 	"context"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -203,4 +205,27 @@ func TestArbitrage4(t *testing.T) {
 
 	balance = k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress()).AmountOf("ucwusdc")
 	require.Equal(t, int64(1005), balance.Int64())
+}
+
+func TestArbitrage5(t *testing.T) {
+	k, msg, _, mmMsg, ctx := keepertest.SetupStrategiesMsgServer(t)
+
+	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &mmtypes.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	balance1 := k.BankKeeper.SpendableCoins(ctx, acc).AmountOf("ucwusdc").Int64()
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "ucwusdc",
+		Amount:  "1000",
+	}))
+
+	balance2 := k.BankKeeper.SpendableCoins(ctx, acc).AmountOf("ucwusdc").Int64()
+	require.Less(t, balance2, balance1)
 }

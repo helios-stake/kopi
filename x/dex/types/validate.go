@@ -18,8 +18,10 @@ func validateTradeData(msg TradeMessage) error {
 		return fmt.Errorf("amount: %w", err)
 	}
 
-	if err := denomtypes.IsDec(msg.GetMaxPrice(), math.LegacyZeroDec()); err != nil {
-		return fmt.Errorf("max_price: %w", err)
+	if msg.GetMaxPrice() != "" {
+		if err := denomtypes.IsDec(msg.GetMaxPrice(), math.LegacyZeroDec()); err != nil {
+			return fmt.Errorf("max_price: %w", err)
+		}
 	}
 
 	if err := denomtypes.ValidateDenomName(msg.GetDenomGiving()); err != nil {
