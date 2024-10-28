@@ -142,7 +142,7 @@ func (k Keeper) ArbitrageBalanceAddress(ctx context.Context, req *types.QueryArb
 		}
 
 		var userShare math.LegacyDec
-		if supply.Equal(math.ZeroInt()) {
+		if supply.IsZero() {
 			userShare = math.LegacyZeroDec()
 		} else {
 			userShare = userCoins.AmountOf(arbitrageDenom.DexDenom).ToLegacyDec().Quo(supply.ToLegacyDec())

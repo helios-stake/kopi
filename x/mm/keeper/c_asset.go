@@ -60,7 +60,7 @@ func (k Keeper) CalculateCAssetValue(ctx context.Context, cAsset *denomtypes.CAs
 
 func (k Keeper) CalculateCAssetRedemptionValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
 	supply := k.BankKeeper.GetSupply(ctx, cAsset.DexDenom)
-	if supply.Amount.Equal(math.ZeroInt()) {
+	if supply.Amount.IsZero() {
 		return math.LegacyZeroDec()
 	}
 
@@ -75,7 +75,7 @@ func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset *denomtypes.CAs
 	CAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
 
 	CAssetPrice := math.LegacyOneDec()
-	if CAssetSupply.GT(math.LegacyZeroDec()) {
+	if CAssetSupply.IsPositive() {
 		CAssetPrice = CAssetValue.Quo(CAssetSupply)
 	}
 

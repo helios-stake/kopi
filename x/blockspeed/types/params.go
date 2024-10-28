@@ -23,11 +23,15 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if p.MovingAverageFactor.IsNil() {
+		return fmt.Errorf("moving_average_factor must not be null")
+	}
+
 	if p.MovingAverageFactor.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("moving_average_factor must not be larger than 1")
 	}
 
-	if p.MovingAverageFactor.LT(math.LegacyZeroDec()) {
+	if p.MovingAverageFactor.IsNegative() {
 		return fmt.Errorf("moving_average_factor must not be smaller than 0")
 	}
 

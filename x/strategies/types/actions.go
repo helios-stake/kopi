@@ -64,7 +64,7 @@ var InactiveErrors = []error{
 func checkActions(actions []*Action) error {
 	for actionIndex, action := range actions {
 		if err := checkAction(action); err != nil {
-			return fmt.Errorf("invalid action (index %v): %w", actionIndex, err)
+			return fmt.Errorf("invalid action[%d]: %w", actionIndex, err)
 		}
 	}
 

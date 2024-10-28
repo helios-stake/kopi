@@ -389,7 +389,7 @@ func (k Keeper) updateRatio(ctx context.Context, denom string, fullBase, fullOth
 	fullBase = fullBase.Add(changeBase.ToLegacyDec())
 	fullOther = fullOther.Add(changeOther.ToLegacyDec())
 
-	if fullBase.GT(math.LegacyZeroDec()) {
+	if fullBase.IsPositive() {
 		k.SetRatio(ctx, types.Ratio{
 			Denom: denom,
 			Ratio: fullOther.Quo(fullBase),

@@ -42,6 +42,10 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 		return nil, fmt.Errorf("invalid other kcoin amount: %v", msg.KCoinAmount)
 	}
 
+	if kCoinAmount.LT(k.getMinimumPoolSize(ctx)) {
+		return nil, types.ErrAmountBelowMinimum
+	}
+
 	poolFee, err := math.LegacyNewDecFromStr(msg.PoolFee)
 	if err != nil {
 		return nil, types.ErrInvalidFeeFormat
@@ -77,14 +81,10 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 	return &types.Void{}, nil
 }
 
-func (k Keeper) checkLiquidity(ctx context.Context, creator, fullName, amount string) (types.FactoryDenom, types.LiquidityPool, math.Int, math.Int, error) {
+func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount string) (types.FactoryDenom, types.LiquidityPool, math.Int, math.Int, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, fullName)
 	if !has {
 		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrDenomDoesntExists
-	}
-
-	if factoryDenom.Admin != creator {
-		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrIncorrectAdmin
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -104,14 +104,10 @@ func (k Keeper) checkLiquidity(ctx context.Context, creator, fullName, amount st
 }
 
 func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity) (*types.Void, error) {
-	factoryDenom, pool, amountFactory, amountKCoin, err := k.checkLiquidity(ctx, msg.Creator, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
+	factoryDenom, pool, amountFactory, amountKCoin, err := k.getLiquidityForAddress(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not check liquidity: %w", err)
 	}
-
-	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Add(amountFactory)
-	pool.KCoinAmount = pool.KCoinAmount.Add(amountKCoin)
-	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
 	coins := sdk.NewCoins(
@@ -120,18 +116,28 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 	)
 
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not send coins to Liquidity pool: %w", err)
 	}
 
 	_ = k.updateLiquidityShare(ctx, factoryDenom, pool, amountFactory, msg.Creator)
+
+	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Add(amountFactory)
+	pool.KCoinAmount = pool.KCoinAmount.Add(amountKCoin)
+	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	return &types.Void{}, nil
 }
 
 func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiquidity) (*types.Void, error) {
-	factoryDenom, pool, amountFactory, amountKCoin, err := k.checkLiquidity(ctx, msg.Creator, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
+	factoryDenom, pool, amountFactory, amountKCoin, err := k.getLiquidityForAddress(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not check liquidity: %w", err)
+	}
+
+	providerShare := k.getLiquidityShare(ctx, msg.FullFactoryDenomName, msg.Creator)
+	factoryAmountShare := pool.FactoryDenomAmount.ToLegacyDec().Mul(providerShare).TruncateInt()
+	if factoryAmountShare.LT(amountFactory) {
+		return nil, types.ErrAmountTooLarge
 	}
 
 	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Sub(amountFactory)
@@ -148,11 +154,11 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 	)
 
 	if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, types.PoolUnlocking, coins); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not send coins from module to module: %w", err)
 	}
 
 	if err = k.updateLiquidityShare(ctx, factoryDenom, pool, amountFactory, msg.Creator); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not update liquidity share: %w", err)
 	}
 
 	k.SetLiquidityUnlocking(ctx, types.LiquidityUnlocking{
@@ -189,7 +195,7 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 		return nil, types.ErrInvalidFeeFormat
 	}
 
-	if pool.PoolFee.LT(math.LegacyZeroDec()) {
+	if pool.PoolFee.IsNegative() {
 		return nil, types.ErrInvalidNegativeFee
 	}
 
@@ -201,4 +207,83 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 
 	k.SetLiquidityPool(ctx, factoryDenom.FullName, pool)
 	return &types.Void{}, nil
+}
+
+func (k msgServer) DissolvePool(ctx context.Context, msg *types.MsgDissolvePool) (*types.Void, error) {
+	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
+	if !has {
+		return nil, types.ErrDenomDoesntExists
+	}
+
+	if factoryDenom.Admin != msg.Creator {
+		return nil, types.ErrIncorrectAdmin
+	}
+
+	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
+	if !has {
+		return nil, types.ErrPoolDoesNotExist
+	}
+
+	if err := k.payoutLiquidityProviders(ctx, factoryDenom, pool); err != nil {
+		return nil, fmt.Errorf("could not payout liquidity Providers: %w", err)
+	}
+
+	k.liquidityPools.Remove(ctx, factoryDenom.FullName)
+
+	return &types.Void{}, nil
+}
+
+func (k Keeper) payoutLiquidityUnlockins(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
+	unlockingIterator := k.LiquidityUnlockingsIterator(ctx)
+	var deleteKeys []uint64
+
+	for unlockingIterator.Valid() {
+		keyValue := unlockingIterator.GetNextKeyValue()
+		unlocking := keyValue.Value().Value()
+		if unlocking.FactoryDenomHash != factoryDenom.FullName {
+			continue
+		}
+
+		coins := sdk.NewCoins(
+			sdk.NewCoin(factoryDenom.FullName, unlocking.FactoryDenomAmount),
+			sdk.NewCoin(pool.KCoin, unlocking.KCoinAmount),
+		)
+
+		acc, _ := sdk.AccAddressFromBech32(unlocking.Address)
+		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
+			return fmt.Errorf("could not send coins from module to account: %w", err)
+		}
+
+		deleteKeys = append(deleteKeys, keyValue.Key())
+	}
+
+	for _, deleteKey := range deleteKeys {
+		k.liquidityUnlockings.Remove(ctx, deleteKey)
+	}
+
+	return nil
+}
+
+func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
+	ratio := getPoolRatio(pool)
+	shareIterator := k.LiquidityShareIterator(ctx, factoryDenom.FullName)
+
+	for shareIterator.Valid() {
+		keyValue := shareIterator.GetNextKeyValue()
+
+		amountFactory := pool.FactoryDenomAmount.ToLegacyDec().Mul(keyValue.Value().Value().Share)
+		amountOtherDenom := amountFactory.Mul(ratio)
+
+		coins := sdk.NewCoins(
+			sdk.NewCoin(factoryDenom.FullName, amountFactory.TruncateInt()),
+			sdk.NewCoin(pool.KCoin, amountOtherDenom.TruncateInt()),
+		)
+
+		acc, _ := sdk.AccAddressFromBech32(keyValue.Key())
+		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
+			return fmt.Errorf("could not send coins from module to account: %w", err)
+		}
+	}
+
+	return nil
 }

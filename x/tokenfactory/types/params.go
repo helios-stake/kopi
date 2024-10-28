@@ -7,16 +7,18 @@ import (
 )
 
 var (
-	CreationFee = math.NewInt(100_000_000)
-	ReserveFee  = math.LegacyNewDecWithPrec(1, 3)
-	PoolFee     = math.LegacyNewDecWithPrec(1, 3)
+	CreationFee     = math.NewInt(100_000_000)
+	ReserveFee      = math.LegacyNewDecWithPrec(1, 3)
+	PoolFee         = math.LegacyNewDecWithPrec(1, 3)
+	MinimumPoolSize = math.NewInt(1_000_000_000)
 )
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		CreationFee: CreationFee,
-		ReserveFee:  ReserveFee,
+		CreationFee:     CreationFee,
+		ReserveFee:      ReserveFee,
+		MinimumPoolSize: MinimumPoolSize,
 	}
 }
 
@@ -28,6 +30,10 @@ func (p Params) Validate() error {
 
 	if err := validateTradeFee(p.ReserveFee); err != nil {
 		return fmt.Errorf("invalid reserve fee: %w", err)
+	}
+
+	if err := validateBiggerZero(p.MinimumPoolSize); err != nil {
+		return fmt.Errorf("invalid minimum pool size: %w", err)
 	}
 
 	return nil
@@ -43,7 +49,7 @@ func validateTradeFee(d any) error {
 		return fmt.Errorf("value is nil")
 	}
 
-	if v.LT(math.LegacyZeroDec()) {
+	if v.IsNegative() {
 		return fmt.Errorf("fee must not be smaller than 0")
 	}
 
@@ -64,7 +70,7 @@ func validateBiggerZero(d any) error {
 		return fmt.Errorf("value is nil")
 	}
 
-	if v.LT(math.ZeroInt()) {
+	if v.IsNegative() {
 		return fmt.Errorf("share must not be smaller than 0")
 	}
 

@@ -29,4 +29,7 @@ var (
 	ErrTradeAmountTooSmall = sdkerrors.Register(ModuleName, 1118, "trade amount too small")
 	ErrMarketPriceTooHigh  = sdkerrors.Register(ModuleName, 1119, "market price too high")
 	ErrEmptyTrade          = sdkerrors.Register(ModuleName, 1120, "given max price results in empty trade")
+	ErrAmountBelowMinimum  = sdkerrors.Register(ModuleName, 1121, "amount below minimum size")
+	ErrZeroShares          = sdkerrors.Register(ModuleName, 1122, "given address has no share of liquidity pool")
+	ErrAmountTooLarge      = sdkerrors.Register(ModuleName, 1123, "given amount exceeds user's share of liquidity pool")
 )

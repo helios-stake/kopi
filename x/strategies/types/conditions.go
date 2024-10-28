@@ -60,7 +60,7 @@ func ConvertConditions(messageConditions []MessageCondition) ([]*Condition, erro
 	for index, messageCondition := range messageConditions {
 		condition, err := convertCondition(messageCondition)
 		if err != nil {
-			return nil, fmt.Errorf("index %v: %w", index, err)
+			return nil, fmt.Errorf("[%d]: %w", index, err)
 		}
 
 		conditions = append(conditions, condition)

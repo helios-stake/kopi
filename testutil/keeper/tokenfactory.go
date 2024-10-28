@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"testing"
 
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -35,10 +36,18 @@ func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, context.Context) {
 
 	// Initialize params
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.SetParams(innerCtx, types.DefaultParams())
+		return k.SetParams(innerCtx, TestParams())
 	}))
 
 	return k, ctx
+}
+
+func TestParams() types.Params {
+	return types.Params{
+		CreationFee:     types.CreationFee,
+		ReserveFee:      types.ReserveFee,
+		MinimumPoolSize: math.NewInt(100),
+	}
 }
 
 func SetupTokenfactoryMsgServer(t *testing.T) (keeper.Keeper, types.MsgServer, context.Context) {
@@ -100,6 +109,16 @@ func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factory
 			KCoinAmount:          kCoinAmount,
 			PoolFee:              poolFee,
 			UnlockBlocks:         unlockBlocks,
+		})
+		return err
+	})
+}
+
+func DissolvePool(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.DissolvePool(innerCtx, &types.MsgDissolvePool{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
 		})
 		return err
 	})

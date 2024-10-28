@@ -229,7 +229,7 @@ func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math
 	newLoanSum := loanSum.LoanSum.Add(addedAmount)
 
 	var valueShare math.LegacyDec
-	if newLoanSum.GT(math.LegacyZeroDec()) {
+	if newLoanSum.IsPositive() {
 		valueShare = addedAmount.Quo(newLoanSum)
 	} else {
 		valueShare = math.LegacyZeroDec()

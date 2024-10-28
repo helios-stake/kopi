@@ -30,6 +30,7 @@ const (
 	Msg_CreatePool_FullMethodName                  = "/kopi.tokenfactory.Msg/CreatePool"
 	Msg_AddLiquidity_FullMethodName                = "/kopi.tokenfactory.Msg/AddLiquidity"
 	Msg_UnlockLiquidity_FullMethodName             = "/kopi.tokenfactory.Msg/UnlockLiquidity"
+	Msg_DissolvePool_FullMethodName                = "/kopi.tokenfactory.Msg/DissolvePool"
 	Msg_Buy_FullMethodName                         = "/kopi.tokenfactory.Msg/Buy"
 	Msg_Sell_FullMethodName                        = "/kopi.tokenfactory.Msg/Sell"
 )
@@ -51,6 +52,7 @@ type MsgClient interface {
 	CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*Void, error)
 	AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts ...grpc.CallOption) (*Void, error)
 	UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity, opts ...grpc.CallOption) (*Void, error)
+	DissolvePool(ctx context.Context, in *MsgDissolvePool, opts ...grpc.CallOption) (*Void, error)
 	Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 	Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 }
@@ -162,6 +164,15 @@ func (c *msgClient) UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity,
 	return out, nil
 }
 
+func (c *msgClient) DissolvePool(ctx context.Context, in *MsgDissolvePool, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_DissolvePool_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
 	out := new(MsgTradeResponse)
 	err := c.cc.Invoke(ctx, Msg_Buy_FullMethodName, in, out, opts...)
@@ -197,6 +208,7 @@ type MsgServer interface {
 	CreatePool(context.Context, *MsgCreatePool) (*Void, error)
 	AddLiquidity(context.Context, *MsgAddLiquidity) (*Void, error)
 	UnlockLiquidity(context.Context, *MsgUnlockLiquidity) (*Void, error)
+	DissolvePool(context.Context, *MsgDissolvePool) (*Void, error)
 	Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error)
 	Sell(context.Context, *MsgSell) (*MsgTradeResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -238,6 +250,9 @@ func (UnimplementedMsgServer) AddLiquidity(context.Context, *MsgAddLiquidity) (*
 }
 func (UnimplementedMsgServer) UnlockLiquidity(context.Context, *MsgUnlockLiquidity) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnlockLiquidity not implemented")
+}
+func (UnimplementedMsgServer) DissolvePool(context.Context, *MsgDissolvePool) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DissolvePool not implemented")
 }
 func (UnimplementedMsgServer) Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
@@ -456,6 +471,24 @@ func _Msg_UnlockLiquidity_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_DissolvePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDissolvePool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DissolvePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DissolvePool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DissolvePool(ctx, req.(*MsgDissolvePool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgBuy)
 	if err := dec(in); err != nil {
@@ -542,6 +575,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnlockLiquidity",
 			Handler:    _Msg_UnlockLiquidity_Handler,
+		},
+		{
+			MethodName: "DissolvePool",
+			Handler:    _Msg_DissolvePool_Handler,
 		},
 		{
 			MethodName: "Buy",

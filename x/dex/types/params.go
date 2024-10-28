@@ -101,7 +101,7 @@ func validateLessThanOne(d any) error {
 		return fmt.Errorf("fee must not be larger than 1")
 	}
 
-	if v.LT(math.LegacyZeroDec()) {
+	if v.IsNegative() {
 		return fmt.Errorf("fee must be bigger than 0")
 	}
 
@@ -152,7 +152,7 @@ func validateBetweenZeroAndOne(d any) error {
 		return fmt.Errorf("value is nil")
 	}
 
-	if !v.GT(math.LegacyZeroDec()) {
+	if !v.IsPositive() {
 		return fmt.Errorf("value has to be bigger than 0")
 	}
 

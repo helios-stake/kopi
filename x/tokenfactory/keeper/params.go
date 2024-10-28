@@ -28,3 +28,12 @@ func (k Keeper) getTradeFee(ctx context.Context, poolFee math.LegacyDec) math.Le
 	reserveFee := k.GetParams(ctx).ReserveFee
 	return reserveFee.Add(poolFee)
 }
+
+func (k Keeper) getMinimumPoolSize(ctx context.Context) math.Int {
+	minimumPoolSize := k.GetParams(ctx).MinimumPoolSize
+	if minimumPoolSize.IsNil() {
+		return types.MinimumPoolSize
+	}
+
+	return minimumPoolSize
+}

@@ -171,7 +171,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 
 	// In case we liquidated more than the loan was worth, the excesses funds will be sent to the user.
 	excessRepayAmount := repayAmount.Sub(loanValue)
-	if excessRepayAmount.GT(math.LegacyZeroDec()) {
+	if excessRepayAmount.IsPositive() {
 		repayAmount = repayAmount.Sub(excessRepayAmount)
 
 		poolVaultAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault).GetAddress().String()

@@ -16,7 +16,7 @@ func (k Keeper) CheckConditions(ctx context.Context, conditions []*types.Conditi
 
 	for conditionIndex, condition := range conditions {
 		if err := k.CheckCondition(ctx, condition); err != nil {
-			return fmt.Errorf("could not convert condition (index %v): %w", conditionIndex, err)
+			return fmt.Errorf("could not convert condition[%d]: %w", conditionIndex, err)
 		}
 	}
 
@@ -125,7 +125,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) 
 			return fmt.Errorf("string2 has to be empty")
 		}
 
-		if condition.Value.LT(math.LegacyZeroDec()) {
+		if condition.Value.IsNegative() {
 			return fmt.Errorf("credit line usage must not be lower than 0")
 		}
 
@@ -148,7 +148,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) 
 			return fmt.Errorf("reference price must not be null")
 		}
 
-		if condition.ReferencePrice.LT(math.LegacyZeroDec()) {
+		if condition.ReferencePrice.IsNegative() {
 			return fmt.Errorf("reference price must not be smaller than 0")
 		}
 

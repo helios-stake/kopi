@@ -17,6 +17,7 @@ service Msg {
   rpc ArbitrageRedeem  (MsgArbitrageRedeem) returns (Void);
 
   rpc AutomationsAdd            (MsgAutomationsAdd) returns (Void);
+  rpc AutomationsImport         (MsgAutomationsImport) returns (Void);
   rpc AutomationsUpdate         (MsgAutomationsUpdate) returns (Void);
   rpc AutomationsRemove         (MsgAutomationsRemove) returns (Void);
   rpc AutomationsRemoveMultiple (MsgAutomationsRemoveMultiple) returns (Void);
@@ -85,6 +86,25 @@ message MsgAutomationsAdd {
   string actions = 8;
 }
 
+message AutomationImport {
+  string title = 1;
+
+  string interval_type = 2;
+  string interval_length = 3;
+  string validity_type = 4;
+  string validity_value = 5;
+
+  string conditions = 6;
+  string actions = 7;
+}
+
+message MsgAutomationsImport {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string automations = 2;
+}
+
 message MsgAutomationsUpdate {
   option (cosmos.msg.v1.signer) = "creator";
 
@@ -99,6 +119,8 @@ message MsgAutomationsUpdate {
 
   string conditions = 8;
   string actions = 9;
+
+  bool active = 10;
 }
 
 message MsgAutomationsRemove {

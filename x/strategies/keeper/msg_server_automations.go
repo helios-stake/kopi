@@ -12,21 +12,41 @@ import (
 )
 
 func (k msgServer) AutomationsAdd(ctx context.Context, msg *types.MsgAutomationsAdd) (*types.Void, error) {
-	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
+	err := k.addAutomation(ctx, msg, msg.Creator)
+	return &types.Void{}, err
+}
 
-	conditions, actions, err := k.checkAutomationMessage(ctx, msg.Creator, msg)
-	if err != nil {
-		return nil, err
+func (k msgServer) AutomationsImport(ctx context.Context, msg *types.MsgAutomationsImport) (*types.Void, error) {
+	var automations []types.AutomationImport
+	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {
+		return nil, fmt.Errorf("could not unmarshal: %w", err)
 	}
 
-	intervalType, _ := strconv.Atoi(msg.IntervalType)
-	intervalLength, _ := strconv.Atoi(msg.IntervalLength)
-	validityType, _ := strconv.Atoi(msg.ValidityType)
-	validitValue, _ := strconv.Atoi(msg.ValidityValue)
+	for index, automation := range automations {
+		if err := k.addAutomation(ctx, &automation, msg.Creator); err != nil {
+			return nil, fmt.Errorf("could not add automation[%d]: %w", index, err)
+		}
+	}
+
+	return &types.Void{}, nil
+}
+
+func (k Keeper) addAutomation(ctx context.Context, msg types.AutomationMessage, creator string) error {
+	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
+
+	conditions, actions, err := k.checkAutomationMessage(ctx, creator, msg)
+	if err != nil {
+		return err
+	}
+
+	intervalType, _ := strconv.Atoi(msg.GetIntervalType())
+	intervalLength, _ := strconv.Atoi(msg.GetIntervalLength())
+	validityType, _ := strconv.Atoi(msg.GetValidityType())
+	validitValue, _ := strconv.Atoi(msg.GetValidityValue())
 
 	k.SetAutomation(ctx, types.Automation{
-		Address:        msg.Creator,
-		Title:          msg.Title,
+		Address:        creator,
+		Title:          msg.GetTitle(),
 		Active:         true,
 		AddedAt:        height,
 		PeriodStart:    height,
@@ -40,11 +60,11 @@ func (k msgServer) AutomationsAdd(ctx context.Context, msg *types.MsgAutomations
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("automation_created",
-			sdk.Attribute{Key: "address", Value: msg.Creator},
+			sdk.Attribute{Key: "address", Value: creator},
 		),
 	)
 
-	return &types.Void{}, nil
+	return nil
 }
 
 func (k msgServer) AutomationsUpdate(ctx context.Context, msg *types.MsgAutomationsUpdate) (*types.Void, error) {
@@ -81,6 +101,15 @@ func (k msgServer) AutomationsUpdate(ctx context.Context, msg *types.MsgAutomati
 	automation.IntervalLength = int64(intervalLength)
 	automation.ValidityType = int64(validityType)
 	automation.ValidityValue = int64(validitValue)
+
+	if msg.Active {
+		automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
+		automation.PeriodTimesExecuted = 0
+		automation.PeriodConditionFeesConsumed = 0
+		automation.PeriodActionFeesConsumed = 0
+	}
+
+	automation.Active = msg.Active
 
 	k.SetAutomation(ctx, automation)
 

@@ -52,7 +52,7 @@ func validateZeroOne(d any) error {
 		return fmt.Errorf("share must not be larger than 1")
 	}
 
-	if v.LT(math.LegacyZeroDec()) {
+	if v.IsNegative() {
 		return fmt.Errorf("share must not be smaller than 0")
 	}
 
@@ -69,7 +69,7 @@ func validateGreaterZero(d any) error {
 		return fmt.Errorf("value is nil")
 	}
 
-	if v.LT(math.LegacyZeroDec()) {
+	if v.IsNegative() {
 		return fmt.Errorf("threshold must not be smaller than 0")
 	}
 

@@ -1298,7 +1298,7 @@ func TestTrade25(t *testing.T) {
 	c := pair.VirtualBase
 
 	var maximum1 *math.LegacyDec
-	if c.GT(math.LegacyZeroDec()) {
+	if c.IsPositive() {
 		m := A.Mul(b.Add(c)).Quo(c).Sub(A)
 		maximum1 = &m
 	}
@@ -1314,7 +1314,7 @@ func TestTrade25(t *testing.T) {
 	c = pair.VirtualOther
 
 	maximum1 = nil
-	if c.GT(math.LegacyZeroDec()) {
+	if c.IsPositive() {
 		m := A.Mul(b.Add(c)).Quo(c).Sub(A)
 		maximum1 = &m
 	}

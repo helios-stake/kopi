@@ -22,6 +22,7 @@ const (
 	Msg_ArbitrageDeposit_FullMethodName          = "/kopi.strategies.Msg/ArbitrageDeposit"
 	Msg_ArbitrageRedeem_FullMethodName           = "/kopi.strategies.Msg/ArbitrageRedeem"
 	Msg_AutomationsAdd_FullMethodName            = "/kopi.strategies.Msg/AutomationsAdd"
+	Msg_AutomationsImport_FullMethodName         = "/kopi.strategies.Msg/AutomationsImport"
 	Msg_AutomationsUpdate_FullMethodName         = "/kopi.strategies.Msg/AutomationsUpdate"
 	Msg_AutomationsRemove_FullMethodName         = "/kopi.strategies.Msg/AutomationsRemove"
 	Msg_AutomationsRemoveMultiple_FullMethodName = "/kopi.strategies.Msg/AutomationsRemoveMultiple"
@@ -39,6 +40,7 @@ type MsgClient interface {
 	ArbitrageDeposit(ctx context.Context, in *MsgArbitrageDeposit, opts ...grpc.CallOption) (*Void, error)
 	ArbitrageRedeem(ctx context.Context, in *MsgArbitrageRedeem, opts ...grpc.CallOption) (*Void, error)
 	AutomationsAdd(ctx context.Context, in *MsgAutomationsAdd, opts ...grpc.CallOption) (*Void, error)
+	AutomationsImport(ctx context.Context, in *MsgAutomationsImport, opts ...grpc.CallOption) (*Void, error)
 	AutomationsUpdate(ctx context.Context, in *MsgAutomationsUpdate, opts ...grpc.CallOption) (*Void, error)
 	AutomationsRemove(ctx context.Context, in *MsgAutomationsRemove, opts ...grpc.CallOption) (*Void, error)
 	AutomationsRemoveMultiple(ctx context.Context, in *MsgAutomationsRemoveMultiple, opts ...grpc.CallOption) (*Void, error)
@@ -78,6 +80,15 @@ func (c *msgClient) ArbitrageRedeem(ctx context.Context, in *MsgArbitrageRedeem,
 func (c *msgClient) AutomationsAdd(ctx context.Context, in *MsgAutomationsAdd, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_AutomationsAdd_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AutomationsImport(ctx context.Context, in *MsgAutomationsImport, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AutomationsImport_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -163,6 +174,7 @@ type MsgServer interface {
 	ArbitrageDeposit(context.Context, *MsgArbitrageDeposit) (*Void, error)
 	ArbitrageRedeem(context.Context, *MsgArbitrageRedeem) (*Void, error)
 	AutomationsAdd(context.Context, *MsgAutomationsAdd) (*Void, error)
+	AutomationsImport(context.Context, *MsgAutomationsImport) (*Void, error)
 	AutomationsUpdate(context.Context, *MsgAutomationsUpdate) (*Void, error)
 	AutomationsRemove(context.Context, *MsgAutomationsRemove) (*Void, error)
 	AutomationsRemoveMultiple(context.Context, *MsgAutomationsRemoveMultiple) (*Void, error)
@@ -186,6 +198,9 @@ func (UnimplementedMsgServer) ArbitrageRedeem(context.Context, *MsgArbitrageRede
 }
 func (UnimplementedMsgServer) AutomationsAdd(context.Context, *MsgAutomationsAdd) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsAdd not implemented")
+}
+func (UnimplementedMsgServer) AutomationsImport(context.Context, *MsgAutomationsImport) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationsImport not implemented")
 }
 func (UnimplementedMsgServer) AutomationsUpdate(context.Context, *MsgAutomationsUpdate) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsUpdate not implemented")
@@ -274,6 +289,24 @@ func _Msg_AutomationsAdd_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AutomationsAdd(ctx, req.(*MsgAutomationsAdd))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AutomationsImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAutomationsImport)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AutomationsImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AutomationsImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AutomationsImport(ctx, req.(*MsgAutomationsImport))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -440,6 +473,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AutomationsAdd",
 			Handler:    _Msg_AutomationsAdd_Handler,
+		},
+		{
+			MethodName: "AutomationsImport",
+			Handler:    _Msg_AutomationsImport_Handler,
 		},
 		{
 			MethodName: "AutomationsUpdate",

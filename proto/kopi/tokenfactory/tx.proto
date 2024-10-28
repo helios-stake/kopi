@@ -25,9 +25,10 @@ service Msg {
   rpc UpdateLiquidityPoolSettings(MsgUpdateLiquidityPoolSettings)    returns (Void);
   rpc Buyback(MsgBuyback)                  returns (Void);
 
-  rpc CreatePool(MsgCreatePool)     returns (Void);
-  rpc AddLiquidity(MsgAddLiquidity)    returns (Void);
+  rpc CreatePool(MsgCreatePool)           returns (Void);
+  rpc AddLiquidity(MsgAddLiquidity)       returns (Void);
   rpc UnlockLiquidity(MsgUnlockLiquidity) returns (Void);
+  rpc DissolvePool(MsgDissolvePool)       returns (Void);
 
   rpc Buy(MsgBuy) returns (MsgTradeResponse);
   rpc Sell(MsgSell) returns (MsgTradeResponse);
@@ -102,6 +103,13 @@ message MsgCreatePool {
 
   string pool_fee = 6;
   uint64 unlock_blocks = 7;
+}
+
+message MsgDissolvePool {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
 }
 
 message MsgBuyback {

@@ -36,7 +36,7 @@ func (k Keeper) AddCollateral(ctx context.Context, address sdk.AccAddress, denom
 		return math.Int{}, types.ErrInvalidCollateralDenom
 	}
 
-	if amount.Equal(math.ZeroInt()) {
+	if amount.IsZero() {
 		return math.Int{}, types.ErrZeroAmount
 	}
 

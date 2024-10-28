@@ -109,7 +109,7 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset *denomtyp
 	})
 
 	available := math.LegacyNewDecFromInt(coin.Amount)
-	for available.GT(math.LegacyZeroDec()) && len(redemptions) > 0 {
+	for available.IsPositive() && len(redemptions) > 0 {
 		redemption := redemptions[0]
 		redemptions = redemptions[1:]
 

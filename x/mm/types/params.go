@@ -87,7 +87,7 @@ func validateZeroOne(d any) error {
 		return fmt.Errorf("fee must not be larger than 1")
 	}
 
-	if v.LT(math.LegacyZeroDec()) {
+	if v.IsNegative() {
 		return fmt.Errorf("fee must be smaller than 0")
 	}
 

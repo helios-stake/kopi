@@ -123,7 +123,7 @@ func (k Keeper) CalcWithdrawableCollateralAmount(ctx context.Context, address, d
 		return math.LegacyDec{}, fmt.Errorf("could not calculate collateral sum without: %w", err)
 	}
 
-	if loanSumBase.GT(math.LegacyZeroDec()) && loanSumBase.GTE(collateralSumBase) {
+	if loanSumBase.IsPositive() && loanSumBase.GTE(collateralSumBase) {
 		return math.LegacyZeroDec(), nil
 	}
 

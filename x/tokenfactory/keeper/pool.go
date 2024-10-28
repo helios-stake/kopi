@@ -76,20 +76,17 @@ func (k Keeper) LiquidityShareIterator(ctx context.Context, denom string) cache.
 	return k.liquidityProviderShares.Iterator(ctx, rng, denom)
 }
 
-func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, addedAmount math.Int, addedAdress string) error {
-	type ProviderAmount struct {
-		address string
-		amount  math.LegacyDec
-	}
-
+func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, addedAmount math.Int, addedAddress string) error {
 	var (
 		iterator      = k.liquidityProviderShares.Iterator(ctx, nil, factoryDenom.FullName)
-		sum           = math.LegacyZeroDec()
-		providers     []ProviderAmount
 		keyValue      cache.KeyValue[string, cache.Entry[types.ProviderShare]]
 		address       string
 		providerShare types.ProviderShare
 	)
+
+	providers := make(map[string]math.LegacyDec)
+	providers[addedAddress] = addedAmount.ToLegacyDec()
+	sum := addedAmount.ToLegacyDec()
 
 	for iterator.Valid() {
 		keyValue = iterator.GetNextKeyValue()
@@ -97,29 +94,36 @@ func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.Fac
 		providerShare = *keyValue.Value().Value()
 
 		amount := pool.FactoryDenomAmount.ToLegacyDec().Mul(providerShare.Share)
-		if address == addedAdress {
+		sum = sum.Add(amount)
+
+		if address == addedAddress {
 			amount = amount.Add(addedAmount.ToLegacyDec())
 			if amount.IsNegative() {
 				return types.ErrNegativeLiquidity
 			}
 		}
 
-		sum = sum.Add(amount)
-		providers = append(providers, ProviderAmount{
-			address: address,
-			amount:  amount,
-		})
+		providers[address] = amount
 	}
 
-	for _, providerAmount := range providers {
-		if providerAmount.amount.Equal(math.LegacyZeroDec()) {
-			k.liquidityProviderShares.Remove(ctx, factoryDenom.FullName, providerAmount.address)
+	for providerAddress, providerAmount := range providers {
+		if providerAmount.IsZero() {
+			k.liquidityProviderShares.Remove(ctx, factoryDenom.FullName, providerAddress)
 		} else {
-			k.liquidityProviderShares.Set(ctx, factoryDenom.FullName, providerAmount.address, types.ProviderShare{
-				Share: providerAmount.amount.Quo(sum),
+			k.liquidityProviderShares.Set(ctx, factoryDenom.FullName, providerAddress, types.ProviderShare{
+				Share: providerAmount.Quo(sum),
 			})
 		}
 	}
 
 	return nil
+}
+
+func (k Keeper) getLiquidityShare(ctx context.Context, factoryDenom, address string) math.LegacyDec {
+	share, has := k.liquidityProviderShares.Get(ctx, factoryDenom, address)
+	if !has {
+		return math.LegacyZeroDec()
+	}
+
+	return share.Share
 }

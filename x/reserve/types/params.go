@@ -20,7 +20,7 @@ func NewParams() Params {
 }
 
 func (p Params) Validate() error {
-	if kCoinBurnShare.LT(math.LegacyZeroDec()) {
+	if kCoinBurnShare.IsNegative() {
 		return fmt.Errorf("kcoin burn share must not be below 0")
 	}
 

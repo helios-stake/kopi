@@ -27,7 +27,7 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 	}
 
 	creditLineUsage := math.LegacyZeroDec()
-	if collateralUserSum.GT(math.LegacyZeroDec()) {
+	if collateralUserSum.IsPositive() {
 		creditLineUsage = userLoanSum.Quo(collateralUserSum)
 	}
 

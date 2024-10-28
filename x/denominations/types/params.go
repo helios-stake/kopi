@@ -291,7 +291,7 @@ func validateArbitrageDenom(p Params, arbitrageDenom *ArbitrageDenom) error {
 		return fmt.Errorf("redemption fee must not be larger than 1")
 	}
 
-	if arbitrageDenom.RedemptionFee.LT(math.LegacyZeroDec()) {
+	if arbitrageDenom.RedemptionFee.IsNegative() {
 		return fmt.Errorf("redemption fee must not be smaller than 0")
 	}
 
@@ -299,7 +299,7 @@ func validateArbitrageDenom(p Params, arbitrageDenom *ArbitrageDenom) error {
 		return fmt.Errorf("redemption fee reserve share must not be larger than 1")
 	}
 
-	if arbitrageDenom.RedemptionFeeReserveShare.LT(math.LegacyZeroDec()) {
+	if arbitrageDenom.RedemptionFeeReserveShare.IsNegative() {
 		return fmt.Errorf("redemption fee reserve share must not be smaller than 0")
 	}
 
@@ -417,7 +417,7 @@ func validateCAsset(p Params, cAsset *CAsset) error {
 		cAsset.DexFeeShare = math.LegacyZeroDec()
 	}
 
-	if cAsset.DexFeeShare.LT(math.LegacyZeroDec()) {
+	if cAsset.DexFeeShare.IsNegative() {
 		return fmt.Errorf("dex fee share must not be smaller than 0")
 	}
 
@@ -470,7 +470,7 @@ func validateCollateralDenom(p Params, collateralDenom *CollateralDenom) error {
 		return fmt.Errorf("max_deposit is nil")
 	}
 
-	if collateralDenom.Ltv.LT(math.LegacyZeroDec()) {
+	if collateralDenom.Ltv.IsNegative() {
 		return fmt.Errorf("ltv must not be smaller than 0")
 	}
 
@@ -528,7 +528,7 @@ func validateDexDenom(dexDenom *DexDenom) error {
 			return fmt.Errorf("for dex denoms other than base, factor cannot be nil")
 		}
 
-		if !dexDenom.Factor.GT(math.LegacyZeroDec()) {
+		if !dexDenom.Factor.IsPositive() {
 			return fmt.Errorf("factor must be larger than zero")
 		}
 

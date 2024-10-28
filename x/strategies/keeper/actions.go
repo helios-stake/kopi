@@ -29,7 +29,7 @@ func isNoAmountAction(actionType int64) bool {
 func (k Keeper) CheckActions(ctx context.Context, address string, actions []*types.Action) error {
 	for actionIndex, action := range actions {
 		if err := k.CheckAction(ctx, address, action); err != nil {
-			return fmt.Errorf("invalid action (index %v): %w", actionIndex, err)
+			return fmt.Errorf("invalid action[%d]: %w", actionIndex, err)
 		}
 	}
 

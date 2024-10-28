@@ -26,7 +26,7 @@ func (lps *LiquidityProviders) sumProvided() math.LegacyDec {
 func (lps *LiquidityProviders) provided() *LiquidityProviders {
 	sumProvided := lps.sumProvided()
 	for _, lp := range *lps {
-		if sumProvided.GT(math.LegacyZeroDec()) {
+		if sumProvided.IsPositive() {
 			lp.shareProvided = lp.amountProvided.Quo(sumProvided)
 		} else {
 			lp.shareProvided = math.LegacyZeroDec()
