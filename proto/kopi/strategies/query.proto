@@ -49,9 +49,21 @@ service Query {
     option (google.api.http).get = "/kopi/strategies/automations/by_index";
   }
 
+  rpc AutomationInterval(QueryAutomationsByIndex) returns (QueryAutomationIntervalResponse) {
+    option (google.api.http).get = "/kopi/strategies/automations/by_index/interval";
+  }
+
   rpc AutomationsAddressFunds(QueryAutomationsAddressFundsRequest) returns (QueryAutomationsAddressFundsResponse) {
     option (google.api.http).get = "/kopi/strategies/automations/funds/{address}";
   }
+}
+
+message QueryAutomationIntervalResponse {
+  string runtime_in_blocks = 1;
+  string runtime_in_seconds = 2;
+  string interval_in_seconds = 3;
+  string period_time_checks = 4;
+  string expected_checks = 5;
 }
 
 message QueryAutomationsStatsRequest {}

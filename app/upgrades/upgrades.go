@@ -4,6 +4,7 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_1"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_2"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_3"
+	"github.com/kopi-money/kopi/app/upgrades/v0_6_4"
 )
 
 func UpgradeHandlers() Upgrades {
@@ -19,6 +20,10 @@ func UpgradeHandlers() Upgrades {
 		{
 			UpgradeName:          "v0_6_3",
 			CreateUpgradeHandler: v0_6_3.CreateUpgradeHandler,
+		},
+		{
+			UpgradeName:          "v0_6_4",
+			CreateUpgradeHandler: v0_6_4.CreateUpgradeHandler,
 		},
 	}
 }

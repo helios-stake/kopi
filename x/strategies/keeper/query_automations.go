@@ -91,3 +91,31 @@ func (k Keeper) AutomationsStats(ctx context.Context, _ *types.QueryAutomationsS
 		Active: active,
 	}, nil
 }
+
+func (k Keeper) AutomationInterval(ctx context.Context, req *types.QueryAutomationsByIndex) (*types.QueryAutomationIntervalResponse, error) {
+	index, err := strconv.Atoi(req.Index)
+	if err != nil {
+		return nil, fmt.Errorf("invalid index: %w", err)
+	}
+
+	automation, has := k.automations.Get(ctx, uint64(index))
+	if !has {
+		return nil, types.ErrAutomationNotFound
+	}
+
+	secondsPerBlock := k.BlockspeedKeeper.GetSecondsPerBlock(ctx)
+	blockHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
+
+	intervalInSeconds, runtimeInSeconds, expectedChecks, runtimeInBlocks, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
+	if err != nil {
+		return nil, fmt.Errorf("could not get interval check data: %w", err)
+	}
+
+	return &types.QueryAutomationIntervalResponse{
+		RuntimeInBlocks:   strconv.Itoa(int(runtimeInBlocks)),
+		RuntimeInSeconds:  runtimeInSeconds.String(),
+		IntervalInSeconds: intervalInSeconds.String(),
+		PeriodTimeChecks:  strconv.Itoa(int(automation.PeriodTimesChecked)),
+		ExpectedChecks:    expectedChecks.String(),
+	}, nil
+}

@@ -51,11 +51,27 @@ func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.
 	return k.factoryDenoms.Get(ctx, fullName)
 }
 
-func (k Keeper) CreateDenom(ctx context.Context, address, displayName, iconHash string, exponent uint64) (types.FactoryDenom, error) {
+func (k Keeper) GetDenomBySymbol(ctx context.Context, symbol string) (types.FactoryDenom, bool) {
+	iterator := k.factoryDenoms.Iterator(ctx, nil)
+	for iterator.Valid() {
+		value := iterator.GetNext()
+		if value.Symbol == symbol {
+			return value, true
+		}
+	}
+
+	return types.FactoryDenom{}, false
+}
+
+func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, iconHash string, exponent uint64) (types.FactoryDenom, error) {
 	fullName := ToFullName(displayName)
 
 	if _, exists := k.GetDenomByFullName(ctx, fullName); exists {
 		return types.FactoryDenom{}, types.ErrDenomAlreadyExists
+	}
+
+	if _, exists := k.GetDenomBySymbol(ctx, symbol); exists {
+		return types.FactoryDenom{}, types.ErrSymbolAlreadyExists
 	}
 
 	if exponent < 1 {
@@ -71,6 +87,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, iconHash 
 		DisplayName: displayName,
 		FullName:    fullName,
 		IconHash:    strings.ToUpper(iconHash),
+		Symbol:      symbol,
 		Exponent:    exponent,
 	}
 

@@ -104,6 +104,16 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					},
 				},
 				{
+					RpcMethod: "AutomationsImport",
+					Use:       "automations-import [automations]",
+					Short:     "Import multiple automations using a json string.",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "automations",
+						},
+					},
+				},
+				{
 					RpcMethod: "AutomationsRemove",
 					Use:       "automations-update [index]",
 					Short:     "Remove an existing Automation.",

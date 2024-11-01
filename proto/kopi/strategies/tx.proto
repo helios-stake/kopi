@@ -6,6 +6,7 @@ import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "kopi/strategies/params.proto";
+import "kopi/strategies/automations.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/strategies/types";
 
@@ -94,8 +95,8 @@ message AutomationImport {
   string validity_type = 4;
   string validity_value = 5;
 
-  string conditions = 6;
-  string actions = 7;
+  repeated Condition conditions = 6;
+  repeated Action actions = 7;
 }
 
 message MsgAutomationsImport {

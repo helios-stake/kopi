@@ -121,8 +121,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 			continue
 		}
 
-		_, _, err = k.HandleAutomation(ctx, params, automation, automationExecutionIndex, &totalConsumption)
-		if err != nil {
+		if _, _, err = k.HandleAutomation(ctx, params, automation, automationExecutionIndex, &totalConsumption); err != nil {
 			k.Logger().Error(err.Error())
 			continue
 		}
@@ -147,23 +146,28 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 // checkAutomationBelowCheckRate calculates the rate with which the automation has been executed in relation to how many times
 // it should have been executed given the time it has been active.
 func (k Keeper) checkAutomationBelowCheckRate(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (bool, error) {
-	intervalInSeconds, err := convertIntervalLengthDec(automation.IntervalType, automation.IntervalLength)
+	_, runtimeInSeconds, expectedChecks, _, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
 	if err != nil {
-		return false, fmt.Errorf("could not convert interval length: %w", err)
+		return false, err
 	}
-
-	runtimeInBlocks := blockHeight - automation.PeriodStart
-	if runtimeInBlocks == 0 {
-		return true, nil
-	}
-
-	runtimeInSeconds := convertBlocksToSeconds(secondsPerBlock, runtimeInBlocks)
-	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds)
 
 	check := math.LegacyNewDec(automation.PeriodTimesChecked).LT(expectedChecks)
 	k.Logger().Info(fmt.Sprintf("%v %v %v %v %v", automation.Index, automation.PeriodTimesChecked, expectedChecks.String(), runtimeInSeconds.String(), check))
 
 	return check, nil
+}
+
+func (k Keeper) getIntervalCheckData(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (math.LegacyDec, math.LegacyDec, math.LegacyDec, int64, error) {
+	intervalInSeconds, err := convertIntervalLengthDec(automation.IntervalType, automation.IntervalLength)
+	if err != nil {
+		return math.LegacyDec{}, math.LegacyDec{}, math.LegacyDec{}, 0, fmt.Errorf("could not convert interval length: %w", err)
+	}
+
+	runtimeInBlocks := blockHeight - automation.PeriodStart
+	runtimeInSeconds := convertBlocksToSeconds(secondsPerBlock, runtimeInBlocks)
+	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds)
+
+	return intervalInSeconds, runtimeInSeconds, expectedChecks, runtimeInBlocks, nil
 }
 
 func convertBlocksToSeconds(secondsPerBlock math.LegacyDec, numBlocks int64) math.LegacyDec {
@@ -207,7 +211,7 @@ func (k Keeper) HandleAutomation(ctx context.Context, params types.Params, autom
 
 	// The automation might have been set inactive because there are not enough funds for executing it
 	if automation.Active {
-		automation.Active, err = checkValidity(automation)
+		automation.Active, automation.InactiveReason, err = checkValidity(automation)
 
 		if !automation.Active { // Testnet
 			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -247,8 +251,10 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 		)
 	}()
 
+	k.Logger().Info(fmt.Sprintf("%v < %v == %v", funds.Int64(), cost.Int64(), funds.LT(cost)))
 	if funds.LT(cost) {
 		automation.Active = false
+		automation.InactiveReason = inactiveReason(InactiveReasonAutomationFunds)
 		return false, nil, nil
 	}
 
@@ -300,6 +306,7 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 				}
 
 				if errorIsOf(err, types.InactiveErrors) {
+					automation.InactiveReason = inactiveReason(InactiveReasonError)
 					automation.Active = false
 				}
 			}

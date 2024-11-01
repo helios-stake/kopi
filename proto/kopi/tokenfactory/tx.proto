@@ -136,7 +136,8 @@ message MsgCreateDenom {
   string creator = 1;
   string name = 2;
   string icon_hash = 3;
-  uint64 exponent = 4;
+  string symbol = 4;
+  uint64 exponent = 5;
 }
 
 message MsgMintDenom {

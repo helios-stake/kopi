@@ -22,6 +22,18 @@ const (
 	AutomationValidityFeesConsumed
 )
 
+const (
+	InactiveReasonAutomationFunds = iota
+	InactiveReasonTimeValidity
+	InactiveReasonFundsConsumed
+	InactiveReasonTimesExecuted
+	InactiveReasonError
+)
+
+func inactiveReason(reason int64) *types.InactiveReason {
+	return &types.InactiveReason{Reason: reason}
+}
+
 func isValidValidity[I int | int64](validityType, validityValue I) error {
 	switch validityType {
 	case AutomationValidityUnlimited:
@@ -62,22 +74,22 @@ func checkTimeValidity(automation *types.Automation, blockHeight, blocksPerYear 
 	return validUntil > blockHeight
 }
 
-func checkValidity(automation types.Automation) (bool, error) {
+func checkValidity(automation types.Automation) (bool, *types.InactiveReason, error) {
 	switch automation.ValidityType {
 	case AutomationValidityUnlimited:
-		return true, nil
+		return true, nil, nil
 	case AutomationValidityNumExecutions:
-		return automation.PeriodTimesExecuted < automation.ValidityValue, nil
+		return automation.PeriodTimesExecuted < automation.ValidityValue, inactiveReason(InactiveReasonTimesExecuted), nil
 	case AutomationValidityFeesConsumed:
 		fees := automation.PeriodConditionFeesConsumed + automation.PeriodActionFeesConsumed
-		return int64(fees) < automation.ValidityValue, nil
+		return int64(fees) < automation.ValidityValue, inactiveReason(InactiveReasonFundsConsumed), nil
 	case AutomationIntervalSeconds, AutomationIntervalMinutes,
 		AutomationIntervalHours, AutomationIntervalDays,
 		AutomationIntervalWeeks, AutomationIntervalMonths:
-		return automation.Active, nil
+		return automation.Active, inactiveReason(InactiveReasonTimeValidity), nil
 
 	default:
-		return false, fmt.Errorf("invalid validity type: %v", automation.ValidityType)
+		return false, nil, fmt.Errorf("invalid validity type: %v", automation.ValidityType)
 	}
 }
 

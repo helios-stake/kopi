@@ -58,7 +58,7 @@ func ConvertConditions(messageConditions []MessageCondition) ([]*Condition, erro
 	var conditions []*Condition
 
 	for index, messageCondition := range messageConditions {
-		condition, err := convertCondition(messageCondition)
+		condition, err := convertCondition(&messageCondition)
 		if err != nil {
 			return nil, fmt.Errorf("[%d]: %w", index, err)
 		}
@@ -69,16 +69,25 @@ func ConvertConditions(messageConditions []MessageCondition) ([]*Condition, erro
 	return conditions, nil
 }
 
-func convertCondition(messageCondition MessageCondition) (*Condition, error) {
-	value, err := math.LegacyNewDecFromStr(messageCondition.Value)
+type MessageIn interface {
+	GetValue() string
+	GetConditionType() int64
+	GetComparison() string
+	GetReferencePrice() string
+	GetString1() string
+	GetString2() string
+}
+
+func convertCondition(messageCondition MessageIn) (*Condition, error) {
+	value, err := math.LegacyNewDecFromStr(messageCondition.GetValue())
 	if err != nil {
 		return nil, fmt.Errorf("could not parse value: %w", err)
 	}
 
 	var referencePrice *math.LegacyDec
-	if IsPriceChangeCondition(messageCondition.ConditionType) {
+	if IsPriceChangeCondition(messageCondition.GetConditionType()) {
 		var rp math.LegacyDec
-		rp, err = math.LegacyNewDecFromStr(messageCondition.ReferencePrice)
+		rp, err = math.LegacyNewDecFromStr(messageCondition.GetReferencePrice())
 		if err != nil {
 			return nil, fmt.Errorf("could not parse reference price: %w", err)
 		}
@@ -86,23 +95,23 @@ func convertCondition(messageCondition MessageCondition) (*Condition, error) {
 		referencePrice = &rp
 	}
 
-	if err = checkAutomationString(messageCondition.String1); err != nil {
+	if err = checkAutomationString(messageCondition.GetString1()); err != nil {
 		return nil, fmt.Errorf("invalid string1: %w", err)
 	}
 
-	if err = checkAutomationString(messageCondition.String2); err != nil {
+	if err = checkAutomationString(messageCondition.GetString2()); err != nil {
 		return nil, fmt.Errorf("invalid string2: %w", err)
 	}
 
-	if !IsValidComparison(messageCondition.ConditionType, messageCondition.Comparison) {
-		return nil, fmt.Errorf("invalid comparison: %v", messageCondition.Comparison)
+	if !IsValidComparison(messageCondition.GetConditionType(), messageCondition.GetComparison()) {
+		return nil, fmt.Errorf("invalid comparison: %v", messageCondition.GetComparison())
 	}
 
 	return &Condition{
-		ConditionType:  messageCondition.ConditionType,
-		String1:        messageCondition.String1,
-		String2:        messageCondition.String2,
-		Comparison:     messageCondition.Comparison,
+		ConditionType:  messageCondition.GetConditionType(),
+		String1:        messageCondition.GetString1(),
+		String2:        messageCondition.GetString2(),
+		Comparison:     messageCondition.GetComparison(),
 		Value:          value,
 		ReferencePrice: referencePrice,
 	}, nil

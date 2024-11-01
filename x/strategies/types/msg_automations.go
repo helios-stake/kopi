@@ -31,18 +31,79 @@ func (msg *MsgAutomationsImport) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	var automations []AutomationImport
-	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {
-		return fmt.Errorf("could not unmarshal: %w", err)
-	}
-
-	for index, automation := range automations {
-		if err := validateAutomation(&automation); err != nil {
-			return fmt.Errorf("invalid automation[%d]: %w", index, err)
-		}
+	_, err := msg.Convert()
+	if err != nil {
+		return fmt.Errorf("could not convert: %w", err)
 	}
 
 	return nil
+}
+
+func validateImportAutomation(automation AutomationImport) error {
+	if len(automation.GetTitle()) == 0 {
+		return ErrAutomationTitleEmpty
+	}
+
+	if len(automation.GetTitle()) > 30 {
+		return ErrAutomationTitleTooLong
+	}
+
+	for _, condition := range automation.GetConditions() {
+		if err := checkAutomationString(condition.GetString1()); err != nil {
+			return fmt.Errorf("invalid string1: %w", err)
+		}
+
+		if err := checkAutomationString(condition.GetString2()); err != nil {
+			return fmt.Errorf("invalid string2: %w", err)
+		}
+
+		if !IsValidComparison(condition.GetConditionType(), condition.GetComparison()) {
+			return fmt.Errorf("invalid comparison: %v", condition.GetComparison())
+		}
+	}
+
+	if len(automation.Actions) > 16 {
+		return fmt.Errorf("must not contain more than 16 actions")
+	}
+
+	if err := checkActions(automation.Actions); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (msg *MsgAutomationsImport) Convert() ([]MsgAutomationsAdd, error) {
+	var automations []AutomationImport
+	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {
+		return nil, fmt.Errorf("could not unmarshal: %w", err)
+	}
+
+	var newAutomations []MsgAutomationsAdd
+	for _, automation := range automations {
+		conditions, err := json.Marshal(automation.Conditions)
+		if err != nil {
+			return nil, fmt.Errorf("could not marshal conditions: %w", err)
+		}
+
+		actions, err := json.Marshal(automation.Actions)
+		if err != nil {
+			return nil, fmt.Errorf("could not marshal conditions: %w", err)
+		}
+
+		newAutomations = append(newAutomations, MsgAutomationsAdd{
+			Creator:        msg.Creator,
+			Title:          automation.Title,
+			IntervalType:   automation.IntervalType,
+			IntervalLength: automation.IntervalLength,
+			ValidityType:   automation.ValidityType,
+			ValidityValue:  automation.ValidityValue,
+			Conditions:     string(conditions),
+			Actions:        string(actions),
+		})
+	}
+
+	return newAutomations, nil
 }
 
 func (msg *MsgAutomationsUpdate) ValidateBasic() error {

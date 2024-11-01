@@ -17,13 +17,13 @@ func (k msgServer) AutomationsAdd(ctx context.Context, msg *types.MsgAutomations
 }
 
 func (k msgServer) AutomationsImport(ctx context.Context, msg *types.MsgAutomationsImport) (*types.Void, error) {
-	var automations []types.AutomationImport
-	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {
-		return nil, fmt.Errorf("could not unmarshal: %w", err)
+	automations, err := msg.Convert()
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert message: %w", err)
 	}
 
 	for index, automation := range automations {
-		if err := k.addAutomation(ctx, &automation, msg.Creator); err != nil {
+		if err = k.addAutomation(ctx, &automation, msg.Creator); err != nil {
 			return nil, fmt.Errorf("could not add automation[%d]: %w", index, err)
 		}
 	}
@@ -96,20 +96,21 @@ func (k msgServer) AutomationsUpdate(ctx context.Context, msg *types.MsgAutomati
 		automation.PeriodTimesChecked = 0
 	}
 
+	if msg.Active {
+		automation.InactiveReason = nil
+	}
+
+	// Only reset statistics when automation was inactive before and is set active
+	if (!automation.Active && msg.Active) || intervalType != int(automation.IntervalType) {
+		resetStatistics(ctx, &automation)
+	}
+
+	automation.Active = msg.Active
 	automation.Title = msg.Title
 	automation.IntervalType = int64(intervalType)
 	automation.IntervalLength = int64(intervalLength)
 	automation.ValidityType = int64(validityType)
 	automation.ValidityValue = int64(validitValue)
-
-	if msg.Active {
-		automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
-		automation.PeriodTimesExecuted = 0
-		automation.PeriodConditionFeesConsumed = 0
-		automation.PeriodActionFeesConsumed = 0
-	}
-
-	automation.Active = msg.Active
 
 	k.SetAutomation(ctx, automation)
 
@@ -266,14 +267,12 @@ func (k Keeper) setAutomationActiveStatus(ctx context.Context, address string, i
 	}
 
 	if active {
-		if k.GetAutomationFunds(ctx, address).LTE(math.ZeroInt()) {
-			return types.ErrEmptyAutomationFunds
-		}
+		automation.InactiveReason = nil
+	}
 
-		automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
-		automation.PeriodTimesExecuted = 0
-		automation.PeriodConditionFeesConsumed = 0
-		automation.PeriodActionFeesConsumed = 0
+	// Only reset statistics when automation was inactive before and is set active
+	if !automation.Active && active {
+		resetStatistics(ctx, &automation)
 	}
 
 	automation.Active = active
@@ -288,4 +287,12 @@ func (k Keeper) setAutomationActiveStatus(ctx context.Context, address string, i
 	)
 
 	return nil
+}
+
+func resetStatistics(ctx context.Context, automation *types.Automation) {
+	automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
+	automation.PeriodTimesChecked = 0
+	automation.PeriodTimesExecuted = 0
+	automation.PeriodConditionFeesConsumed = 0
+	automation.PeriodActionFeesConsumed = 0
 }

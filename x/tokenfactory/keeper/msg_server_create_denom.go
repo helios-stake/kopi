@@ -8,7 +8,7 @@ import (
 )
 
 func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
-	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.IconHash, msg.Exponent)
+	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.IconHash, msg.Exponent)
 	if err != nil {
 		return nil, err
 	}

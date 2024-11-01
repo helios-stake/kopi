@@ -29,6 +29,14 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 		return fmt.Errorf("invalid icon hash")
 	}
 
+	if len(msg.Symbol) < 3 {
+		return fmt.Errorf("symbol must contain at least 3 characters")
+	}
+
+	if len(msg.Symbol) > 6 {
+		return fmt.Errorf("symbol must not contain more than 6 characters")
+	}
+
 	return nil
 }
 

@@ -28,6 +28,7 @@ const (
 	Query_AutomationsFunds_FullMethodName        = "/kopi.strategies.Query/AutomationsFunds"
 	Query_AutomationsAddress_FullMethodName      = "/kopi.strategies.Query/AutomationsAddress"
 	Query_AutomationsIndex_FullMethodName        = "/kopi.strategies.Query/AutomationsIndex"
+	Query_AutomationInterval_FullMethodName      = "/kopi.strategies.Query/AutomationInterval"
 	Query_AutomationsAddressFunds_FullMethodName = "/kopi.strategies.Query/AutomationsAddressFunds"
 )
 
@@ -45,6 +46,7 @@ type QueryClient interface {
 	AutomationsFunds(ctx context.Context, in *QueryAutomationsFundsRequest, opts ...grpc.CallOption) (*QueryAutomationsFundsResponse, error)
 	AutomationsAddress(ctx context.Context, in *QueryAutomationsAddressRequest, opts ...grpc.CallOption) (*QueryAutomationsResponse, error)
 	AutomationsIndex(ctx context.Context, in *QueryAutomationsByIndex, opts ...grpc.CallOption) (*Automation, error)
+	AutomationInterval(ctx context.Context, in *QueryAutomationsByIndex, opts ...grpc.CallOption) (*QueryAutomationIntervalResponse, error)
 	AutomationsAddressFunds(ctx context.Context, in *QueryAutomationsAddressFundsRequest, opts ...grpc.CallOption) (*QueryAutomationsAddressFundsResponse, error)
 }
 
@@ -137,6 +139,15 @@ func (c *queryClient) AutomationsIndex(ctx context.Context, in *QueryAutomations
 	return out, nil
 }
 
+func (c *queryClient) AutomationInterval(ctx context.Context, in *QueryAutomationsByIndex, opts ...grpc.CallOption) (*QueryAutomationIntervalResponse, error) {
+	out := new(QueryAutomationIntervalResponse)
+	err := c.cc.Invoke(ctx, Query_AutomationInterval_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) AutomationsAddressFunds(ctx context.Context, in *QueryAutomationsAddressFundsRequest, opts ...grpc.CallOption) (*QueryAutomationsAddressFundsResponse, error) {
 	out := new(QueryAutomationsAddressFundsResponse)
 	err := c.cc.Invoke(ctx, Query_AutomationsAddressFunds_FullMethodName, in, out, opts...)
@@ -160,6 +171,7 @@ type QueryServer interface {
 	AutomationsFunds(context.Context, *QueryAutomationsFundsRequest) (*QueryAutomationsFundsResponse, error)
 	AutomationsAddress(context.Context, *QueryAutomationsAddressRequest) (*QueryAutomationsResponse, error)
 	AutomationsIndex(context.Context, *QueryAutomationsByIndex) (*Automation, error)
+	AutomationInterval(context.Context, *QueryAutomationsByIndex) (*QueryAutomationIntervalResponse, error)
 	AutomationsAddressFunds(context.Context, *QueryAutomationsAddressFundsRequest) (*QueryAutomationsAddressFundsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
@@ -194,6 +206,9 @@ func (UnimplementedQueryServer) AutomationsAddress(context.Context, *QueryAutoma
 }
 func (UnimplementedQueryServer) AutomationsIndex(context.Context, *QueryAutomationsByIndex) (*Automation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsIndex not implemented")
+}
+func (UnimplementedQueryServer) AutomationInterval(context.Context, *QueryAutomationsByIndex) (*QueryAutomationIntervalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutomationInterval not implemented")
 }
 func (UnimplementedQueryServer) AutomationsAddressFunds(context.Context, *QueryAutomationsAddressFundsRequest) (*QueryAutomationsAddressFundsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AutomationsAddressFunds not implemented")
@@ -373,6 +388,24 @@ func _Query_AutomationsIndex_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_AutomationInterval_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAutomationsByIndex)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AutomationInterval(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_AutomationInterval_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AutomationInterval(ctx, req.(*QueryAutomationsByIndex))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_AutomationsAddressFunds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAutomationsAddressFundsRequest)
 	if err := dec(in); err != nil {
@@ -433,6 +466,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AutomationsIndex",
 			Handler:    _Query_AutomationsIndex_Handler,
+		},
+		{
+			MethodName: "AutomationInterval",
+			Handler:    _Query_AutomationInterval_Handler,
 		},
 		{
 			MethodName: "AutomationsAddressFunds",

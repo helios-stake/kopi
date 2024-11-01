@@ -32,4 +32,5 @@ var (
 	ErrAmountBelowMinimum  = sdkerrors.Register(ModuleName, 1121, "amount below minimum size")
 	ErrZeroShares          = sdkerrors.Register(ModuleName, 1122, "given address has no share of liquidity pool")
 	ErrAmountTooLarge      = sdkerrors.Register(ModuleName, 1123, "given amount exceeds user's share of liquidity pool")
+	ErrSymbolAlreadyExists = sdkerrors.Register(ModuleName, 1124, "there already is a denom with the given symbol")
 )

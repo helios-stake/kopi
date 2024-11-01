@@ -42,6 +42,10 @@ message MessageCondition {
   string reference_price = 6;
 }
 
+message InactiveReason {
+  int64 reason = 1;
+}
+
 message Automation {
   uint64 index = 1;
   string address = 2;
@@ -67,6 +71,11 @@ message Automation {
 
   repeated Condition conditions = 19;
   repeated Action actions = 20;
+
+  bytes inactive_reason = 21 [
+    (gogoproto.customtype) = "InactiveReason",
+    (gogoproto.nullable) = true
+  ];
 }
 
 message GenesisAutomationFunds {

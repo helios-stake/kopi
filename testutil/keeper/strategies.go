@@ -161,6 +161,13 @@ func AddAutomationMsg(ctx context.Context, k types.MsgServer, msg *types.MsgAuto
 	})
 }
 
+func ImportAutomationsMsg(ctx context.Context, k types.MsgServer, msg *types.MsgAutomationsImport) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.AutomationsImport(innerCtx, msg)
+		return err
+	})
+}
+
 func AddAutomationFunds(ctx context.Context, k types.MsgServer, address, amount string) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := k.AutomationsAddFunds(innerCtx, &types.MsgAutomationsAddFunds{
