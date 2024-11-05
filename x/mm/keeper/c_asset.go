@@ -35,7 +35,8 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes
 	cAssetValue := loanSum.Add(vaultSize)
 	k.Logger().Info(fmt.Sprintf("VS: %v + %v = %v", loanSum.String(), vaultSize.String(), cAssetValue.String()))
 
-	valueShare := addedAmount.ToLegacyDec().Quo(cAssetValue)
+	newTotalValue := addedAmount.ToLegacyDec().Add(cAssetValue)
+	valueShare := addedAmount.ToLegacyDec().Quo(newTotalValue)
 	k.Logger().Info(fmt.Sprintf("VS: %v / %v = %v", addedAmount.String(), cAssetValue.String(), valueShare.String()))
 
 	var newTokens math.Int

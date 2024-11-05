@@ -15,10 +15,6 @@ func (k msgServer) AddCollateral(ctx context.Context, msg *types.MsgAddCollatera
 		return nil, err
 	}
 
-	if err = k.checkSupplyCap(ctx, msg.Denom, amount); err != nil {
-		return nil, err
-	}
-
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, types.ErrInvalidAddress

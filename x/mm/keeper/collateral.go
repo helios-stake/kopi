@@ -62,17 +62,14 @@ func (k Keeper) GetCollateralForDenomForAddressWithDefault(ctx context.Context, 
 
 func (k Keeper) checkSupplyCap(ctx context.Context, denom string, amountToAdd math.Int) error {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
-	found, supply := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).Find(denom)
-	if !found {
-		return nil
-	}
+	supply := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(denom)
 
 	depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom)
 	if err != nil {
 		return err
 	}
 
-	if supply.Amount.Add(amountToAdd).GT(depositCap) {
+	if supply.Add(amountToAdd).GT(depositCap) {
 		return types.ErrCollateralDepositLimitExceeded
 	}
 

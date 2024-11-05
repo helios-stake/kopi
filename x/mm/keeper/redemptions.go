@@ -130,6 +130,9 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset *denomtyp
 
 func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset *denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
 	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
+	if grossRedemptionAmountBase.IsZero() {
+		return math.LegacyZeroDec(), nil
+	}
 
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
@@ -194,6 +197,10 @@ func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *
 
 	// how much of what is requested can be paid out
 	redeemAmount := math.LegacyMinDec(redemptionValue, available)
+
+	if redeemAmount.IsZero() {
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
+	}
 
 	// the share of what is paid out in relation to what has been requested
 	requestedShare := redeemAmount.Quo(redemptionValue)

@@ -29,6 +29,8 @@ const (
 	Query_GetDepositUserStats_FullMethodName            = "/kopi.mm.Query/GetDepositUserStats"
 	Query_GetDepositUserDenomStats_FullMethodName       = "/kopi.mm.Query/GetDepositUserDenomStats"
 	Query_GetDepositStats_FullMethodName                = "/kopi.mm.Query/GetDepositStats"
+	Query_SimulateDeposit_FullMethodName                = "/kopi.mm.Query/SimulateDeposit"
+	Query_SimulateRedemption_FullMethodName             = "/kopi.mm.Query/SimulateRedemption"
 	Query_GetBorrowInterestRate_FullMethodName          = "/kopi.mm.Query/GetBorrowInterestRate"
 	Query_GetLoansByDenom_FullMethodName                = "/kopi.mm.Query/GetLoansByDenom"
 	Query_GetUserLoans_FullMethodName                   = "/kopi.mm.Query/GetUserLoans"
@@ -63,6 +65,8 @@ type QueryClient interface {
 	GetDepositUserStats(ctx context.Context, in *GetDepositUserStatsQuery, opts ...grpc.CallOption) (*GetDepositUserStatsResponse, error)
 	GetDepositUserDenomStats(ctx context.Context, in *GetDepositUserDenomStatsQuery, opts ...grpc.CallOption) (*DepositUserStats, error)
 	GetDepositStats(ctx context.Context, in *GetDepositStatsQuery, opts ...grpc.CallOption) (*GetDepositStatsResponse, error)
+	SimulateDeposit(ctx context.Context, in *SimulateDepositQuery, opts ...grpc.CallOption) (*SimulateDepositResponse, error)
+	SimulateRedemption(ctx context.Context, in *SimulateRedemptionQuery, opts ...grpc.CallOption) (*SimulateRedemptionResponse, error)
 	GetBorrowInterestRate(ctx context.Context, in *GetBorrowInterestRateQuery, opts ...grpc.CallOption) (*GetBorrowInterestRateResponse, error)
 	GetLoansByDenom(ctx context.Context, in *GetLoansByDenomQuery, opts ...grpc.CallOption) (*GetLoansResponse, error)
 	GetUserLoans(ctx context.Context, in *GetUserLoansQuery, opts ...grpc.CallOption) (*GetUserLoansResponse, error)
@@ -175,6 +179,24 @@ func (c *queryClient) GetDepositUserDenomStats(ctx context.Context, in *GetDepos
 func (c *queryClient) GetDepositStats(ctx context.Context, in *GetDepositStatsQuery, opts ...grpc.CallOption) (*GetDepositStatsResponse, error) {
 	out := new(GetDepositStatsResponse)
 	err := c.cc.Invoke(ctx, Query_GetDepositStats_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SimulateDeposit(ctx context.Context, in *SimulateDepositQuery, opts ...grpc.CallOption) (*SimulateDepositResponse, error) {
+	out := new(SimulateDepositResponse)
+	err := c.cc.Invoke(ctx, Query_SimulateDeposit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SimulateRedemption(ctx context.Context, in *SimulateRedemptionQuery, opts ...grpc.CallOption) (*SimulateRedemptionResponse, error) {
+	out := new(SimulateRedemptionResponse)
+	err := c.cc.Invoke(ctx, Query_SimulateRedemption_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -357,6 +379,8 @@ type QueryServer interface {
 	GetDepositUserStats(context.Context, *GetDepositUserStatsQuery) (*GetDepositUserStatsResponse, error)
 	GetDepositUserDenomStats(context.Context, *GetDepositUserDenomStatsQuery) (*DepositUserStats, error)
 	GetDepositStats(context.Context, *GetDepositStatsQuery) (*GetDepositStatsResponse, error)
+	SimulateDeposit(context.Context, *SimulateDepositQuery) (*SimulateDepositResponse, error)
+	SimulateRedemption(context.Context, *SimulateRedemptionQuery) (*SimulateRedemptionResponse, error)
 	GetBorrowInterestRate(context.Context, *GetBorrowInterestRateQuery) (*GetBorrowInterestRateResponse, error)
 	GetLoansByDenom(context.Context, *GetLoansByDenomQuery) (*GetLoansResponse, error)
 	GetUserLoans(context.Context, *GetUserLoansQuery) (*GetUserLoansResponse, error)
@@ -411,6 +435,12 @@ func (UnimplementedQueryServer) GetDepositUserDenomStats(context.Context, *GetDe
 }
 func (UnimplementedQueryServer) GetDepositStats(context.Context, *GetDepositStatsQuery) (*GetDepositStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDepositStats not implemented")
+}
+func (UnimplementedQueryServer) SimulateDeposit(context.Context, *SimulateDepositQuery) (*SimulateDepositResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SimulateDeposit not implemented")
+}
+func (UnimplementedQueryServer) SimulateRedemption(context.Context, *SimulateRedemptionQuery) (*SimulateRedemptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SimulateRedemption not implemented")
 }
 func (UnimplementedQueryServer) GetBorrowInterestRate(context.Context, *GetBorrowInterestRateQuery) (*GetBorrowInterestRateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBorrowInterestRate not implemented")
@@ -655,6 +685,42 @@ func _Query_GetDepositStats_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).GetDepositStats(ctx, req.(*GetDepositStatsQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SimulateDeposit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimulateDepositQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SimulateDeposit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_SimulateDeposit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SimulateDeposit(ctx, req.(*SimulateDepositQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SimulateRedemption_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimulateRedemptionQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SimulateRedemption(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_SimulateRedemption_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SimulateRedemption(ctx, req.(*SimulateRedemptionQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1029,6 +1095,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDepositStats",
 			Handler:    _Query_GetDepositStats_Handler,
+		},
+		{
+			MethodName: "SimulateDeposit",
+			Handler:    _Query_SimulateDeposit_Handler,
+		},
+		{
+			MethodName: "SimulateRedemption",
+			Handler:    _Query_SimulateRedemption_Handler,
 		},
 		{
 			MethodName: "GetBorrowInterestRate",

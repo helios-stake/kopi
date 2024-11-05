@@ -19,17 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                  = "/kopi.strategies.Query/Params"
-	Query_ArbitrageDenomBalance_FullMethodName   = "/kopi.strategies.Query/ArbitrageDenomBalance"
-	Query_ArbitrageBalance_FullMethodName        = "/kopi.strategies.Query/ArbitrageBalance"
-	Query_ArbitrageBalanceAddress_FullMethodName = "/kopi.strategies.Query/ArbitrageBalanceAddress"
-	Query_AutomationsAll_FullMethodName          = "/kopi.strategies.Query/AutomationsAll"
-	Query_AutomationsStats_FullMethodName        = "/kopi.strategies.Query/AutomationsStats"
-	Query_AutomationsFunds_FullMethodName        = "/kopi.strategies.Query/AutomationsFunds"
-	Query_AutomationsAddress_FullMethodName      = "/kopi.strategies.Query/AutomationsAddress"
-	Query_AutomationsIndex_FullMethodName        = "/kopi.strategies.Query/AutomationsIndex"
-	Query_AutomationInterval_FullMethodName      = "/kopi.strategies.Query/AutomationInterval"
-	Query_AutomationsAddressFunds_FullMethodName = "/kopi.strategies.Query/AutomationsAddressFunds"
+	Query_Params_FullMethodName                         = "/kopi.strategies.Query/Params"
+	Query_ArbitrageDenomBalance_FullMethodName          = "/kopi.strategies.Query/ArbitrageDenomBalance"
+	Query_ArbitrageBalance_FullMethodName               = "/kopi.strategies.Query/ArbitrageBalance"
+	Query_ArbitrageSimulateDepositBase_FullMethodName   = "/kopi.strategies.Query/ArbitrageSimulateDepositBase"
+	Query_ArbitrageSimulateDepositCAsset_FullMethodName = "/kopi.strategies.Query/ArbitrageSimulateDepositCAsset"
+	Query_ArbitrageSimulateRedemption_FullMethodName    = "/kopi.strategies.Query/ArbitrageSimulateRedemption"
+	Query_ArbitrageBalanceAddress_FullMethodName        = "/kopi.strategies.Query/ArbitrageBalanceAddress"
+	Query_AutomationsAll_FullMethodName                 = "/kopi.strategies.Query/AutomationsAll"
+	Query_AutomationsStats_FullMethodName               = "/kopi.strategies.Query/AutomationsStats"
+	Query_AutomationsFunds_FullMethodName               = "/kopi.strategies.Query/AutomationsFunds"
+	Query_AutomationsAddress_FullMethodName             = "/kopi.strategies.Query/AutomationsAddress"
+	Query_AutomationsIndex_FullMethodName               = "/kopi.strategies.Query/AutomationsIndex"
+	Query_AutomationInterval_FullMethodName             = "/kopi.strategies.Query/AutomationInterval"
+	Query_AutomationsAddressFunds_FullMethodName        = "/kopi.strategies.Query/AutomationsAddressFunds"
 )
 
 // QueryClient is the client API for Query service.
@@ -40,6 +43,9 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	ArbitrageDenomBalance(ctx context.Context, in *QueryArbitrageDenomBalanceRequest, opts ...grpc.CallOption) (*QueryArbitrageDenomBalanceResponse, error)
 	ArbitrageBalance(ctx context.Context, in *QueryArbitrageBalancesRequest, opts ...grpc.CallOption) (*QueryArbitrageBalancesResponse, error)
+	ArbitrageSimulateDepositBase(ctx context.Context, in *ArbitrageSimulateDepositRequest, opts ...grpc.CallOption) (*ArbitrageSimulateDepositResponse, error)
+	ArbitrageSimulateDepositCAsset(ctx context.Context, in *ArbitrageSimulateDepositRequest, opts ...grpc.CallOption) (*ArbitrageSimulateDepositResponse, error)
+	ArbitrageSimulateRedemption(ctx context.Context, in *ArbitrageSimulateRedemptionRequest, opts ...grpc.CallOption) (*ArbitrageSimulateRedemptionResponse, error)
 	ArbitrageBalanceAddress(ctx context.Context, in *QueryArbitrageBalancesAddressRequest, opts ...grpc.CallOption) (*QueryArbitrageBalancesAddressResponse, error)
 	AutomationsAll(ctx context.Context, in *QueryAutomationsAllRequest, opts ...grpc.CallOption) (*QueryAutomationsResponse, error)
 	AutomationsStats(ctx context.Context, in *QueryAutomationsStatsRequest, opts ...grpc.CallOption) (*QueryAutomationsStatsResponse, error)
@@ -79,6 +85,33 @@ func (c *queryClient) ArbitrageDenomBalance(ctx context.Context, in *QueryArbitr
 func (c *queryClient) ArbitrageBalance(ctx context.Context, in *QueryArbitrageBalancesRequest, opts ...grpc.CallOption) (*QueryArbitrageBalancesResponse, error) {
 	out := new(QueryArbitrageBalancesResponse)
 	err := c.cc.Invoke(ctx, Query_ArbitrageBalance_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ArbitrageSimulateDepositBase(ctx context.Context, in *ArbitrageSimulateDepositRequest, opts ...grpc.CallOption) (*ArbitrageSimulateDepositResponse, error) {
+	out := new(ArbitrageSimulateDepositResponse)
+	err := c.cc.Invoke(ctx, Query_ArbitrageSimulateDepositBase_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ArbitrageSimulateDepositCAsset(ctx context.Context, in *ArbitrageSimulateDepositRequest, opts ...grpc.CallOption) (*ArbitrageSimulateDepositResponse, error) {
+	out := new(ArbitrageSimulateDepositResponse)
+	err := c.cc.Invoke(ctx, Query_ArbitrageSimulateDepositCAsset_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ArbitrageSimulateRedemption(ctx context.Context, in *ArbitrageSimulateRedemptionRequest, opts ...grpc.CallOption) (*ArbitrageSimulateRedemptionResponse, error) {
+	out := new(ArbitrageSimulateRedemptionResponse)
+	err := c.cc.Invoke(ctx, Query_ArbitrageSimulateRedemption_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -165,6 +198,9 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	ArbitrageDenomBalance(context.Context, *QueryArbitrageDenomBalanceRequest) (*QueryArbitrageDenomBalanceResponse, error)
 	ArbitrageBalance(context.Context, *QueryArbitrageBalancesRequest) (*QueryArbitrageBalancesResponse, error)
+	ArbitrageSimulateDepositBase(context.Context, *ArbitrageSimulateDepositRequest) (*ArbitrageSimulateDepositResponse, error)
+	ArbitrageSimulateDepositCAsset(context.Context, *ArbitrageSimulateDepositRequest) (*ArbitrageSimulateDepositResponse, error)
+	ArbitrageSimulateRedemption(context.Context, *ArbitrageSimulateRedemptionRequest) (*ArbitrageSimulateRedemptionResponse, error)
 	ArbitrageBalanceAddress(context.Context, *QueryArbitrageBalancesAddressRequest) (*QueryArbitrageBalancesAddressResponse, error)
 	AutomationsAll(context.Context, *QueryAutomationsAllRequest) (*QueryAutomationsResponse, error)
 	AutomationsStats(context.Context, *QueryAutomationsStatsRequest) (*QueryAutomationsStatsResponse, error)
@@ -188,6 +224,15 @@ func (UnimplementedQueryServer) ArbitrageDenomBalance(context.Context, *QueryArb
 }
 func (UnimplementedQueryServer) ArbitrageBalance(context.Context, *QueryArbitrageBalancesRequest) (*QueryArbitrageBalancesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageBalance not implemented")
+}
+func (UnimplementedQueryServer) ArbitrageSimulateDepositBase(context.Context, *ArbitrageSimulateDepositRequest) (*ArbitrageSimulateDepositResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageSimulateDepositBase not implemented")
+}
+func (UnimplementedQueryServer) ArbitrageSimulateDepositCAsset(context.Context, *ArbitrageSimulateDepositRequest) (*ArbitrageSimulateDepositResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageSimulateDepositCAsset not implemented")
+}
+func (UnimplementedQueryServer) ArbitrageSimulateRedemption(context.Context, *ArbitrageSimulateRedemptionRequest) (*ArbitrageSimulateRedemptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageSimulateRedemption not implemented")
 }
 func (UnimplementedQueryServer) ArbitrageBalanceAddress(context.Context, *QueryArbitrageBalancesAddressRequest) (*QueryArbitrageBalancesAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageBalanceAddress not implemented")
@@ -276,6 +321,60 @@ func _Query_ArbitrageBalance_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ArbitrageBalance(ctx, req.(*QueryArbitrageBalancesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ArbitrageSimulateDepositBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArbitrageSimulateDepositRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ArbitrageSimulateDepositBase(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ArbitrageSimulateDepositBase_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ArbitrageSimulateDepositBase(ctx, req.(*ArbitrageSimulateDepositRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ArbitrageSimulateDepositCAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArbitrageSimulateDepositRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ArbitrageSimulateDepositCAsset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ArbitrageSimulateDepositCAsset_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ArbitrageSimulateDepositCAsset(ctx, req.(*ArbitrageSimulateDepositRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ArbitrageSimulateRedemption_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArbitrageSimulateRedemptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ArbitrageSimulateRedemption(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ArbitrageSimulateRedemption_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ArbitrageSimulateRedemption(ctx, req.(*ArbitrageSimulateRedemptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -442,6 +541,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArbitrageBalance",
 			Handler:    _Query_ArbitrageBalance_Handler,
+		},
+		{
+			MethodName: "ArbitrageSimulateDepositBase",
+			Handler:    _Query_ArbitrageSimulateDepositBase_Handler,
+		},
+		{
+			MethodName: "ArbitrageSimulateDepositCAsset",
+			Handler:    _Query_ArbitrageSimulateDepositCAsset_Handler,
+		},
+		{
+			MethodName: "ArbitrageSimulateRedemption",
+			Handler:    _Query_ArbitrageSimulateRedemption_Handler,
 		},
 		{
 			MethodName: "ArbitrageBalanceAddress",

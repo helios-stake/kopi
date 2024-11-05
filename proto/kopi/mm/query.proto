@@ -53,6 +53,14 @@ service Query {
     option (google.api.http).get = "/kopi/mm/deposits/stats";
   }
 
+  rpc SimulateDeposit (SimulateDepositQuery) returns (SimulateDepositResponse) {
+    option (google.api.http).get = "/kopi/mm/deposits/simulate/deposit";
+  }
+
+  rpc SimulateRedemption (SimulateRedemptionQuery) returns (SimulateRedemptionResponse) {
+    option (google.api.http).get = "/kopi/mm/deposits/simulate/redemption";
+  }
+
   rpc GetBorrowInterestRate (GetBorrowInterestRateQuery) returns (GetBorrowInterestRateResponse) {
     option (google.api.http).get = "/kopi/mm/interest_rate";
   }
@@ -124,6 +132,27 @@ service Query {
   rpc GetVaultValues (GetVaultValuesQuery) returns (GetVaultValuesResponse) {
     option (google.api.http).get = "/kopi/mm/vaults";
   }
+}
+
+message SimulateDepositQuery {
+  string deposit_denom = 1;
+  string deposit_amount = 2;
+}
+
+message SimulateDepositResponse {
+  string deposit_amount = 1;
+  string receive_amount = 2;
+}
+
+message SimulateRedemptionQuery {
+  string redemption_denom = 1;
+  string redemption_amount = 2;
+}
+
+message SimulateRedemptionResponse {
+  string redemption_amount = 1;
+  string amount_received = 2;
+  string vault_size = 3;
 }
 
 message GetRedemptionsQuery {
