@@ -76,8 +76,7 @@ message ArbitrageSimulateRedemptionRequest {
 }
 
 message ArbitrageSimulateRedemptionResponse {
-  string redemption_amount = 1;
-  string amount_received = 2;
+  string amount_received = 1;
 }
 
 message ArbitrageSimulateDepositRequest {
@@ -116,7 +115,9 @@ message QueryAutomationsByIndex {
   string index = 1;
 }
 
-message QueryAutomationsAllRequest {}
+message QueryAutomationsAllRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 message QueryAutomationsAddressFundsRequest {
   string address = 1;
@@ -133,6 +134,7 @@ message QueryAutomationsAddressRequest {
 
 message QueryAutomationsResponse {
   repeated Automation automations = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryArbitrageBalancesRequest {

@@ -176,6 +176,28 @@ func (nmc *NestedMapCache[K1, K2, V]) Initialize(ctx context.Context) error {
 	return nil
 }
 
+func (nmc *NestedMapCache[K1, K2, V]) Has(ctx context.Context, key1 K1, key2 K2) bool {
+	txKey := getTXKey(ctx)
+	if txKey != nil {
+		mapTransaction := nmc.transactions.Get(*txKey)
+		change, has := mapTransaction.changes.Get(key1, key2)
+		if has {
+			return hasEntry(ctx, change)
+		}
+	}
+
+	if !useCache(ctx, nmc.currentHeight) {
+		return nmc.Has(ctx, key1, key2)
+	}
+
+	entry, has := nmc.cache.Get(key1, key2)
+	if has {
+		return hasEntry(ctx, entry)
+	}
+
+	return false
+}
+
 func (nmc *NestedMapCache[K1, K2, V]) Get(ctx context.Context, key1 K1, key2 K2) (V, bool) {
 	txKey := getTXKey(ctx)
 	if txKey != nil {

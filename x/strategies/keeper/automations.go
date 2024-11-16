@@ -146,15 +146,12 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 // checkAutomationBelowCheckRate calculates the rate with which the automation has been executed in relation to how many times
 // it should have been executed given the time it has been active.
 func (k Keeper) checkAutomationBelowCheckRate(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (bool, error) {
-	_, runtimeInSeconds, expectedChecks, _, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
+	_, _, expectedChecks, _, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
 	if err != nil {
 		return false, err
 	}
 
-	check := math.LegacyNewDec(automation.PeriodTimesChecked).LT(expectedChecks)
-	k.Logger().Info(fmt.Sprintf("%v %v %v %v %v", automation.Index, automation.PeriodTimesChecked, expectedChecks.String(), runtimeInSeconds.String(), check))
-
-	return check, nil
+	return math.LegacyNewDec(automation.PeriodTimesChecked).LT(expectedChecks), nil
 }
 
 func (k Keeper) getIntervalCheckData(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (math.LegacyDec, math.LegacyDec, math.LegacyDec, int64, error) {
@@ -251,7 +248,6 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 		)
 	}()
 
-	k.Logger().Info(fmt.Sprintf("%v < %v == %v", funds.Int64(), cost.Int64(), funds.LT(cost)))
 	if funds.LT(cost) {
 		automation.Active = false
 		automation.InactiveReason = inactiveReason(InactiveReasonAutomationFunds)
@@ -301,10 +297,6 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 
 				return err
 			}); err != nil {
-				if !errorIsOf(err, types.ValidErrors) {
-					k.Logger().Error(fmt.Sprintf("could not execute action: %v", err))
-				}
-
 				if errorIsOf(err, types.InactiveErrors) {
 					automation.InactiveReason = inactiveReason(InactiveReasonError)
 					automation.Active = false

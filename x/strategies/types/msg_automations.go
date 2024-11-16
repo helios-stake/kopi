@@ -39,40 +39,6 @@ func (msg *MsgAutomationsImport) ValidateBasic() error {
 	return nil
 }
 
-func validateImportAutomation(automation AutomationImport) error {
-	if len(automation.GetTitle()) == 0 {
-		return ErrAutomationTitleEmpty
-	}
-
-	if len(automation.GetTitle()) > 30 {
-		return ErrAutomationTitleTooLong
-	}
-
-	for _, condition := range automation.GetConditions() {
-		if err := checkAutomationString(condition.GetString1()); err != nil {
-			return fmt.Errorf("invalid string1: %w", err)
-		}
-
-		if err := checkAutomationString(condition.GetString2()); err != nil {
-			return fmt.Errorf("invalid string2: %w", err)
-		}
-
-		if !IsValidComparison(condition.GetConditionType(), condition.GetComparison()) {
-			return fmt.Errorf("invalid comparison: %v", condition.GetComparison())
-		}
-	}
-
-	if len(automation.Actions) > 16 {
-		return fmt.Errorf("must not contain more than 16 actions")
-	}
-
-	if err := checkActions(automation.Actions); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (msg *MsgAutomationsImport) Convert() ([]MsgAutomationsAdd, error) {
 	var automations []AutomationImport
 	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {

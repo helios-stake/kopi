@@ -38,15 +38,11 @@ func (k Keeper) calculateNewStrategyAssetAmount(ctx context.Context, denom strin
 
 	valueShare := addedAmount.ToLegacyDec().Quo(aAssetValue)
 
-	k.Logger().Info(fmt.Sprintf("aAsset value: %v", aAssetValue.String()))
-
 	var newTokens math.Int
 	if valueShare.Equal(math.LegacyOneDec()) {
-		k.Logger().Info(fmt.Sprintf("newTokens = addedAmount = %v", addedAmount.String()))
 		newTokens = addedAmount
 	} else {
 		newTokens = assetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(assetSupply)
-		k.Logger().Info(fmt.Sprintf("(%v / (1-%v)) - %v", assetSupply.String(), valueShare.String(), assetSupply.String()))
 	}
 
 	return newTokens, nil

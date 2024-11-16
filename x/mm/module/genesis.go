@@ -27,7 +27,10 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 			})
 
 			for _, loan := range loans.Loans {
-				k.SetLoan(innerCtx, loans.Denom, *loan)
+				k.SetLoan(innerCtx, loans.Denom, loan.Address, types.Loan{
+					Index:  loan.Index,
+					Weight: loan.Weight,
+				})
 			}
 		}
 

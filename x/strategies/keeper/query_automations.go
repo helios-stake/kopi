@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -11,9 +12,23 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-func (k Keeper) AutomationsAll(ctx context.Context, _ *types.QueryAutomationsAllRequest) (*types.QueryAutomationsResponse, error) {
+func (k Keeper) AutomationsAll(ctx context.Context, req *types.QueryAutomationsAllRequest) (*types.QueryAutomationsResponse, error) {
+	automations, pageRes, err := query.CollectionPaginate(
+		ctx,
+		k.automations,
+		req.Pagination,
+		func(_ uint64, automation types.Automation) (*types.Automation, error) {
+			return &automation, nil
+		},
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("could not get orders from pagination: %w", err)
+	}
+
 	return &types.QueryAutomationsResponse{
-		Automations: k.GetAutomations(ctx),
+		Automations: automations,
+		Pagination:  pageRes,
 	}, nil
 }
 

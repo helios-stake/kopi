@@ -284,11 +284,21 @@ func TestAutomation7(t *testing.T) {
 func TestAutomation8(t *testing.T) {
 	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
 
-	require.NoError(t, keepertest.AddAutomationFunds(ctx, msg, keepertest.Alice, "2"))
+	coins := sdk.NewCoins(
+		sdk.NewCoin(constants.KUSD, math.NewInt(10000)),
+		sdk.NewCoin(constants.BaseCurrency, math.NewInt(2)),
+	)
+
+	acc1, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	acc2, _ := sdk.AccAddressFromBech32(keepertest.Dave)
+	require.NoError(t, k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc1, dextypes.PoolReserve, coins))
+	require.NoError(t, k.BankKeeper.SendCoinsFromModuleToAccount(ctx, dextypes.PoolReserve, acc2, coins))
+
+	require.NoError(t, keepertest.AddAutomationFunds(ctx, msg, keepertest.Dave, "2"))
 
 	allConditionsMatched, successfulActions, err := handleAutomation(ctx, k, types.Automation{
 		Index:   0,
-		Address: keepertest.Alice,
+		Address: keepertest.Dave,
 		Active:  true,
 		Conditions: []*types.Condition{
 			{
@@ -315,9 +325,9 @@ func TestAutomation8(t *testing.T) {
 	poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolAutomationFunds)
 	poolBalance := k.BankKeeper.SpendableCoin(ctx, poolAcc.GetAddress(), constants.BaseCurrency).Amount.Int64()
 	require.Equal(t, int64(0), poolBalance)
-	require.Equal(t, int64(0), k.GetAutomationFunds(ctx, keepertest.Alice).Int64())
+	require.Equal(t, int64(0), k.GetAutomationFunds(ctx, keepertest.Dave).Int64())
 
-	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Dave)
 	userBalance := k.BankKeeper.SpendableCoin(ctx, userAcc, constants.KUSD).Amount.Int64()
 	require.Equal(t, int64(1), userBalance)
 }

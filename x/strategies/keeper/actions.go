@@ -43,8 +43,14 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action *types.A
 
 	if !isNoAmountAction(action.ActionType) {
 		if !types.RegexPercentage.MatchString(action.Amount) {
-			if _, ok := math.NewIntFromString(action.Amount); !ok {
+			integer, ok := math.NewIntFromString(action.Amount)
+
+			if !ok {
 				return fmt.Errorf("given amount either has to be valid integer or percentage, was: %v", action.Amount)
+			}
+
+			if integer.IsZero() {
+				return types.ErrZeroAmount
 			}
 		}
 	}
@@ -436,8 +442,6 @@ func (k Keeper) executeAction(
 		}
 
 	case types.ActionWithdrawRewardsAndStake:
-		k.Logger().Info("A: WR+stake")
-
 		pseudoRandomNumber := automationIndex + automationExecutionIndex + actionIndex
 
 		var validator string
@@ -450,8 +454,6 @@ func (k Keeper) executeAction(
 		string2 = validator
 
 	case types.ActionWithdrawRewards:
-		k.Logger().Info("A: WR")
-
 		var rewards sdk.Coins
 		rewards, err = k.withdrawRewards(ctx, address)
 		if err != nil {
@@ -463,8 +465,6 @@ func (k Keeper) executeAction(
 		amount2, err = k.getAmountStaked(ctx, address)
 
 	case types.ActionStake:
-		k.Logger().Info("A: stake")
-
 		amount1, err = k.getAmountWallet(ctx, address, constants.BaseCurrency, action.Amount)
 		if err != nil {
 			return
@@ -566,7 +566,7 @@ func (k Keeper) getAmountWallet(ctx context.Context, address sdk.AccAddress, den
 			}
 		}
 
-		if amount.LT(math.ZeroInt()) {
+		if amount.IsNegative() {
 			amount = spendable.Add(amount)
 			if spendable.LTE(math.ZeroInt()) {
 				return math.Int{}, types.ErrNotEnoughFunds

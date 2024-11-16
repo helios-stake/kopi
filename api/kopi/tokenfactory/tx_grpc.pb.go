@@ -27,6 +27,7 @@ const (
 	Msg_UpdateIconHash_FullMethodName              = "/kopi.tokenfactory.Msg/UpdateIconHash"
 	Msg_UpdateLiquidityPoolSettings_FullMethodName = "/kopi.tokenfactory.Msg/UpdateLiquidityPoolSettings"
 	Msg_Buyback_FullMethodName                     = "/kopi.tokenfactory.Msg/Buyback"
+	Msg_DisableMinting_FullMethodName              = "/kopi.tokenfactory.Msg/DisableMinting"
 	Msg_CreatePool_FullMethodName                  = "/kopi.tokenfactory.Msg/CreatePool"
 	Msg_AddLiquidity_FullMethodName                = "/kopi.tokenfactory.Msg/AddLiquidity"
 	Msg_UnlockLiquidity_FullMethodName             = "/kopi.tokenfactory.Msg/UnlockLiquidity"
@@ -49,6 +50,7 @@ type MsgClient interface {
 	UpdateIconHash(ctx context.Context, in *MsgUpdateIconHash, opts ...grpc.CallOption) (*Void, error)
 	UpdateLiquidityPoolSettings(ctx context.Context, in *MsgUpdateLiquidityPoolSettings, opts ...grpc.CallOption) (*Void, error)
 	Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.CallOption) (*Void, error)
+	DisableMinting(ctx context.Context, in *MsgDisableMinting, opts ...grpc.CallOption) (*Void, error)
 	CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*Void, error)
 	AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts ...grpc.CallOption) (*Void, error)
 	UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity, opts ...grpc.CallOption) (*Void, error)
@@ -137,6 +139,15 @@ func (c *msgClient) Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *msgClient) DisableMinting(ctx context.Context, in *MsgDisableMinting, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_DisableMinting_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_CreatePool_FullMethodName, in, out, opts...)
@@ -205,6 +216,7 @@ type MsgServer interface {
 	UpdateIconHash(context.Context, *MsgUpdateIconHash) (*Void, error)
 	UpdateLiquidityPoolSettings(context.Context, *MsgUpdateLiquidityPoolSettings) (*Void, error)
 	Buyback(context.Context, *MsgBuyback) (*Void, error)
+	DisableMinting(context.Context, *MsgDisableMinting) (*Void, error)
 	CreatePool(context.Context, *MsgCreatePool) (*Void, error)
 	AddLiquidity(context.Context, *MsgAddLiquidity) (*Void, error)
 	UnlockLiquidity(context.Context, *MsgUnlockLiquidity) (*Void, error)
@@ -241,6 +253,9 @@ func (UnimplementedMsgServer) UpdateLiquidityPoolSettings(context.Context, *MsgU
 }
 func (UnimplementedMsgServer) Buyback(context.Context, *MsgBuyback) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buyback not implemented")
+}
+func (UnimplementedMsgServer) DisableMinting(context.Context, *MsgDisableMinting) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableMinting not implemented")
 }
 func (UnimplementedMsgServer) CreatePool(context.Context, *MsgCreatePool) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePool not implemented")
@@ -417,6 +432,24 @@ func _Msg_Buyback_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_DisableMinting_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDisableMinting)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DisableMinting(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DisableMinting_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DisableMinting(ctx, req.(*MsgDisableMinting))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_CreatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgCreatePool)
 	if err := dec(in); err != nil {
@@ -563,6 +596,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Buyback",
 			Handler:    _Msg_Buyback_Handler,
+		},
+		{
+			MethodName: "DisableMinting",
+			Handler:    _Msg_DisableMinting_Handler,
 		},
 		{
 			MethodName: "CreatePool",

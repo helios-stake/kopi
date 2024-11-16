@@ -71,20 +71,13 @@ func (k Keeper) ArbitrageSimulateRedemption(ctx context.Context, req *types.Arbi
 		return nil, fmt.Errorf("invalid deposit amount: %s", req.RedemptionAmount)
 	}
 
-	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolArbitrage)
-	available := k.BankKeeper.SpendableCoin(ctx, moduleAccount.GetAddress(), aAsset.CAsset).Amount
-	if available.IsZero() {
-		return nil, types.ErrEmptyVault
-	}
-
 	calculateValue := k.calculateArbitrageTokenValue(ctx, aAsset)
-	payoutAmountGross, usedTokens, err := k.calculateRedemptionAmount(ctx, aAsset, amount, available, calculateValue, true)
+	redemptionValue, err := k.calculateRedemptionValue(ctx, aAsset, amount, calculateValue)
 	if err != nil {
 		return nil, fmt.Errorf("could not calculate redemption amount: %w", err)
 	}
 
 	return &types.ArbitrageSimulateRedemptionResponse{
-		RedemptionAmount: usedTokens.String(),
-		AmountReceived:   payoutAmountGross.String(),
+		AmountReceived: redemptionValue.String(),
 	}, nil
 }

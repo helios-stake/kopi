@@ -12,4 +12,5 @@ message FactoryDenom {
   string icon_hash = 4;
   uint64 exponent = 5;
   string symbol = 6;
+  bool mintable = 7;
 }

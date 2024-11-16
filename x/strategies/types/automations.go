@@ -102,9 +102,14 @@ func checkAmountString(amountString string) error {
 		return nil
 	}
 
-	if _, ok := math.NewIntFromString(amountString); ok {
-		return nil
+	value, ok := math.NewIntFromString(amountString)
+	if !ok {
+		return fmt.Errorf("invalid amount, was: %v", amountString)
 	}
 
-	return fmt.Errorf("given amount string was neither valid percentage expression nor integer")
+	if value.IsZero() {
+		return fmt.Errorf("value must not be zero")
+	}
+
+	return nil
 }

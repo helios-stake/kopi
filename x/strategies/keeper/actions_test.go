@@ -125,6 +125,12 @@ func TestActions1(t *testing.T) {
 		ActionType: types.ActionWithdrawAutomationFunds,
 		Amount:     "100",
 	}))
+
+	require.Error(t, k.CheckAction(ctx, keepertest.Alice, &types.Action{
+		ActionType: types.ActionRedeem,
+		String1:    "uckusd",
+		Amount:     "0",
+	}))
 }
 
 func TestActions2(t *testing.T) {

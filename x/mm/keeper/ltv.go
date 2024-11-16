@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"
@@ -46,16 +47,16 @@ func (k Keeper) calculateCollateralBaseValue(ctx context.Context, address string
 
 func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateralDenom *denomtypes.CollateralDenom, address string) (math.LegacyDec, error) {
 	collateral, found := k.collateral.Get(ctx, collateralDenom.DexDenom, address)
-	if !found {
+	if !found || collateral.Amount.IsZero() {
 		return math.LegacyZeroDec(), nil
 	}
 
-	price, err := k.DexKeeper.CalculatePrice(ctx, collateralDenom.DexDenom, constants.BaseCurrency)
+	amountBase, err := k.DexKeeper.GetValueInBase(ctx, collateralDenom.DexDenom, collateral.Amount.ToLegacyDec())
 	if err != nil {
-		return math.LegacyDec{}, err
+		return math.LegacyDec{}, fmt.Errorf("unable to calculate collateral value for %s: %w", collateralDenom.DexDenom, err)
 	}
 
-	return collateral.Amount.ToLegacyDec().Quo(price).Mul(collateralDenom.Ltv), nil
+	return amountBase.Mul(collateralDenom.Ltv), nil
 }
 
 func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (math.LegacyDec, error) {

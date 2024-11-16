@@ -8,16 +8,23 @@ import (
 	"github.com/kopi-money/kopi/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
+	"sort"
 )
 
 // GetGenesisLoans is used for genesis export
 func (k Keeper) GetGenesisLoans(ctx context.Context) (denomLoans []types.Loans) {
 	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
-		var loans []*types.Loan
+		var loans []*types.GenesisLoan
 		iterator := k.LoanIterator(ctx, denom.BaseDexDenom)
 		for iterator.Valid() {
-			loan := iterator.GetNext()
-			loans = append(loans, &loan)
+			keyValue := iterator.GetNextKeyValue()
+			loan := keyValue.Value().Value()
+
+			loans = append(loans, &types.GenesisLoan{
+				Index:   loan.Index,
+				Address: keyValue.Key(),
+				Weight:  loan.Weight,
+			})
 		}
 
 		loanSum := k.GetLoanSumWithDefault(ctx, denom.BaseDexDenom)
@@ -39,28 +46,34 @@ func (k Keeper) loadLoanWithDefault(ctx context.Context, denom, address string) 
 	}
 
 	return types.Loan{
-		Index:   0,
-		Address: address,
-		Weight:  math.LegacyZeroDec(),
+		Index:  0, // Index 0 indicates this is a new loan
+		Weight: math.LegacyZeroDec(),
 	}
 }
 
-func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) (uint64, int) {
+func (k Keeper) SetLoan(ctx context.Context, denom, address string, loan types.Loan) (uint64, int) {
+	change := 0
+
 	// If loan is empty, delete it
 	if loan.Weight.LTE(math.LegacyZeroDec()) {
-		k.loans.Remove(ctx, denom, loan.Address)
-		return loan.Index, -1
+		if has := k.loans.Has(ctx, denom, address); has {
+			k.loans.Remove(ctx, denom, address)
+			change = -1
+		}
+
+		return loan.Index, change
 	}
 
-	change := 0
 	if loan.Index == 0 {
 		nextIndex, _ := k.loanNextIndex.Get(ctx)
-		loan.Index = nextIndex + 1
+		nextIndex += 1
 		k.loanNextIndex.Set(ctx, nextIndex)
+		loan.Index = nextIndex
+
 		change = 1
 	}
 
-	k.loans.Set(ctx, denom, loan.Address, loan)
+	k.loans.Set(ctx, denom, address, loan)
 	return loan.Index, change
 }
 
@@ -145,25 +158,26 @@ type Borrower struct {
 	loans   []CAssetLoan
 }
 
-// getBorrowers returns a list with all borrowers and their loans. There might be easier ways to get this, e.g. by using
-// maps more prominently, but the intention was to create a function that returns the same list of entries if it is
-// called on various nodes.
-func (k Keeper) getBorrowers(ctx context.Context) []string {
-	var borrowers []string
-	borrowersMap := make(map[string]struct{})
+// getBorrowers returns a list with all borrowers and their loans. By iterating over all loans, the list of borrowers
+// automatically is sorted by loan age: Borrowers with the oldest loan are added first, borrowers with the younger
+// loan are added later.
+func (k Keeper) getBorrowers(ctx context.Context) (borrowers []string) {
+	borrowersMap := make(map[string]uint64)
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		iterator := k.LoanIterator(ctx, cAsset.BaseDexDenom)
 		for iterator.Valid() {
-			loan := iterator.GetNext()
-			if _, seen := borrowersMap[loan.Address]; !seen {
-				borrowersMap[loan.Address] = struct{}{}
-				borrowers = append(borrowers, loan.Address)
+			keyValue := iterator.GetNextKeyValue()
+			loan := keyValue.Value().Value()
+
+			lowestIndex, seen := borrowersMap[keyValue.Key()]
+			if !seen || lowestIndex < borrowersMap[keyValue.Key()] {
+				borrowersMap[keyValue.Key()] = loan.Index
 			}
 		}
 	}
 
-	return borrowers
+	return rankMapStringInt(borrowersMap)
 }
 
 func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.Int, error) {
@@ -202,17 +216,23 @@ func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChan
 
 	// Calculate the new weight
 	newLoanValue := loanValue.Add(valueChange)
-	newWeight := calculateLoanWeight(loanSum, newLoanValue)
+	loan.Weight = calculateLoanWeight(loanSum, newLoanValue)
 
 	// Update loan and loanSum
-	loan.Weight = newWeight
-	loanSum.WeightSum = loanSum.WeightSum.Add(newWeight)
+	loanSum.WeightSum = loanSum.WeightSum.Add(loan.Weight)
 	loanSum.LoanSum = loanSum.LoanSum.Add(newLoanValue)
 
-	loanIndex, numLoanChange := k.SetLoan(ctx, denom, loan)
-	loanSum.NumLoans += uint64(numLoanChange)
-	k.loansSum.Set(ctx, denom, loanSum)
+	loanIndex, numLoanChange := k.SetLoan(ctx, denom, address, loan)
 
+	if numLoanChange != 0 {
+		loanSum.NumLoans += uint64(numLoanChange)
+	}
+
+	if loanSum.NumLoans < 0 {
+		loanSum.NumLoans = 0
+	}
+
+	k.loansSum.Set(ctx, denom, loanSum)
 	return loanIndex, numLoanChange == -1
 }
 
@@ -221,8 +241,8 @@ func calculateLoanValue(loanSum types.LoanSum, weight math.LegacyDec) math.Legac
 		return math.LegacyZeroDec()
 	}
 
-	share := weight.Quo(loanSum.WeightSum)
-	return loanSum.LoanSum.Mul(share)
+	valueShare := weight.Quo(loanSum.WeightSum)
+	return loanSum.LoanSum.Mul(valueShare)
 }
 
 func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math.LegacyDec {
@@ -236,11 +256,34 @@ func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math
 	}
 
 	var additionalWeight math.LegacyDec
-	if valueShare.Equal(math.LegacyOneDec()) {
+	if valueShare.Equal(math.LegacyOneDec()) || loanSum.WeightSum.IsZero() {
 		additionalWeight = addedAmount
 	} else {
 		additionalWeight = loanSum.WeightSum.Quo(math.LegacyOneDec().Sub(valueShare)).Sub(loanSum.WeightSum)
 	}
 
 	return additionalWeight
+}
+
+func rankMapStringInt(values map[string]uint64) []string {
+	type kv struct {
+		Key   string
+		Value uint64
+	}
+
+	var ss []kv
+	for k, v := range values {
+		ss = append(ss, kv{k, v})
+	}
+
+	sort.Slice(ss, func(i, j int) bool {
+		return ss[i].Value < ss[j].Value
+	})
+
+	ranked := make([]string, len(values))
+	for i, kv := range ss {
+		ranked[i] = kv.Key
+	}
+
+	return ranked
 }

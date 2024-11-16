@@ -37,8 +37,9 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 
 	iterator := k.LoanIterator(ctx, cAsset.BaseDexDenom)
 	for iterator.Valid() {
-		loan := iterator.GetNext()
-		loanValue := k.getLoanValue(loanSum, loan)
+		keyValue := iterator.GetNextKeyValue()
+		loan := keyValue.Value().Value()
+		loanValue := k.getLoanValue(loanSum, *loan)
 
 		amountBorrowedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
 		if err != nil {
@@ -47,7 +48,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 
 		loans = append(loans, &types.DenomLoan{
 			LoanIndex:         loan.Index,
-			Address:           loan.Address,
+			Address:           keyValue.Key(),
 			AmountBorrowed:    loanValue.String(),
 			AmountBorrowedUsd: amountBorrowedUSD.String(),
 		})

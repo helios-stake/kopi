@@ -100,11 +100,11 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dex
 
 	for _, loan := range loans {
 		if loanUnderMinimumThreshold(loan.cAsset, loan.value) {
-			k.updateLoan(ctx, loan.cAsset.BaseDexDenom, loan.Address, loan.value.Neg())
+			k.updateLoan(ctx, loan.cAsset.BaseDexDenom, borrower, loan.value.Neg())
 
 			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 				sdk.NewEvent("loan_repaid",
-					sdk.Attribute{Key: "address", Value: loan.Address},
+					sdk.Attribute{Key: "address", Value: borrower},
 					sdk.Attribute{Key: "denom", Value: loan.cAsset.BaseDexDenom},
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loan.Index))},
 					sdk.Attribute{Key: "amount", Value: loan.value.String()},
@@ -113,7 +113,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dex
 
 			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 				sdk.NewEvent("loan_removed",
-					sdk.Attribute{Key: "address", Value: loan.Address},
+					sdk.Attribute{Key: "address", Value: borrower},
 					sdk.Attribute{Key: "denom", Value: loan.cAsset.BaseDexDenom},
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loan.Index))},
 				),
@@ -122,7 +122,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dex
 			continue
 		}
 
-		if err = k.liquidateCollateral(ctx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, &excessAmountBase); err != nil {
+		if err = k.liquidateCollateral(ctx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, borrower, &excessAmountBase); err != nil {
 			return fmt.Errorf("could not liquidate collateral: %w", err)
 		}
 	}
@@ -135,13 +135,13 @@ func loanUnderMinimumThreshold(cAsset *denomtypes.CAsset, loanValue math.LegacyD
 		return false
 	}
 
-	return cAsset.MinimumLoanSize.GT(math.ZeroInt()) && loanValue.LT(cAsset.MinimumLoanSize.ToLegacyDec())
+	return cAsset.MinimumLoanSize.IsPositive() && loanValue.LT(cAsset.MinimumLoanSize.ToLegacyDec())
 }
 
 // liquidateCollateral calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
 // excess borrow amount. Sold collateral is sent to the vault.
-func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, excessAmountBase *math.LegacyDec) error {
-	addr, _ := sdk.AccAddressFromBech32(loan.Address)
+func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, borrower string, excessAmountBase *math.LegacyDec) error {
+	addr, _ := sdk.AccAddressFromBech32(borrower)
 	repayAmount := math.LegacyZeroDec()
 
 	excessAmount, err := k.DexKeeper.GetValueIn(ctx, constants.BaseCurrency, cAsset.BaseDexDenom, *excessAmountBase)
@@ -149,7 +149,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 		return err
 	}
 
-	loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, loan.Address)
+	loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, borrower)
 	// There might be loans in multiple denoms, but the excess amount for this loan must not be larger than the loan
 	// itself. If the excessAmount is larger than this loan, it means the next loan will be repaid as well.
 	excessAmount = math.LegacyMinDec(excessAmount, loanValue)
@@ -178,7 +178,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 		tradeBalances.AddTransfer(poolVaultAcc, addr.String(), cAsset.BaseDexDenom, excessRepayAmount.TruncateInt())
 	}
 
-	k.updateLoan(ctx, cAsset.BaseDexDenom, loan.Address, repayAmount.Neg())
+	k.updateLoan(ctx, cAsset.BaseDexDenom, borrower, repayAmount.Neg())
 
 	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, constants.BaseCurrency, repayAmount)
 	if err != nil {
@@ -190,7 +190,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("loan_liquidation",
 			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loan.Index))},
-			sdk.Attribute{Key: "address", Value: loan.Address},
+			sdk.Attribute{Key: "address", Value: borrower},
 			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
 			sdk.Attribute{Key: "repaid", Value: repayAmount.String()},
 		),

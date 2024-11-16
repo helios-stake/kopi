@@ -36,7 +36,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) 
 		return fmt.Errorf("condition value must not be nil")
 	}
 
-	// PriceChangePercentage  is the only condition that can have a negative value since a change in % can be negative
+	// PriceChangePercentage is the only condition that can have a negative value since a change in % can be negative
 	if !(condition.ConditionType == types.ConditionPriceChangePercentage || condition.ConditionType == types.ConditionPriceChangeAmount) {
 		if !condition.Value.GTE(math.LegacyZeroDec()) {
 			return fmt.Errorf("must not be less than 0, was: %v", condition.Value.String())
@@ -199,11 +199,9 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 	case types.ConditionPriceChangeAmount:
 		if condition.Comparison == types.ComparisonIncreasedBy {
 			conditionValue = condition.ReferencePrice.Add(condition.Value)
-			k.Logger().Info(fmt.Sprintf("%v + %v = %v", condition.ReferencePrice.String(), condition.Value.String(), conditionValue.String()))
 			conditionComparison = types.ComparisonGreaterThan
 		} else {
 			conditionValue = condition.ReferencePrice.Sub(condition.Value)
-			k.Logger().Info(fmt.Sprintf("%v - %v = %v", condition.ReferencePrice.String(), condition.Value.String(), conditionValue.String()))
 			conditionComparison = types.ComparisonLessThan
 		}
 
@@ -225,7 +223,6 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 		}
 
 		conditionValue = condition.ReferencePrice.Mul(factor)
-		k.Logger().Info(fmt.Sprintf("%v * %v = %v", condition.ReferencePrice.String(), factor, conditionValue.String()))
 
 		value, err = k.DexKeeper.GetPriceInUSD(ctx, condition.String1)
 		if err != nil {
@@ -295,8 +292,6 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 	default:
 		return false, fmt.Errorf("invalid condition type: %v", condition.ConditionType)
 	}
-
-	k.Logger().Info(fmt.Sprintf("%v %v %v", conditionComparison, value.String(), conditionValue.String()))
 
 	matched, err := compare(conditionComparison, value, conditionValue)
 	if err != nil {

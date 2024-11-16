@@ -18,6 +18,10 @@ func (k msgServer) MintDenom(ctx context.Context, msg *types.MsgMintDenom) (*typ
 		return nil, types.ErrIncorrectAdmin
 	}
 
+	if !factoryDenom.Mintable {
+		return nil, types.ErrNotMintable
+	}
+
 	amount, ok := math.NewIntFromString(msg.Amount)
 	if !ok {
 		return nil, types.ErrInvalidAmountFormat

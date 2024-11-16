@@ -193,3 +193,20 @@ func TestRedemptions7(t *testing.T) {
 	iterator := k.RedemptionIterator(ctx, constants.KUSD)
 	require.Equal(t, 1, len(iterator.GetAll()))
 }
+
+func TestRedemptions8(t *testing.T) {
+	_, _, msg, ctx := keepertest.SetupMMMsgServer(t)
+
+	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "1000",
+	})
+
+	require.Error(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
+		Creator:      keepertest.Alice,
+		Denom:        "uckusd",
+		CAssetAmount: "0",
+		Fee:          "0.05",
+	}))
+}

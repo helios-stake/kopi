@@ -24,6 +24,7 @@ service Msg {
   rpc UpdateIconHash(MsgUpdateIconHash)    returns (Void);
   rpc UpdateLiquidityPoolSettings(MsgUpdateLiquidityPoolSettings)    returns (Void);
   rpc Buyback(MsgBuyback)                  returns (Void);
+  rpc DisableMinting(MsgDisableMinting)    returns (Void);
 
   rpc CreatePool(MsgCreatePool)           returns (Void);
   rpc AddLiquidity(MsgAddLiquidity)       returns (Void);
@@ -47,6 +48,13 @@ message MsgTradeResponse {
   int64 fee = 5;
   int64 fee_pool = 6;
   int64 fee_reserve = 7;
+}
+
+message MsgDisableMinting {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1;
+
+  string full_factory_denom_name = 2;
 }
 
 message MsgBuy {

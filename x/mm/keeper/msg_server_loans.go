@@ -58,7 +58,6 @@ func (k Keeper) Borrow(ctx context.Context, address sdk.AccAddress, denom string
 	vaultBalance := k.BankKeeper.SpendableCoin(ctx, vaultAcc.GetAddress(), cAsset.BaseDexDenom).Amount
 
 	if vaultBalance.LT(borrowAmount) {
-		k.Logger().Error(fmt.Sprintf("%v < %v %v", vaultBalance.String(), borrowAmount.String(), cAsset.BaseDexDenom))
 		return math.Int{}, math.Int{}, types.ErrNotEnoughFundsInVault
 	}
 
@@ -108,7 +107,7 @@ func (k msgServer) RepayLoan(ctx context.Context, msg *types.MsgRepayLoan) (*typ
 	}
 
 	if err := k.Repay(ctx, msg.Denom, msg.Creator, loanValue.Ceil().TruncateInt()); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to repay loan: %w", err)
 	}
 
 	return &types.Void{}, nil
@@ -119,8 +118,7 @@ func (k msgServer) PartiallyRepayLoan(ctx context.Context, msg *types.MsgPartial
 		return nil, types.ErrInvalidDepositDenom
 	}
 
-	_, found := k.loans.Get(ctx, msg.Denom, msg.Creator)
-	if !found {
+	if _, found := k.loans.Get(ctx, msg.Denom, msg.Creator); !found {
 		return nil, types.ErrNoLoanFound
 	}
 
@@ -139,7 +137,7 @@ func (k msgServer) PartiallyRepayLoan(ctx context.Context, msg *types.MsgPartial
 	}
 
 	if err := k.Repay(ctx, msg.Denom, msg.Creator, repayAmount); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to repay loan %v: %v", msg.Denom, err)
 	}
 
 	return &types.Void{}, nil
@@ -162,7 +160,7 @@ func (k Keeper) Repay(ctx context.Context, denom, address string, repayAmount ma
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {
-		return err
+		return fmt.Errorf("could not send coins from account to module: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(

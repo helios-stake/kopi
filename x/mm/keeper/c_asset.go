@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
@@ -33,24 +31,21 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes
 	vaultSize := k.GetVaultAmount(ctx, cAsset).ToLegacyDec()
 
 	cAssetValue := loanSum.Add(vaultSize)
-	k.Logger().Info(fmt.Sprintf("VS: %v + %v = %v", loanSum.String(), vaultSize.String(), cAssetValue.String()))
 
 	newTotalValue := addedAmount.ToLegacyDec().Add(cAssetValue)
 	valueShare := addedAmount.ToLegacyDec().Quo(newTotalValue)
-	k.Logger().Info(fmt.Sprintf("VS: %v / %v = %v", addedAmount.String(), cAssetValue.String(), valueShare.String()))
 
 	var newTokens math.Int
 	if valueShare.Equal(math.LegacyOneDec()) {
 		newTokens = addedAmount
 	} else {
 		newTokens = cAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).TruncateInt().Sub(cAssetSupply)
-		k.Logger().Info(fmt.Sprintf("(%v / (1-%v)) - %v = %v", cAssetSupply.String(), valueShare.String(), cAssetSupply.String(), newTokens.String()))
 	}
 
 	return newTokens
 }
 
-// calculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
+// CalculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
 // funds in outstanding loans.
 func (k Keeper) CalculateCAssetValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum

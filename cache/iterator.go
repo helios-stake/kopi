@@ -77,13 +77,13 @@ func (il *IteratorList[K, V]) next() KeyValue[K, Entry[V]] {
 	return item
 }
 
-func useCache(ctx context.Context, currentHeight int64) bool {
-	height := getCurrentHeight(ctx)
-	if height == 0 {
-		height = currentHeight
+func useCache(ctx context.Context, cacheHeight int64) bool {
+	requestedHeight := getCurrentHeight(ctx)
+	if requestedHeight == 0 {
+		requestedHeight = cacheHeight
 	}
 
-	return height == currentHeight
+	return requestedHeight == cacheHeight
 }
 
 func newIterator[K ordered, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], valueGetter ValueGetter[K, V], deleted []K, cci CreateCollectionIterator[K, V], currentHeight int64) Iterator[K, V] {

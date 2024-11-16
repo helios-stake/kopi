@@ -162,6 +162,18 @@ func getEntry[V any](ctx context.Context, entry Entry[V]) (V, bool) {
 	return value, false
 }
 
+func hasEntry[V any](ctx context.Context, entry Entry[V]) bool {
+	if entry.value != nil {
+		if sdkCtx, ok := ctx.(sdk.Context); ok {
+			sdkCtx.GasMeter().ConsumeGas(entry.cost, "")
+		}
+
+		return true
+	}
+
+	return false
+}
+
 type MapCache[K ordered, V any] struct {
 	sync.Mutex
 
@@ -245,7 +257,8 @@ func (mc *MapCache[K, V]) Get(ctx context.Context, key K) (V, bool) {
 		}
 	}
 
-	if !useCache(ctx, mc.currentHeight) {
+	requestedHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
+	if requestedHeight != mc.currentHeight {
 		entry, has := mc.loadFromStorage(ctx, key)
 		if has {
 			return *entry.value, true

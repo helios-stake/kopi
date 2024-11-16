@@ -137,8 +137,8 @@ func (ic *ItemCache[V]) Get(ctx context.Context) (V, bool) {
 		}
 	}
 
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	if ic.item == nil || sdkCtx.BlockHeight() != ic.currentHeight {
+	requestedHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
+	if ic.item == nil || requestedHeight != ic.currentHeight {
 		item, has := ic.loadFromStorage(ctx)
 		if has {
 			return *item.value, true

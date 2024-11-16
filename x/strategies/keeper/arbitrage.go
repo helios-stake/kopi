@@ -78,9 +78,6 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomt
 	if parity.LT(arbitrageDenom.BuyThreshold) {
 		amountCAsset := balance.AmountOf(arbitrageDenom.CAsset)
 		if amountCAsset.GT(math.ZeroInt()) {
-			msg := fmt.Sprintf("ARB: %v %v > %v", amountCAsset, arbitrageDenom.CAsset, arbitrageDenom.KCoin)
-			k.Logger().Info(msg)
-
 			tradeCtx := dextypes.TradeContext{
 				Context:             ctx,
 				CoinSource:          address.String(),
@@ -144,9 +141,6 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomt
 
 				return fmt.Errorf("could not execute incomplete trade: %w", err)
 			}
-
-			msg := fmt.Sprintf("ARB: %v %v > %v", amount.String(), arbitrageDenom.KCoin, arbitrageDenom.CAsset)
-			k.Logger().Info(msg)
 
 			k.updateArbitrageDenomBalance(ctx, arbitrageDenom.DexDenom, tradeResult.AmountGiven.Neg())
 		}
