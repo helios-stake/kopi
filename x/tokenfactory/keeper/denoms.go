@@ -89,6 +89,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, i
 		IconHash:    strings.ToUpper(iconHash),
 		Symbol:      symbol,
 		Exponent:    exponent,
+		Mintable:    true,
 	}
 
 	k.SetDenom(ctx, factoryDenom)
