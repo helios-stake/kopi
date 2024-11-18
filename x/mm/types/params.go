@@ -7,27 +7,25 @@ import (
 )
 
 var (
-	CollateralDiscount      = math.LegacyNewDecWithPrec(95, 2) // 0.95
-	ProtocolShare           = math.LegacyNewDecWithPrec(5, 1)  // 0.5
-	MinRedemptionFee        = math.LegacyNewDecWithPrec(1, 2)  // 0.01
-	MaxRedemptionFee        = math.LegacyNewDecWithPrec(5, 2)  // 0.05
-	MinimumInterestRate     = math.LegacyNewDecWithPrec(5, 2)  // 0.05
-	A                       = math.LegacyNewDec(12)
-	B                       = math.LegacyNewDec(131072)
-	BlockSpeedMovingAverage = math.LegacyNewDecWithPrec(999, 3) // 0.999
+	CollateralDiscount  = math.LegacyNewDecWithPrec(95, 2) // 0.95
+	ProtocolShare       = math.LegacyNewDecWithPrec(5, 1)  // 0.5
+	MinRedemptionFee    = math.LegacyNewDecWithPrec(1, 2)  // 0.01
+	MaxRedemptionFee    = math.LegacyNewDecWithPrec(5, 2)  // 0.05
+	MinimumInterestRate = math.LegacyNewDecWithPrec(5, 2)  // 0.05
+	A                   = math.LegacyNewDec(12)
+	B                   = math.LegacyNewDec(131072)
 )
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		CollateralDiscount:      CollateralDiscount,
-		ProtocolShare:           ProtocolShare,
-		MinRedemptionFee:        MinRedemptionFee,
-		MaxRedemptionFee:        MaxRedemptionFee,
-		MinInterestRate:         MinimumInterestRate,
-		A:                       A,
-		B:                       B,
-		BlockSpeedMovingAverage: BlockSpeedMovingAverage,
+		CollateralDiscount: CollateralDiscount,
+		ProtocolShare:      ProtocolShare,
+		MinRedemptionFee:   MinRedemptionFee,
+		MaxRedemptionFee:   MaxRedemptionFee,
+		MinInterestRate:    MinimumInterestRate,
+		A:                  A,
+		B:                  B,
 	}
 }
 

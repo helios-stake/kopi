@@ -7,13 +7,11 @@ import (
 )
 
 var (
-	FeeReimbursement      = math.LegacyNewDecWithPrec(5, 1)      // 0.5
 	TradeFee              = math.LegacyNewDecWithPrec(1, 3)      // 0.001 -> 0.1%
 	OrderFee              = math.LegacyNewDecWithPrec(5, 3)      // 0.005 -> 0.5%
 	ReserveShare          = math.LegacyNewDecWithPrec(5, 1)      // 0.5 -> 50%
 	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
 	TradeAmountDecay      = math.LegacyNewDecWithPrec(95, 2)     // 0.95
-	KCoinBurnShare        = math.LegacyNewDec(1)                 // 1 -> 100%
 	MaxOrderLife          = 60 * 60 * 24 * 7
 	DiscountLevels        = []*DiscountLevel{
 		{

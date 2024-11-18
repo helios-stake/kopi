@@ -15,15 +15,14 @@ import (
 )
 
 var (
-	md_Params                            protoreflect.MessageDescriptor
-	fd_Params_collateral_discount        protoreflect.FieldDescriptor
-	fd_Params_min_redemption_fee         protoreflect.FieldDescriptor
-	fd_Params_max_redemption_fee         protoreflect.FieldDescriptor
-	fd_Params_protocol_share             protoreflect.FieldDescriptor
-	fd_Params_min_interest_rate          protoreflect.FieldDescriptor
-	fd_Params_a                          protoreflect.FieldDescriptor
-	fd_Params_b                          protoreflect.FieldDescriptor
-	fd_Params_block_speed_moving_average protoreflect.FieldDescriptor
+	md_Params                     protoreflect.MessageDescriptor
+	fd_Params_collateral_discount protoreflect.FieldDescriptor
+	fd_Params_min_redemption_fee  protoreflect.FieldDescriptor
+	fd_Params_max_redemption_fee  protoreflect.FieldDescriptor
+	fd_Params_protocol_share      protoreflect.FieldDescriptor
+	fd_Params_min_interest_rate   protoreflect.FieldDescriptor
+	fd_Params_a                   protoreflect.FieldDescriptor
+	fd_Params_b                   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -36,7 +35,6 @@ func init() {
 	fd_Params_min_interest_rate = md_Params.Fields().ByName("min_interest_rate")
 	fd_Params_a = md_Params.Fields().ByName("a")
 	fd_Params_b = md_Params.Fields().ByName("b")
-	fd_Params_block_speed_moving_average = md_Params.Fields().ByName("block_speed_moving_average")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -146,12 +144,6 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if len(x.BlockSpeedMovingAverage) != 0 {
-		value := protoreflect.ValueOfBytes(x.BlockSpeedMovingAverage)
-		if !f(fd_Params_block_speed_moving_average, value) {
-			return
-		}
-	}
 }
 
 // Has reports whether a field is populated.
@@ -181,8 +173,6 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.A) != 0
 	case "kopi.mm.Params.b":
 		return len(x.B) != 0
-	case "kopi.mm.Params.block_speed_moving_average":
-		return len(x.BlockSpeedMovingAverage) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Params"))
@@ -213,8 +203,6 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.A = nil
 	case "kopi.mm.Params.b":
 		x.B = nil
-	case "kopi.mm.Params.block_speed_moving_average":
-		x.BlockSpeedMovingAverage = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Params"))
@@ -252,9 +240,6 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "kopi.mm.Params.b":
 		value := x.B
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.mm.Params.block_speed_moving_average":
-		value := x.BlockSpeedMovingAverage
-		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Params"))
@@ -289,8 +274,6 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.A = value.Bytes()
 	case "kopi.mm.Params.b":
 		x.B = value.Bytes()
-	case "kopi.mm.Params.block_speed_moving_average":
-		x.BlockSpeedMovingAverage = value.Bytes()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Params"))
@@ -325,8 +308,6 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field a of message kopi.mm.Params is not mutable"))
 	case "kopi.mm.Params.b":
 		panic(fmt.Errorf("field b of message kopi.mm.Params is not mutable"))
-	case "kopi.mm.Params.block_speed_moving_average":
-		panic(fmt.Errorf("field block_speed_moving_average of message kopi.mm.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Params"))
@@ -353,8 +334,6 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "kopi.mm.Params.a":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.mm.Params.b":
-		return protoreflect.ValueOfBytes(nil)
-	case "kopi.mm.Params.block_speed_moving_average":
 		return protoreflect.ValueOfBytes(nil)
 	default:
 		if fd.IsExtension() {
@@ -453,10 +432,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.BlockSpeedMovingAverage)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -485,13 +460,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.BlockSpeedMovingAverage) > 0 {
-			i -= len(x.BlockSpeedMovingAverage)
-			copy(dAtA[i:], x.BlockSpeedMovingAverage)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BlockSpeedMovingAverage)))
-			i--
-			dAtA[i] = 0x42
 		}
 		if len(x.B) > 0 {
 			i -= len(x.B)
@@ -829,40 +797,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					x.B = []byte{}
 				}
 				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlockSpeedMovingAverage", wireType)
-				}
-				var byteLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					byteLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if byteLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + byteLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.BlockSpeedMovingAverage = append(x.BlockSpeedMovingAverage[:0], dAtA[iNdEx:postIndex]...)
-				if x.BlockSpeedMovingAverage == nil {
-					x.BlockSpeedMovingAverage = []byte{}
-				}
-				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -917,14 +851,13 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CollateralDiscount      []byte `protobuf:"bytes,1,opt,name=collateral_discount,json=collateralDiscount,proto3" json:"collateral_discount,omitempty"`
-	MinRedemptionFee        []byte `protobuf:"bytes,2,opt,name=min_redemption_fee,json=minRedemptionFee,proto3" json:"min_redemption_fee,omitempty"`
-	MaxRedemptionFee        []byte `protobuf:"bytes,3,opt,name=max_redemption_fee,json=maxRedemptionFee,proto3" json:"max_redemption_fee,omitempty"`
-	ProtocolShare           []byte `protobuf:"bytes,4,opt,name=protocol_share,json=protocolShare,proto3" json:"protocol_share,omitempty"`
-	MinInterestRate         []byte `protobuf:"bytes,5,opt,name=min_interest_rate,json=minInterestRate,proto3" json:"min_interest_rate,omitempty"`
-	A                       []byte `protobuf:"bytes,6,opt,name=a,proto3" json:"a,omitempty"`
-	B                       []byte `protobuf:"bytes,7,opt,name=b,proto3" json:"b,omitempty"`
-	BlockSpeedMovingAverage []byte `protobuf:"bytes,8,opt,name=block_speed_moving_average,json=blockSpeedMovingAverage,proto3" json:"block_speed_moving_average,omitempty"`
+	CollateralDiscount []byte `protobuf:"bytes,1,opt,name=collateral_discount,json=collateralDiscount,proto3" json:"collateral_discount,omitempty"`
+	MinRedemptionFee   []byte `protobuf:"bytes,2,opt,name=min_redemption_fee,json=minRedemptionFee,proto3" json:"min_redemption_fee,omitempty"`
+	MaxRedemptionFee   []byte `protobuf:"bytes,3,opt,name=max_redemption_fee,json=maxRedemptionFee,proto3" json:"max_redemption_fee,omitempty"`
+	ProtocolShare      []byte `protobuf:"bytes,4,opt,name=protocol_share,json=protocolShare,proto3" json:"protocol_share,omitempty"`
+	MinInterestRate    []byte `protobuf:"bytes,5,opt,name=min_interest_rate,json=minInterestRate,proto3" json:"min_interest_rate,omitempty"`
+	A                  []byte `protobuf:"bytes,6,opt,name=a,proto3" json:"a,omitempty"`
+	B                  []byte `protobuf:"bytes,7,opt,name=b,proto3" json:"b,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -996,13 +929,6 @@ func (x *Params) GetB() []byte {
 	return nil
 }
 
-func (x *Params) GetBlockSpeedMovingAverage() []byte {
-	if x != nil {
-		return x.BlockSpeedMovingAverage
-	}
-	return nil
-}
-
 var File_kopi_mm_params_proto protoreflect.FileDescriptor
 
 var file_kopi_mm_params_proto_rawDesc = []byte{
@@ -1010,7 +936,7 @@ var file_kopi_mm_params_proto_rawDesc = []byte{
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x07, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x1a,
 	0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f,
-	0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x84, 0x05, 0x0a, 0x06, 0x50, 0x61, 0x72,
+	0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa2, 0x04, 0x0a, 0x06, 0x50, 0x61, 0x72,
 	0x61, 0x6d, 0x73, 0x12, 0x54, 0x0a, 0x13, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61,
 	0x6c, 0x5f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c,
 	0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
@@ -1043,22 +969,16 @@ var file_kopi_mm_params_proto_rawDesc = []byte{
 	0x31, 0x0a, 0x01, 0x62, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00,
 	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
 	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52,
-	0x01, 0x62, 0x12, 0x60, 0x0a, 0x1a, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x73, 0x70, 0x65, 0x65,
-	0x64, 0x5f, 0x6d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x5f, 0x61, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x18, 0x08, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x17, 0x62, 0x6c, 0x6f,
-	0x63, 0x6b, 0x53, 0x70, 0x65, 0x65, 0x64, 0x4d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x41, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x3a, 0x19, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x10, 0x6b,
-	0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x6d, 0x6d, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42,
-	0x71, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0b,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07,
-	0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d,
-	0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a,
-	0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x62, 0x3a, 0x19, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x10, 0x6b, 0x6f, 0x70,
+	0x69, 0x2f, 0x78, 0x2f, 0x6d, 0x6d, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x71, 0x0a,
+	0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0b, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f,
+	0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f,
+	0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2,
+	0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	MovingAverageFactors = math.LegacyNewDecWithPrec(999, 4) // 0.9999
+	MovingAverageFactors = math.LegacyNewDecWithPrec(9999, 4) // 0.9999
 )
 
 // NewParams creates a new Params instance

@@ -209,17 +209,6 @@ func (k Keeper) HandleAutomation(ctx context.Context, params types.Params, autom
 	// The automation might have been set inactive because there are not enough funds for executing it
 	if automation.Active {
 		automation.Active, automation.InactiveReason, err = checkValidity(automation)
-
-		if !automation.Active { // Testnet
-			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
-				sdk.NewEvent(
-					"automation_validity",
-					sdk.Attribute{Key: "automation_index", Value: strconv.Itoa(int(automation.Index))},
-					sdk.Attribute{Key: "validity_type", Value: strconv.Itoa(int(automation.ValidityType))},
-					sdk.Attribute{Key: "address", Value: automation.Address},
-				),
-			)
-		}
 	}
 
 	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
@@ -240,8 +229,6 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 			sdk.NewEvent("automation_executed",
 				sdk.Attribute{Key: "automation_index", Value: strconv.Itoa(int(automation.Index))},
-				sdk.Attribute{Key: "address", Value: automation.Address},                              // Testnet
-				sdk.Attribute{Key: "num_conditions", Value: strconv.Itoa(len(automation.Conditions))}, // Testnet
 				sdk.Attribute{Key: "funds", Value: strconv.Itoa(int(funds.Int64()))},
 				sdk.Attribute{Key: "cost", Value: strconv.Itoa(int(cost.Int64()))},
 			),

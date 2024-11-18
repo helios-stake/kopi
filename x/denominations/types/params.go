@@ -15,63 +15,11 @@ func createDefaultCollateralDenoms() []*CollateralDenom {
 			Ltv:        math.LegacyNewDecWithPrec(5, 1),
 			MaxDeposit: math.NewInt(1_000_000_000),
 		},
-		{
-			DexDenom:   "uwusdc",
-			Ltv:        math.LegacyNewDecWithPrec(9, 1),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
-		{
-			DexDenom:   "ucwusdc",
-			Ltv:        math.LegacyNewDecWithPrec(95, 2),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
-		{
-			DexDenom:   constants.KUSD,
-			Ltv:        math.LegacyNewDecWithPrec(9, 1),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
-		{
-			DexDenom:   "uckusd",
-			Ltv:        math.LegacyNewDecWithPrec(95, 2),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
-		{
-			DexDenom:   "swbtc",
-			Ltv:        math.LegacyNewDecWithPrec(8, 1),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
-		{
-			DexDenom:   "skbtc",
-			Ltv:        math.LegacyNewDecWithPrec(8, 1),
-			MaxDeposit: math.NewInt(1_000_000_000),
-		},
 	}
 }
 
 func createDefaultCAssets() []*CAsset {
-	return []*CAsset{
-		{
-			DexDenom:        "uckusd",
-			BaseDexDenom:    constants.KUSD,
-			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
-			MinimumLoanSize: math.NewInt(1000),
-		},
-		{
-			DexDenom:        "ucwusdc",
-			BaseDexDenom:    "uwusdc",
-			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
-			MinimumLoanSize: math.NewInt(1000),
-		},
-		{
-			DexDenom:        "sckbtc",
-			BaseDexDenom:    "skbtc",
-			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
-			MinimumLoanSize: math.NewInt(1000),
-		},
-	}
+	return []*CAsset{}
 }
 
 func createDefaultDexDenoms() []*DexDenom {
@@ -82,86 +30,11 @@ func createDefaultDexDenoms() []*DexDenom {
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
 		},
-		{
-			Name:         "uwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1),
-			Exponent:     6,
-		},
-		{
-			Name:         "uwusdt",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
-		},
-		{
-			Name:         constants.KUSD,
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1),
-			Exponent:     6,
-		},
-		{
-			Name:         "uckusd",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
-		},
-		{
-			Name:         "ucwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
-		},
-		{
-			Name:         "swbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
-		},
-		{
-			Name:         "skbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
-		},
-		{
-			Name:         "sckbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
-		},
 	}
 }
 
 func createDefaultKCoins() []*KCoin {
-	return []*KCoin{
-		{
-			DexDenom:      constants.KUSD,
-			References:    []string{"uwusdc", "uwusdt"},
-			MaxSupply:     math.NewInt(1_000_000_000_000),
-			MaxMintAmount: math.NewInt(1_000_000),
-			MaxBurnAmount: math.NewInt(1_000_000),
-		},
-		{
-			DexDenom:      "skbtc",
-			References:    []string{"swbtc"},
-			MaxSupply:     math.NewInt(100_000_000),
-			MaxMintAmount: math.NewInt(10_000),
-			MaxBurnAmount: math.NewInt(10_000),
-		},
-	}
-}
-
-func decPtr(dec math.LegacyDec) *math.LegacyDec {
-	return &dec
+	return []*KCoin{}
 }
 
 // DefaultParams returns a default set of parameters
@@ -177,23 +50,23 @@ func DefaultParams() Params {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if err := validateDexDenoms(p); err != nil {
-		return err
+		return fmt.Errorf("invalid dex denoms: %w", err)
 	}
 
 	if err := validateKCoins(p); err != nil {
-		return err
+		return fmt.Errorf("invalid kcoins: %w", err)
 	}
 
 	if err := validateCollateralDenoms(p); err != nil {
-		return err
+		return fmt.Errorf("invalid collateral denoms: %w", err)
 	}
 
 	if err := validateCAssets(p); err != nil {
-		return err
+		return fmt.Errorf("invalid c asset denoms: %w", err)
 	}
 
 	if err := validateArbitrageDenoms(p); err != nil {
-		return err
+		return fmt.Errorf("invalid arbitrage denoms: %w", err)
 	}
 
 	return nil

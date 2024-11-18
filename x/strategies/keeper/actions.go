@@ -219,8 +219,6 @@ func (k Keeper) ExecuteAction(ctx context.Context, address sdk.AccAddress, actio
 		"automation_action_executed",
 		sdk.Attribute{Key: "automation_index", Value: strconv.Itoa(automationIndex)},
 		sdk.Attribute{Key: "action_index", Value: strconv.Itoa(actionIndex)},
-		sdk.Attribute{Key: "action_type", Value: strconv.Itoa(int(action.ActionType))}, // Testnet
-		sdk.Attribute{Key: "address", Value: address.String()},                         // Testnet
 		sdk.Attribute{Key: "cost", Value: strconv.Itoa(int(k.GetParams(ctx).AutomationFeeAction))},
 	)
 
