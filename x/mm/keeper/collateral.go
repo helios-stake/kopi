@@ -40,7 +40,11 @@ func (k Keeper) LoadCollateral(ctx context.Context, denom, address string) (type
 }
 
 func (k Keeper) SetCollateral(ctx context.Context, denom, address string, amount math.Int) {
-	k.collateral.Set(ctx, denom, address, types.Collateral{Address: address, Amount: amount})
+	if amount.IsZero() {
+		k.collateral.Remove(ctx, denom, address)
+	} else {
+		k.collateral.Set(ctx, denom, address, types.Collateral{Address: address, Amount: amount})
+	}
 }
 
 func (k Keeper) removeCollateral(ctx context.Context, denom, address string) {
