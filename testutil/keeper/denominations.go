@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/constants"
 	"testing"
 
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -94,7 +95,7 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 	cache.AddCache(denomKeeper)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
-	params := denomtypes.DefaultParams()
+	params := createDenomTestParams()
 
 	f := math.LegacyNewDecWithPrec(25, 2)
 
@@ -137,4 +138,169 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 	}))
 
 	return denomKeeper, ctx, &keys
+}
+
+func createDenomTestParams() denomtypes.Params {
+	return denomtypes.Params{
+		CAssets:          createDefaultCAssets(),
+		CollateralDenoms: createDefaultCollateralDenoms(),
+		DexDenoms:        createDefaultDexDenoms(),
+		KCoins:           createDefaultKCoins(),
+	}
+}
+
+func createDefaultCollateralDenoms() []*denomtypes.CollateralDenom {
+	return []*denomtypes.CollateralDenom{
+		{
+			DexDenom:   constants.BaseCurrency,
+			Ltv:        math.LegacyNewDecWithPrec(5, 1),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   "uwusdc",
+			Ltv:        math.LegacyNewDecWithPrec(9, 1),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   "ucwusdc",
+			Ltv:        math.LegacyNewDecWithPrec(95, 2),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   constants.KUSD,
+			Ltv:        math.LegacyNewDecWithPrec(9, 1),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   "uckusd",
+			Ltv:        math.LegacyNewDecWithPrec(95, 2),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   "swbtc",
+			Ltv:        math.LegacyNewDecWithPrec(8, 1),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+		{
+			DexDenom:   "skbtc",
+			Ltv:        math.LegacyNewDecWithPrec(8, 1),
+			MaxDeposit: math.NewInt(1_000_000_000),
+		},
+	}
+}
+
+func createDefaultCAssets() []*denomtypes.CAsset {
+	return []*denomtypes.CAsset{
+		{
+			DexDenom:        "uckusd",
+			BaseDexDenom:    constants.KUSD,
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
+		},
+		{
+			DexDenom:        "ucwusdc",
+			BaseDexDenom:    "uwusdc",
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
+		},
+		{
+			DexDenom:        "sckbtc",
+			BaseDexDenom:    "skbtc",
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
+		},
+	}
+}
+
+func createDefaultDexDenoms() []*denomtypes.DexDenom {
+	return []*denomtypes.DexDenom{
+		{
+			Name:         constants.BaseCurrency,
+			MinLiquidity: math.NewInt(10_000),
+			MinOrderSize: math.NewInt(1),
+			Exponent:     6,
+		},
+		{
+			Name:         "uwusdc",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
+			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1),
+			Exponent:     6,
+		},
+		{
+			Name:         "uwusdt",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
+			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     6,
+		},
+		{
+			Name:         constants.KUSD,
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
+			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1),
+			Exponent:     6,
+		},
+		{
+			Name:         "uckusd",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
+			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     6,
+		},
+		{
+			Name:         "ucwusdc",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
+			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     6,
+		},
+		{
+			Name:         "swbtc",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
+			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     8,
+		},
+		{
+			Name:         "skbtc",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
+			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     8,
+		},
+		{
+			Name:         "sckbtc",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
+			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
+			Exponent:     8,
+		},
+	}
+}
+
+func decPtr(dec math.LegacyDec) *math.LegacyDec {
+	return &dec
+}
+
+func createDefaultKCoins() []*denomtypes.KCoin {
+	return []*denomtypes.KCoin{
+		{
+			DexDenom:      constants.KUSD,
+			References:    []string{"uwusdc", "uwusdt"},
+			MaxSupply:     math.NewInt(1_000_000_000_000),
+			MaxMintAmount: math.NewInt(1_000_000),
+			MaxBurnAmount: math.NewInt(1_000_000),
+		},
+		{
+			DexDenom:      "skbtc",
+			References:    []string{"swbtc"},
+			MaxSupply:     math.NewInt(100_000_000),
+			MaxMintAmount: math.NewInt(10_000),
+			MaxBurnAmount: math.NewInt(10_000),
+		},
+	}
 }
