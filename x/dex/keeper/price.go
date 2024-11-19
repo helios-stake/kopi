@@ -15,7 +15,7 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving 
 	price := math.LegacyOneDec()
 
 	if denomGiving != constants.BaseCurrency {
-		ratio, err := k.GetRatio(ctx, denomGiving)
+		ratio, err := k.DenomKeeper.GetRatio(ctx, denomGiving)
 		if err != nil {
 			return price, err
 		}
@@ -24,7 +24,7 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving 
 	}
 
 	if denomReceiving != constants.BaseCurrency {
-		ratio, err := k.GetRatio(ctx, denomReceiving)
+		ratio, err := k.DenomKeeper.GetRatio(ctx, denomReceiving)
 		if err != nil {
 			return price, err
 		}
@@ -56,7 +56,7 @@ func (k Keeper) GetHighestUSDReference(ctx context.Context) (string, error) {
 	)
 
 	for _, usd := range k.DenomKeeper.ReferenceDenoms(ctx, constants.KUSD) {
-		r, err := k.GetRatio(ctx, usd)
+		r, err := k.DenomKeeper.GetRatio(ctx, usd)
 		if err != nil {
 			return "", err
 		}

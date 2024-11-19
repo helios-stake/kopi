@@ -4,11 +4,12 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
 func (k Keeper) GetLiquidityPair(ctx context.Context, denom string) (types.LiquidityPair, error) {
-	ratio, err := k.GetRatio(ctx, denom)
+	ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
 	if err != nil {
 		return types.LiquidityPair{}, err
 	}
@@ -43,7 +44,7 @@ func (k Keeper) calcVirtualAmountBase(ctx context.Context, ratio math.LegacyDec,
 	return liqOtherDec.Quo(ratio).Sub(liqBaseDec)
 }
 
-func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio types.Ratio) (pair types.LiquidityPair) {
+func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio denomtypes.Ratio) (pair types.LiquidityPair) {
 	liqBase := k.GetLiquiditySum(ctx, constants.BaseCurrency)
 	liqOther := k.GetLiquiditySum(ctx, ratio.Denom)
 

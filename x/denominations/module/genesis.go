@@ -17,6 +17,10 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 			return err
 		}
 
+		for _, elem := range genState.RatioList {
+			k.SetRatio(innerCtx, elem)
+		}
+
 		return nil
 	}); err != nil {
 		panic(err)

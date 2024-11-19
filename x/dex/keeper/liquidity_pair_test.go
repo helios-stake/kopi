@@ -19,10 +19,10 @@ func TestLiquidityPairs1(t *testing.T) {
 	// Other: 0 + 2 #entries: 0
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 8))
 
-	ratios := k.GetAllRatio(ctx)
-	require.Equal(t, 0, len(ratios))
+	ratios := k.DenomKeeper.GetAllRatios(ctx)
+	require.Equal(t, 10, len(ratios))
 
-	r, err := k.GetRatio(ctx, constants.KUSD)
+	r, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), r.Ratio)
 
@@ -59,7 +59,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, math.LegacyNewDec(0), pair.VirtualBase)
 	require.Equal(t, math.LegacyNewDec(1), pair.VirtualOther)
 
-	ratio, err := k.GetRatio(ctx, constants.KUSD)
+	ratio, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, ratio.Ratio)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), ratio.Ratio)
@@ -84,7 +84,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(0), pair.VirtualBase.TruncateInt().Int64())
 	require.Equal(t, int64(0), pair.VirtualOther.TruncateInt().Int64())
 
-	ratio, err = k.GetRatio(ctx, constants.KUSD)
+	ratio, err = k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, ratio.Ratio)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), ratio.Ratio)

@@ -38,8 +38,6 @@ const (
 	Query_OrderPool_FullMethodName            = "/kopi.dex.Query/OrderPool"
 	Query_Price_FullMethodName                = "/kopi.dex.Query/Price"
 	Query_PriceUsd_FullMethodName             = "/kopi.dex.Query/PriceUsd"
-	Query_Ratio_FullMethodName                = "/kopi.dex.Query/Ratio"
-	Query_Ratios_FullMethodName               = "/kopi.dex.Query/Ratios"
 	Query_ReserveFunds_FullMethodName         = "/kopi.dex.Query/ReserveFunds"
 	Query_ReserveFundsPerDenom_FullMethodName = "/kopi.dex.Query/ReserveFundsPerDenom"
 	Query_QuerySimulateSell_FullMethodName    = "/kopi.dex.Query/QuerySimulateSell"
@@ -69,8 +67,6 @@ type QueryClient interface {
 	OrderPool(ctx context.Context, in *QueryOrderPoolRequest, opts ...grpc.CallOption) (*QueryOrderPoolResponse, error)
 	Price(ctx context.Context, in *QueryPriceRequest, opts ...grpc.CallOption) (*QueryPriceResponse, error)
 	PriceUsd(ctx context.Context, in *QueryPriceUsdRequest, opts ...grpc.CallOption) (*QueryPriceUsdResponse, error)
-	Ratio(ctx context.Context, in *QueryGetRatioRequest, opts ...grpc.CallOption) (*QueryGetRatioResponse, error)
-	Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error)
 	ReserveFunds(ctx context.Context, in *QueryReserveFundsRequest, opts ...grpc.CallOption) (*QueryReserveFundsResponse, error)
 	ReserveFundsPerDenom(ctx context.Context, in *QueryReserveFundsPerDenomRequest, opts ...grpc.CallOption) (*Denom, error)
 	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
@@ -256,24 +252,6 @@ func (c *queryClient) PriceUsd(ctx context.Context, in *QueryPriceUsdRequest, op
 	return out, nil
 }
 
-func (c *queryClient) Ratio(ctx context.Context, in *QueryGetRatioRequest, opts ...grpc.CallOption) (*QueryGetRatioResponse, error) {
-	out := new(QueryGetRatioResponse)
-	err := c.cc.Invoke(ctx, Query_Ratio_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error) {
-	out := new(QueryGetRatiosResponse)
-	err := c.cc.Invoke(ctx, Query_Ratios_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) ReserveFunds(ctx context.Context, in *QueryReserveFundsRequest, opts ...grpc.CallOption) (*QueryReserveFundsResponse, error) {
 	out := new(QueryReserveFundsResponse)
 	err := c.cc.Invoke(ctx, Query_ReserveFunds_FullMethodName, in, out, opts...)
@@ -333,8 +311,6 @@ type QueryServer interface {
 	OrderPool(context.Context, *QueryOrderPoolRequest) (*QueryOrderPoolResponse, error)
 	Price(context.Context, *QueryPriceRequest) (*QueryPriceResponse, error)
 	PriceUsd(context.Context, *QueryPriceUsdRequest) (*QueryPriceUsdResponse, error)
-	Ratio(context.Context, *QueryGetRatioRequest) (*QueryGetRatioResponse, error)
-	Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error)
 	ReserveFunds(context.Context, *QueryReserveFundsRequest) (*QueryReserveFundsResponse, error)
 	ReserveFundsPerDenom(context.Context, *QueryReserveFundsPerDenomRequest) (*Denom, error)
 	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
@@ -402,12 +378,6 @@ func (UnimplementedQueryServer) Price(context.Context, *QueryPriceRequest) (*Que
 }
 func (UnimplementedQueryServer) PriceUsd(context.Context, *QueryPriceUsdRequest) (*QueryPriceUsdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PriceUsd not implemented")
-}
-func (UnimplementedQueryServer) Ratio(context.Context, *QueryGetRatioRequest) (*QueryGetRatioResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ratio not implemented")
-}
-func (UnimplementedQueryServer) Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ratios not implemented")
 }
 func (UnimplementedQueryServer) ReserveFunds(context.Context, *QueryReserveFundsRequest) (*QueryReserveFundsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReserveFunds not implemented")
@@ -776,42 +746,6 @@ func _Query_PriceUsd_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Ratio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetRatioRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Ratio(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Ratio_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Ratio(ctx, req.(*QueryGetRatioRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Ratios_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetRatiosRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Ratios(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Ratios_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Ratios(ctx, req.(*QueryGetRatiosRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_ReserveFunds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryReserveFundsRequest)
 	if err := dec(in); err != nil {
@@ -966,14 +900,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PriceUsd",
 			Handler:    _Query_PriceUsd_Handler,
-		},
-		{
-			MethodName: "Ratio",
-			Handler:    _Query_Ratio_Handler,
-		},
-		{
-			MethodName: "Ratios",
-			Handler:    _Query_Ratios_Handler,
 		},
 		{
 			MethodName: "ReserveFunds",

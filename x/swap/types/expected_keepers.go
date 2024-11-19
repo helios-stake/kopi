@@ -43,7 +43,6 @@ type DexKeeper interface {
 	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
 	GetFullLiquidityOther(ctx context.Context, denom string) math.LegacyDec
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
-	GetRatio(ctx context.Context, denom string) (dextypes.Ratio, error)
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	RemoveAllLiquidityForModule(ctx context.Context, denom, module string) error
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int) error
@@ -52,6 +51,7 @@ type DexKeeper interface {
 
 type DenomKeeper interface {
 	GetArbitrageDenoms(ctx context.Context) []*denomtypes.ArbitrageDenom
+	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	KCoins(ctx context.Context) []string
 	MaxSupply(ctx context.Context, kCoin string) math.Int

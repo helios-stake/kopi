@@ -36,12 +36,12 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 			return fmt.Errorf("no dex asset found for given c asset: %v", req.CAsset)
 		}
 
-		dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, cAsset.Exponent)
+		dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, cAsset.Exponent)
 		if err != nil {
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, dexDenom)
+		params.DexDenoms = append(params.DexDenoms, &dexDenom)
 
 		strategyDenoms.ArbitrageDenoms = append(strategyDenoms.ArbitrageDenoms, &types.ArbitrageDenom{
 			DexDenom:                  req.Name,
@@ -59,6 +59,8 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
+
+		k.ratios.Set(innerCtx, req.Name, ratio)
 
 		return nil
 	})

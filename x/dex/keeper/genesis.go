@@ -12,7 +12,6 @@ func (k Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
 
 	genesis.LiquidityList = k.GetAllLiquidity(ctx)
 	genesis.LiquidityNextIndex, _ = k.liquidityEntriesNextIndex.Get(ctx)
-	genesis.RatioList = k.GetAllRatio(ctx)
 	genesis.OrderNextIndex = k.GetOrderNextIndex(ctx)
 
 	orderIterator := k.orders.Iterator(ctx, nil)

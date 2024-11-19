@@ -15,6 +15,5 @@ var (
 	ErrInvalidCollateralDenom = sdkerrors.Register(ModuleName, 1104, "given collateral denom is no collateral denom")
 	ErrInvalidArbitrageDenom  = sdkerrors.Register(ModuleName, 1105, "given denom is no arbitrage denom")
 	ErrInvalidAmount          = sdkerrors.Register(ModuleName, 1106, "invalid amount")
-	ErrInvalidFactorReference = sdkerrors.Register(ModuleName, 1107, "invalid factor reference")
 	ErrInvalidFactor          = sdkerrors.Register(ModuleName, 1108, "invalid factor")
 )

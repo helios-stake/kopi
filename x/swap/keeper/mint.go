@@ -46,7 +46,7 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		return nil
 	}
 
-	referenceRatio, _ := k.DexKeeper.GetRatio(ctx, referenceDenom)
+	referenceRatio, _ := k.DenomKeeper.GetRatio(ctx, referenceDenom)
 	mintAmount := k.calcKCoinMintAmount(ctx, referenceRatio.Ratio, kCoin)
 	mintAmount = math.MinInt(mintAmount, maxMintAmount)
 	mintAmount = k.adjustForSupplyCap(ctx, kCoin, mintAmount)

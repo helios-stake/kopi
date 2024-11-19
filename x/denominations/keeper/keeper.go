@@ -17,6 +17,7 @@ import (
 
 var (
 	PrefixParams = collections.NewPrefix(0)
+	PrefixRatios = collections.NewPrefix(1)
 )
 
 type (
@@ -27,6 +28,7 @@ type (
 
 		// Collection
 		params *cache.ItemCache[types.Params]
+		ratios *cache.MapCache[string, types.Ratio]
 		caches *cache.Caches
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
@@ -62,6 +64,15 @@ func NewKeeper(
 			PrefixParams,
 			"params",
 			codec.CollValue[types.Params](cdc),
+			caches,
+		),
+
+		ratios: cache.NewMapCache(
+			sb,
+			PrefixRatios,
+			"ratios",
+			collections.StringKey,
+			codec.CollValue[types.Ratio](cdc),
 			caches,
 		),
 	}

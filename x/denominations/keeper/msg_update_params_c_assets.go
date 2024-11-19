@@ -37,12 +37,14 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 		}
 
 		if !k.IsValidDenom(innerCtx, req.Name) {
-			dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, baseDenom.Exponent)
+			dexDenom, ratio, err := k.createDexDenom(innerCtx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, baseDenom.Exponent)
 			if err != nil {
 				return err
 			}
 
-			params.DexDenoms = append(params.DexDenoms, dexDenom)
+			params.DexDenoms = append(params.DexDenoms, &dexDenom)
+
+			k.ratios.Set(innerCtx, req.Name, ratio)
 		}
 
 		if err := k.SetParams(innerCtx, params); err != nil {

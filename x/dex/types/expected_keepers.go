@@ -44,12 +44,14 @@ type DenomKeeper interface {
 	Denoms(ctx context.Context) []string
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
-	InitialVirtualLiquidityFactor(ctx context.Context, denom string) (*denomtypes.ReferenceFactor, error)
+	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
+	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	IsNativeDenom(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	MinLiquidity(ctx context.Context, denom string) math.Int
 	MinOrderSize(ctx context.Context, denom string) math.Int
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
+	SetRatio(ctx context.Context, ratio denomtypes.Ratio)
 	KCoins(ctx context.Context) (kCoins []string)
 }

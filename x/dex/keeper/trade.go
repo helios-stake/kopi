@@ -7,6 +7,7 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/dex/constant_product"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
@@ -390,7 +391,7 @@ func (k Keeper) updateRatio(ctx context.Context, denom string, fullBase, fullOth
 	fullOther = fullOther.Add(changeOther.ToLegacyDec())
 
 	if fullBase.IsPositive() {
-		k.SetRatio(ctx, types.Ratio{
+		k.DenomKeeper.SetRatio(ctx, denomtypes.Ratio{
 			Denom: denom,
 			Ratio: fullOther.Quo(fullBase),
 		})

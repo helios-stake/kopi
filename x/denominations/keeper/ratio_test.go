@@ -3,17 +3,19 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestRatios1(t *testing.T) {
-	k, denomMsg, _, ctx := keepertest.SetupDexDenomMsgServer(t)
+	k, ctx, _ := keepertest.DenomKeeper(t)
+	denomMsg := denomkeeper.NewMsgServerImpl(k)
 
 	// Add BTC with a price 1 BTC = 1000 kUSD
 	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
-		Authority:    k.DenomKeeper.GetAuthority(),
+		Authority:    k.GetAuthority(),
 		Name:         "bitcoin",
 		Factor:       "1000ukusd",
 		MinLiquidity: "1000000",

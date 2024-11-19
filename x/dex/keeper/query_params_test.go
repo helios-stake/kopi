@@ -13,7 +13,7 @@ import (
 )
 
 func TestParamsQuery(t *testing.T) {
-	keeper, _, ctx, _ := keepertest.DexKeeper(t)
+	keeper, ctx, _ := keepertest.DexKeeper(t)
 	params := types.DefaultParams()
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return keeper.SetParams(innerCtx, params)

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"testing"
 
 	"github.com/kopi-money/kopi/x/dex/constant_product"
@@ -96,7 +97,7 @@ func TestSingleTrade1(t *testing.T) {
 
 	fee := math.LegacyZeroDec()
 
-	ratio1, err := k.GetRatio(ctx, constants.KUSD)
+	ratio1, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), ratio1.Ratio)
 
@@ -1196,7 +1197,7 @@ func TestTrade23(t *testing.T) {
 	price1, err := k.CalculatePrice(ctx, constants.BaseCurrency, constants.KUSD)
 	require.NoError(t, err)
 
-	ratio1, err := k.GetRatio(ctx, constants.KUSD)
+	ratio1, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 
 	_, err = keepertest.Sell(ctx, msg, &types.MsgSell{
@@ -1208,7 +1209,7 @@ func TestTrade23(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	ratio2, err := k.GetRatio(ctx, constants.KUSD)
+	ratio2, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.True(t, ratio1.Ratio.GT(ratio2.Ratio))
 
@@ -1828,7 +1829,7 @@ func TestTrade42(t *testing.T) {
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		for denom, ratio := range ratios {
 			r, _ := math.LegacyNewDecFromStr(ratio)
-			k.SetRatio(innerCtx, types.Ratio{Denom: denom, Ratio: r})
+			k.DenomKeeper.SetRatio(innerCtx, denomtypes.Ratio{Denom: denom, Ratio: r})
 		}
 
 		return nil

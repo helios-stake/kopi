@@ -102,20 +102,12 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 			MinLiquidity: math.NewInt(100_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDec(10),
-			},
 		},
 		&denomtypes.DexDenom{
 			Name:         "uawusdc",
 			MinLiquidity: math.NewInt(1000),
 			MinOrderSize: math.NewInt(1000),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 	)
 
@@ -136,6 +128,56 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 	}
 
 	require.NoError(t, cache.Transact(ctx, func(innerContext context.Context) error {
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "uwusdc",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "uwusdt",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "ukusd",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "uckusd",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "ucwusdc",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "swbtc",
+			Ratio: math.LegacyNewDecWithPrec(1, 3),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "skbtc",
+			Ratio: math.LegacyNewDecWithPrec(1, 3),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "sckbtc",
+			Ratio: math.LegacyNewDecWithPrec(1, 3),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+			Ratio: math.LegacyNewDec(10),
+		})
+
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "uawusdc",
+			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
 		return denomKeeper.SetParams(innerContext, params)
 	}))
 
@@ -230,80 +272,48 @@ func createDefaultDexDenoms() []*denomtypes.DexDenom {
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 		{
 			Name:         "uwusdt",
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 		{
 			Name:         constants.KUSD,
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 		{
 			Name:         "uckusd",
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 		{
 			Name:         "ucwusdc",
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(25, 2),
-			},
 		},
 		{
 			Name:         "swbtc",
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(1, 3),
-			},
 		},
 		{
 			Name:         "skbtc",
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(1, 3),
-			},
 		},
 		{
 			Name:         "sckbtc",
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
-			ReferenceFactor: &denomtypes.ReferenceFactor{
-				Denom:  constants.BaseCurrency,
-				Factor: math.LegacyNewDecWithPrec(1, 3),
-			},
 		},
 	}
 }

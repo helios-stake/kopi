@@ -183,13 +183,13 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
 		if denom != constants.BaseCurrency {
 			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
-				ratio, err := k.GetRatio(ctx, denom)
+				ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
 				if err != nil {
 					return fmt.Errorf("could not get ratio for %v: %w", denom, err)
 				}
 
 				ratio.Ratio = ratio.Ratio.Mul(decay)
-				k.SetRatio(ctx, ratio)
+				k.DenomKeeper.SetRatio(ctx, ratio)
 			}
 		}
 	}

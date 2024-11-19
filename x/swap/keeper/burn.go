@@ -49,7 +49,7 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return fmt.Errorf("could not convert to maxBurnAmountBase: %w", err)
 	}
 
-	referenceRatio, _ := k.DexKeeper.GetRatio(ctx, referenceDenom)
+	referenceRatio, _ := k.DenomKeeper.GetRatio(ctx, referenceDenom)
 	mintAmountBase := k.calcBaseMintAmount(ctx, referenceRatio.Ratio, kCoin)
 	mintAmountBase = math.MinInt(mintAmountBase, maxBurnAmountBase.TruncateInt())
 	if mintAmountBase.LTE(math.ZeroInt()) {

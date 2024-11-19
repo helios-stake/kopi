@@ -1,9 +1,9 @@
 syntax = "proto3";
-package kopi.dex;
+package kopi.denominations;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/kopi-money/kopi/x/dex/types";
+option go_package = "github.com/kopi-money/kopi/x/denominations/types";
 
 message Ratio {
   string denom = 1;
@@ -12,5 +12,4 @@ message Ratio {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-
 }

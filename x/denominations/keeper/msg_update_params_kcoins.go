@@ -30,16 +30,18 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 			MaxBurnAmount: maxBurnAmount,
 		})
 
-		dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
+		dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
 		if err != nil {
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, dexDenom)
+		params.DexDenoms = append(params.DexDenoms, &dexDenom)
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
+
+		k.ratios.Set(innerCtx, req.Name, ratio)
 
 		return nil
 	})

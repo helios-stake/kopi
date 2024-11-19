@@ -4,7 +4,6 @@ package types
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		LiquidityList:      []DenomLiquidity{},
-		RatioList:          []Ratio{},
 		LiquidityNextIndex: 0,
 
 		OrderList:         []Order{},

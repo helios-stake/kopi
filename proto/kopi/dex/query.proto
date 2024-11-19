@@ -7,7 +7,6 @@ import "google/api/annotations.proto";
 import "kopi/dex/params.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kopi/dex/liquidity_pair.proto";
-import "kopi/dex/ratio.proto";
 import "kopi/dex/order.proto";
 
 // this line is used by starport scaffolding # 1
@@ -71,12 +70,6 @@ service Query {
   }
   rpc PriceUsd (QueryPriceUsdRequest) returns (QueryPriceUsdResponse) {
     option (google.api.http).get = "/kopi/dex/price_usd/by_denom";
-  }
-  rpc Ratio (QueryGetRatioRequest) returns (QueryGetRatioResponse) {
-    option (google.api.http).get = "/kopi/dex/ratio/by_denom";
-  }
-  rpc Ratios (QueryGetRatiosRequest) returns (QueryGetRatiosResponse) {
-    option (google.api.http).get = "/kopi/dex/ratios";
   }
   rpc ReserveFunds (QueryReserveFundsRequest) returns (QueryReserveFundsResponse) {
     option (google.api.http).get = "/kopi/dex/reserve/funds";
@@ -221,35 +214,6 @@ message QueryAllLiquidityPairResponse {
 }
 
 message QueryTradeRequest {}
-
-message QueryGetRatioRequest {
-  string denom = 1;
-}
-
-message RatioResponse {
-  string denom = 1;
-  string ratio = 2;
-}
-
-message QueryGetRatioResponse {
-  RatioResponse ratio = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryGetRatiosRequest {
-}
-
-message QueryGetRatiosResponse {
-  repeated RatioResponse ratios = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryAllRatioRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QueryAllRatioResponse {
-  repeated Ratio                                  ratio = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
 
 // this line is used by starport scaffolding # 3
 message QueryLiquidityForAddressRequest {

@@ -20,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Query_Params_FullMethodName = "/kopi.denominations.Query/Params"
+	Query_Ratio_FullMethodName  = "/kopi.denominations.Query/Ratio"
+	Query_Ratios_FullMethodName = "/kopi.denominations.Query/Ratios"
 )
 
 // QueryClient is the client API for Query service.
@@ -28,6 +30,8 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	Ratio(ctx context.Context, in *QueryGetRatioRequest, opts ...grpc.CallOption) (*QueryGetRatioResponse, error)
+	Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error)
 }
 
 type queryClient struct {
@@ -47,12 +51,32 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Ratio(ctx context.Context, in *QueryGetRatioRequest, opts ...grpc.CallOption) (*QueryGetRatioResponse, error) {
+	out := new(QueryGetRatioResponse)
+	err := c.cc.Invoke(ctx, Query_Ratio_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error) {
+	out := new(QueryGetRatiosResponse)
+	err := c.cc.Invoke(ctx, Query_Ratios_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	Ratio(context.Context, *QueryGetRatioRequest) (*QueryGetRatioResponse, error)
+	Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -62,6 +86,12 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Ratio(context.Context, *QueryGetRatioRequest) (*QueryGetRatioResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ratio not implemented")
+}
+func (UnimplementedQueryServer) Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ratios not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -94,6 +124,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Ratio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetRatioRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Ratio(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Ratio_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Ratio(ctx, req.(*QueryGetRatioRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Ratios_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetRatiosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Ratios(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Ratios_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Ratios(ctx, req.(*QueryGetRatiosRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -104,6 +170,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Ratio",
+			Handler:    _Query_Ratio_Handler,
+		},
+		{
+			MethodName: "Ratios",
+			Handler:    _Query_Ratios_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

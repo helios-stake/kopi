@@ -30,7 +30,7 @@ func (k BlockspeedKeeper) BlocksPerYear(_ context.Context) (math.LegacyDec, erro
 }
 
 func MmKeeperKeys(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, context.Context, *Keys) {
-	dexKeeper, _, ctx, keys := DexKeeper(t)
+	dexKeeper, ctx, keys := DexKeeper(t)
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 	mmKeeper := NewMMKeeper(keys, dexKeeper, authority)

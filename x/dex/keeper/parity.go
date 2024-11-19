@@ -22,12 +22,12 @@ func (k Keeper) CalculateParity(ctx context.Context, kCoin string) (*math.Legacy
 		return nil, referenceDenom, fmt.Errorf("could not get highest price denom: %w", err)
 	}
 
-	referenceRatio, err := k.GetRatio(ctx, referenceDenom)
+	referenceRatio, err := k.DenomKeeper.GetRatio(ctx, referenceDenom)
 	if err != nil {
 		return nil, referenceDenom, err
 	}
 
-	kCoinRatio, err := k.GetRatio(ctx, kCoin)
+	kCoinRatio, err := k.DenomKeeper.GetRatio(ctx, kCoin)
 	if err != nil {
 		return nil, referenceDenom, err
 	}

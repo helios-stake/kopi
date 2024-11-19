@@ -24,8 +24,8 @@ func (k Keeper) KCoinSupply(ctx context.Context, req *types.QueryKCoinSupplyRequ
 		return nil, err
 	}
 
-	ratioKCoin, _ := k.DexKeeper.GetRatio(ctx, req.Denom)
-	ratioReference, _ := k.DexKeeper.GetRatio(ctx, denom)
+	ratioKCoin, _ := k.DenomKeeper.GetRatio(ctx, req.Denom)
+	ratioReference, _ := k.DenomKeeper.GetRatio(ctx, denom)
 
 	return &types.QueryKCoinSupplyResponse{
 		Amount:         coin.Amount.String(),

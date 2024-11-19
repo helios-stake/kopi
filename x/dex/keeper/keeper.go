@@ -19,9 +19,8 @@ var (
 	PrefixLiquidityNextIndex = collections.NewPrefix(2)
 	PrefixOrders             = collections.NewPrefix(3)
 	PrefixOrdersNextIndex    = collections.NewPrefix(4)
-	PrefixRatios             = collections.NewPrefix(5)
-	PrefixTradeAmounts       = collections.NewPrefix(6)
-	PrefixBaseTradeFee       = collections.NewPrefix(7)
+	PrefixTradeAmounts       = collections.NewPrefix(5)
+	PrefixBaseTradeFee       = collections.NewPrefix(6)
 )
 
 type (
@@ -40,7 +39,6 @@ type (
 		liquidityEntriesNextIndex *cache.ItemCache[uint64]
 		orders                    *cache.MapCache[uint64, types.Order]
 		ordersNextIndex           *cache.ItemCache[uint64]
-		ratios                    *cache.MapCache[string, types.Ratio]
 		tradeAmounts              *cache.MapCache[string, types.WalletTradeAmount]
 		tradeFeeTracker           *cache.ItemCache[int64]
 
@@ -120,15 +118,6 @@ func NewKeeper(
 			PrefixOrdersNextIndex,
 			"orders_next_index",
 			collections.Uint64Value,
-			caches,
-		),
-
-		ratios: cache.NewMapCache(
-			sb,
-			PrefixRatios,
-			"ratios",
-			collections.StringKey,
-			codec.CollValue[types.Ratio](cdc),
 			caches,
 		),
 

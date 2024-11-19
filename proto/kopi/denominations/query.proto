@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kopi/denominations/params.proto";
+import "kopi/denominations/ratios.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/denominations/types";
 
@@ -14,6 +15,13 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/kopi/denominations/params";
+  }
+
+  rpc Ratio (QueryGetRatioRequest) returns (QueryGetRatioResponse) {
+    option (google.api.http).get = "/kopi/denominations/ratio/by_denom";
+  }
+  rpc Ratios (QueryGetRatiosRequest) returns (QueryGetRatiosResponse) {
+    option (google.api.http).get = "/kopi/denominations/ratios";
   }
 }
 
@@ -27,4 +35,33 @@ message QueryParamsResponse {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+}
+
+message QueryGetRatioRequest {
+  string denom = 1;
+}
+
+message RatioResponse {
+  string denom = 1;
+  string ratio = 2;
+}
+
+message QueryGetRatioResponse {
+  RatioResponse ratio = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetRatiosRequest {
+}
+
+message QueryGetRatiosResponse {
+  repeated RatioResponse ratios = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllRatioRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllRatioResponse {
+  repeated Ratio                                  ratio = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

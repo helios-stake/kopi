@@ -20,10 +20,6 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 			}
 		}
 
-		for _, elem := range genState.RatioList {
-			k.SetRatio(innerCtx, elem)
-		}
-
 		// Set all the order
 		for _, elem := range genState.OrderList {
 			k.SetOrder(innerCtx, elem)

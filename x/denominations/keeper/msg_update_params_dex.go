@@ -2,8 +2,11 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
+	"fmt"
 	"github.com/kopi-money/kopi/cache"
+	"github.com/kopi-money/kopi/constants"
+
+	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/kopi-money/kopi/x/denominations/types"
@@ -17,16 +20,18 @@ func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (
 
 		params := k.GetParams(innerCtx)
 
-		dexDenom, err := createDexDenom(params.DexDenoms, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
+		dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
 		if err != nil {
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, dexDenom)
+		params.DexDenoms = append(params.DexDenoms, &dexDenom)
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
+
+		k.ratios.Set(innerCtx, req.Name, ratio)
 
 		return nil
 	})
@@ -106,36 +111,40 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
-func createDexDenom(dexDenoms types.DexDenoms, name, factorStr, minLiquidityStr, minOrderSizeStr string, exponent uint64) (*types.DexDenom, error) {
-	factor, denom, err := types.ExtractNumberAndString(factorStr)
+func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidityStr, minOrderSizeStr string, exponent uint64) (types.DexDenom, types.Ratio, error) {
+	referenceFactor, referenceDenom, err := types.ExtractNumberAndString(factorStr)
 	if err != nil {
-		return nil, err
+		return types.DexDenom{}, types.Ratio{}, err
 	}
 
-	if denom == "" {
-		return nil, types.ErrInvalidFactorReference
+	if referenceDenom != constants.BaseCurrency && referenceDenom != "" {
+		var otherRatio types.Ratio
+		otherRatio, err = k.GetRatio(ctx, referenceDenom)
+		if err != nil {
+			return types.DexDenom{}, types.Ratio{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
+		}
+
+		referenceFactor = otherRatio.Ratio.Quo(referenceFactor)
 	}
 
-	referenceDenom := dexDenoms.Get(denom)
-	if referenceDenom == nil {
-		return nil, types.ErrInvalidFactorReference
-	}
-
-	if factor.LTE(math.LegacyZeroDec()) {
-		return nil, types.ErrInvalidFactor
+	if referenceFactor.LTE(math.LegacyZeroDec()) {
+		return types.DexDenom{}, types.Ratio{}, types.ErrInvalidFactor
 	}
 
 	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
 	minOrderSize, _ := math.NewIntFromString(minOrderSizeStr)
 
-	return &types.DexDenom{
+	dexDenom := types.DexDenom{
 		Name:         name,
 		MinLiquidity: minLiquidity,
 		MinOrderSize: minOrderSize,
 		Exponent:     exponent,
-		ReferenceFactor: &types.ReferenceFactor{
-			Denom:  denom,
-			Factor: factor,
-		},
-	}, nil
+	}
+
+	ratio := types.Ratio{
+		Denom: name,
+		Ratio: referenceFactor,
+	}
+
+	return dexDenom, ratio, nil
 }
