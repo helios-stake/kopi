@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	"strconv"
 	"testing"
 
@@ -32,7 +33,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
+func DexKeeper(t *testing.T) (dexkeeper.Keeper, denomkeeper.Keeper, context.Context, *Keys) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	maccPerms := map[string][]string{
@@ -124,7 +125,7 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 	require.NoError(t, reserveAcc.SetAccountNumber(acc.GetAccountNumber()))
 	accountKeeper.SetAccount(ctx, reserveAcc)
 
-	return dexKeeper, ctx, keys
+	return dexKeeper, denomKeeper, ctx, keys
 }
 
 func AddLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom string, amount int64) error {
@@ -269,7 +270,13 @@ func TestAddLiquidity(ctx context.Context, k LiquidityI, t *testing.T, address, 
 }
 
 func SetupDexMsgServer(t *testing.T) (dexkeeper.Keeper, dextypes.MsgServer, context.Context) {
-	k, ctx, _ := DexKeeper(t)
+	k, _, ctx, _ := DexKeeper(t)
 	addFunds(ctx, k.BankKeeper.(bankkeeper.BaseKeeper), t)
 	return k, dexkeeper.NewMsgServerImpl(k), ctx
+}
+
+func SetupDexDenomMsgServer(t *testing.T) (dexkeeper.Keeper, denomtypes.MsgServer, dextypes.MsgServer, context.Context) {
+	dexK, denomK, ctx, _ := DexKeeper(t)
+	addFunds(ctx, dexK.BankKeeper.(bankkeeper.BaseKeeper), t)
+	return dexK, denomkeeper.NewMsgServerImpl(denomK), dexkeeper.NewMsgServerImpl(dexK), ctx
 }

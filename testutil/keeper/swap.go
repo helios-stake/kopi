@@ -25,7 +25,7 @@ import (
 )
 
 func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, reservekeeper.Keeper, context.Context) {
-	dexKeeper, ctx, keys := DexKeeper(t)
+	dexKeeper, _, ctx, keys := DexKeeper(t)
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)

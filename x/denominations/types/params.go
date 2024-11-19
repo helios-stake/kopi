@@ -397,11 +397,11 @@ func validateDexDenom(dexDenom *DexDenom) error {
 	}
 
 	if dexDenom.Name != constants.BaseCurrency {
-		if dexDenom.Factor == nil || dexDenom.Factor.IsNil() {
+		if dexDenom.ReferenceFactor == nil {
 			return fmt.Errorf("for dex denoms other than base, factor cannot be nil")
 		}
 
-		if !dexDenom.Factor.IsPositive() {
+		if !dexDenom.ReferenceFactor.Factor.IsPositive() {
 			return fmt.Errorf("factor must be larger than zero")
 		}
 

@@ -152,14 +152,13 @@ func (k Keeper) Exponent(ctx context.Context, denom string) (uint64, error) {
 }
 
 // InitialVirtualLiquidityFactor returns the factor used for initial virtual liquidity for a denom.
-func (k Keeper) InitialVirtualLiquidityFactor(ctx context.Context, denom string) (math.LegacyDec, error) {
-	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
-		if dexDenom.Name == denom {
-			return *dexDenom.Factor, nil
-		}
+func (k Keeper) InitialVirtualLiquidityFactor(ctx context.Context, denom string) (*types.ReferenceFactor, error) {
+	dexDenom, found := k.GetDexDenom(ctx, denom)
+	if !found {
+		return nil, fmt.Errorf("could not find dex denom: %v", denom)
 	}
 
-	return math.LegacyDec{}, fmt.Errorf("no initial virtual liquidity factor found for %v", denom)
+	return dexDenom.ReferenceFactor, nil
 }
 
 func (k Keeper) MaxSupply(ctx context.Context, kCoinName string) math.Int {

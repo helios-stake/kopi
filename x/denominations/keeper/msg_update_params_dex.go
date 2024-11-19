@@ -2,10 +2,8 @@ package keeper
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/cache"
-	"github.com/kopi-money/kopi/constants"
-
 	"cosmossdk.io/math"
+	"github.com/kopi-money/kopi/cache"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/kopi-money/kopi/x/denominations/types"
@@ -114,17 +112,13 @@ func createDexDenom(dexDenoms types.DexDenoms, name, factorStr, minLiquidityStr,
 		return nil, err
 	}
 
-	if denom != "" {
-		if denom == constants.BaseCurrency {
-			return nil, types.ErrInvalidFactorReference
-		}
+	if denom == "" {
+		return nil, types.ErrInvalidFactorReference
+	}
 
-		referenceDenom := dexDenoms.Get(denom)
-		if referenceDenom == nil {
-			return nil, types.ErrInvalidFactorReference
-		}
-
-		factor = referenceDenom.Factor.Mul(factor)
+	referenceDenom := dexDenoms.Get(denom)
+	if referenceDenom == nil {
+		return nil, types.ErrInvalidFactorReference
 	}
 
 	if factor.LTE(math.LegacyZeroDec()) {
@@ -136,9 +130,12 @@ func createDexDenom(dexDenoms types.DexDenoms, name, factorStr, minLiquidityStr,
 
 	return &types.DexDenom{
 		Name:         name,
-		Factor:       &factor,
 		MinLiquidity: minLiquidity,
 		MinOrderSize: minOrderSize,
 		Exponent:     exponent,
+		ReferenceFactor: &types.ReferenceFactor{
+			Denom:  denom,
+			Factor: factor,
+		},
 	}, nil
 }

@@ -96,24 +96,26 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
 	params := createDenomTestParams()
-
-	f := math.LegacyNewDecWithPrec(25, 2)
-
-	factor := math.LegacyNewDec(10)
 	params.DexDenoms = append(params.DexDenoms,
 		&denomtypes.DexDenom{
 			Name:         "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
-			Factor:       &factor,
 			MinLiquidity: math.NewInt(100_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDec(10),
+			},
 		},
 		&denomtypes.DexDenom{
 			Name:         "uawusdc",
-			Factor:       &f,
 			MinLiquidity: math.NewInt(1000),
 			MinOrderSize: math.NewInt(1000),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 	)
 
@@ -225,65 +227,90 @@ func createDefaultDexDenoms() []*denomtypes.DexDenom {
 		},
 		{
 			Name:         "uwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 		{
 			Name:         "uwusdt",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 		{
 			Name:         constants.KUSD,
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 		{
 			Name:         "uckusd",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 		{
 			Name:         "ucwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(25, 2),
+			},
 		},
 		{
 			Name:         "swbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(1, 3),
+			},
 		},
 		{
 			Name:         "skbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(1, 3),
+			},
 		},
 		{
 			Name:         "sckbtc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     8,
+			ReferenceFactor: &denomtypes.ReferenceFactor{
+				Denom:  constants.BaseCurrency,
+				Factor: math.LegacyNewDecWithPrec(1, 3),
+			},
 		},
 	}
 }
 
-func decPtr(dec math.LegacyDec) *math.LegacyDec {
-	return &dec
+func AddDexDenom(ctx context.Context, k denomtypes.MsgServer, msg *denomtypes.MsgDexAddDenom) error {
+	_, err := k.DexAddDenom(ctx, msg)
+	return err
 }
 
 func createDefaultKCoins() []*denomtypes.KCoin {

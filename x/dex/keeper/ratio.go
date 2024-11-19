@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
+	"fmt"
+	"github.com/kopi-money/kopi/constants"
 
 	"github.com/kopi-money/kopi/x/dex/types"
 )
@@ -17,14 +20,27 @@ func (k Keeper) RemoveRatio(ctx context.Context, ratio types.Ratio) {
 func (k Keeper) GetRatio(ctx context.Context, denom string) (types.Ratio, error) {
 	ratio, has := k.ratios.Get(ctx, denom)
 	if !has {
-		fac, err := k.DenomKeeper.InitialVirtualLiquidityFactor(ctx, denom)
+		referenceFactor, err := k.DenomKeeper.InitialVirtualLiquidityFactor(ctx, denom)
 		if err != nil {
 			return types.Ratio{}, err
 		}
 
+		var factor math.LegacyDec
+		if referenceFactor.Denom == constants.BaseCurrency {
+			factor = referenceFactor.Factor
+		} else {
+			var otherRatio types.Ratio
+			otherRatio, err = k.GetRatio(ctx, referenceFactor.Denom)
+			if err != nil {
+				return otherRatio, fmt.Errorf("unable to find ratio for %s: %w", referenceFactor.Denom, err)
+			}
+
+			factor = otherRatio.Ratio.Quo(referenceFactor.Factor)
+		}
+
 		ratio = types.Ratio{
 			Denom: denom,
-			Ratio: fac,
+			Ratio: factor,
 		}
 	}
 
@@ -33,12 +49,4 @@ func (k Keeper) GetRatio(ctx context.Context, denom string) (types.Ratio, error)
 
 func (k Keeper) GetAllRatio(ctx context.Context) (list []types.Ratio) {
 	return k.ratios.Iterator(ctx, nil).GetAll()
-}
-
-func compareRatios(r1, r2 types.Ratio) bool {
-	if r1.Denom != r2.Denom {
-		return false
-	}
-
-	return r1.Ratio.Equal(r2.Ratio)
 }

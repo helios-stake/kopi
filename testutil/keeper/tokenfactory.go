@@ -19,7 +19,7 @@ import (
 )
 
 func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, context.Context) {
-	dexKeeper, ctx, keys := DexKeeper(t)
+	dexKeeper, _, ctx, keys := DexKeeper(t)
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
