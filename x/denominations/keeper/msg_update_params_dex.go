@@ -124,7 +124,13 @@ func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidit
 			return types.DexDenom{}, types.Ratio{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
 		}
 
+		otherDenom, has := k.GetDexDenom(ctx, referenceDenom)
+		if !has {
+			return types.DexDenom{}, types.Ratio{}, fmt.Errorf("unable to find other denom: %v", referenceDenom)
+		}
+
 		referenceFactor = otherRatio.Ratio.Quo(referenceFactor)
+		referenceFactor = adjustForExponent(referenceFactor, otherDenom.Exponent, exponent)
 	}
 
 	if referenceFactor.LTE(math.LegacyZeroDec()) {
@@ -147,4 +153,14 @@ func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidit
 	}
 
 	return dexDenom, ratio, nil
+}
+
+func adjustForExponent(value math.LegacyDec, exp1, exp2 uint64) math.LegacyDec {
+	if exp1 == exp2 {
+		return value
+	}
+
+	value = value.Mul(math.LegacyNewDec(10).Power(exp2))
+	value = value.Quo(math.LegacyNewDec(10).Power(exp1))
+	return value
 }
