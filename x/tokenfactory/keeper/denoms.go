@@ -78,6 +78,10 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, i
 		return types.FactoryDenom{}, fmt.Errorf("exponent has to be at least 1")
 	}
 
+	if exponent > 18 {
+		return types.FactoryDenom{}, fmt.Errorf("exponent must not be larger than 18")
+	}
+
 	if err := k.processCreationFee(ctx, address); err != nil {
 		return types.FactoryDenom{}, err
 	}
