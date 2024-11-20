@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -57,7 +58,12 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
 
-	price := tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec())
+	var price math.LegacyDec
+	if tradeResult.AmountReceived.IsPositive() {
+		price = tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec())
+	} else {
+		price = math.LegacyZeroDec()
+	}
 
 	return &types.QuerySimulateTradeResponse{
 		AmountGiven:         tradeResult.AmountGiven.String(),
