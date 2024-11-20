@@ -60,11 +60,11 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 	price := tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec())
 
 	return &types.QuerySimulateTradeResponse{
-		AmountGiven:         tradeResult.AmountGiven.Int64(),
-		AmountGivenInUsd:    tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt64(),
-		AmountReceived:      tradeResult.AmountReceived.Int64(),
-		AmountReceivedInUsd: tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt64(),
-		Fee:                 tradeResult.FeeGiven.Int64(),
+		AmountGiven:         tradeResult.AmountGiven.String(),
+		AmountGivenInUsd:    tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt().String(),
+		AmountReceived:      tradeResult.AmountReceived.String(),
+		AmountReceivedInUsd: tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt().String(),
+		Fee:                 tradeResult.FeeGiven.String(),
 		Price:               price.String(),
 		PriceGivenInUsd:     priceGivingUSD.String(),
 		PriceReceivedInUsd:  priceReceivingUSD.String(),

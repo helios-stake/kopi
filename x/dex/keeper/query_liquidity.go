@@ -27,7 +27,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 
 		amountUSD, err = k.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not convert value %s > %s: %w", denom, referenceDenom, err)
 		}
 
 		entries = append(entries, &types.QueryGetLiquidityAllResponseEntry{

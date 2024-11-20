@@ -21823,32 +21823,32 @@ func (x *fastReflection_QuerySimulateTradeResponse) Interface() protoreflect.Pro
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QuerySimulateTradeResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.AmountGiven != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountGiven)
+	if x.AmountGiven != "" {
+		value := protoreflect.ValueOfString(x.AmountGiven)
 		if !f(fd_QuerySimulateTradeResponse_amount_given, value) {
 			return
 		}
 	}
-	if x.AmountGivenInUsd != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountGivenInUsd)
+	if x.AmountGivenInUsd != "" {
+		value := protoreflect.ValueOfString(x.AmountGivenInUsd)
 		if !f(fd_QuerySimulateTradeResponse_amount_given_in_usd, value) {
 			return
 		}
 	}
-	if x.AmountReceived != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountReceived)
+	if x.AmountReceived != "" {
+		value := protoreflect.ValueOfString(x.AmountReceived)
 		if !f(fd_QuerySimulateTradeResponse_amount_received, value) {
 			return
 		}
 	}
-	if x.AmountReceivedInUsd != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountReceivedInUsd)
+	if x.AmountReceivedInUsd != "" {
+		value := protoreflect.ValueOfString(x.AmountReceivedInUsd)
 		if !f(fd_QuerySimulateTradeResponse_amount_received_in_usd, value) {
 			return
 		}
 	}
-	if x.Fee != int64(0) {
-		value := protoreflect.ValueOfInt64(x.Fee)
+	if x.Fee != "" {
+		value := protoreflect.ValueOfString(x.Fee)
 		if !f(fd_QuerySimulateTradeResponse_fee, value) {
 			return
 		}
@@ -21887,15 +21887,15 @@ func (x *fastReflection_QuerySimulateTradeResponse) Range(f func(protoreflect.Fi
 func (x *fastReflection_QuerySimulateTradeResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given":
-		return x.AmountGiven != int64(0)
+		return x.AmountGiven != ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given_in_usd":
-		return x.AmountGivenInUsd != int64(0)
+		return x.AmountGivenInUsd != ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received":
-		return x.AmountReceived != int64(0)
+		return x.AmountReceived != ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received_in_usd":
-		return x.AmountReceivedInUsd != int64(0)
+		return x.AmountReceivedInUsd != ""
 	case "kopi.dex.QuerySimulateTradeResponse.fee":
-		return x.Fee != int64(0)
+		return x.Fee != ""
 	case "kopi.dex.QuerySimulateTradeResponse.price":
 		return x.Price != ""
 	case "kopi.dex.QuerySimulateTradeResponse.price_given_in_usd":
@@ -21919,15 +21919,15 @@ func (x *fastReflection_QuerySimulateTradeResponse) Has(fd protoreflect.FieldDes
 func (x *fastReflection_QuerySimulateTradeResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given":
-		x.AmountGiven = int64(0)
+		x.AmountGiven = ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given_in_usd":
-		x.AmountGivenInUsd = int64(0)
+		x.AmountGivenInUsd = ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received":
-		x.AmountReceived = int64(0)
+		x.AmountReceived = ""
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received_in_usd":
-		x.AmountReceivedInUsd = int64(0)
+		x.AmountReceivedInUsd = ""
 	case "kopi.dex.QuerySimulateTradeResponse.fee":
-		x.Fee = int64(0)
+		x.Fee = ""
 	case "kopi.dex.QuerySimulateTradeResponse.price":
 		x.Price = ""
 	case "kopi.dex.QuerySimulateTradeResponse.price_given_in_usd":
@@ -21952,19 +21952,19 @@ func (x *fastReflection_QuerySimulateTradeResponse) Get(descriptor protoreflect.
 	switch descriptor.FullName() {
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given":
 		value := x.AmountGiven
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given_in_usd":
 		value := x.AmountGivenInUsd
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received":
 		value := x.AmountReceived
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received_in_usd":
 		value := x.AmountReceivedInUsd
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.QuerySimulateTradeResponse.fee":
 		value := x.Fee
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.QuerySimulateTradeResponse.price":
 		value := x.Price
 		return protoreflect.ValueOfString(value)
@@ -21995,15 +21995,15 @@ func (x *fastReflection_QuerySimulateTradeResponse) Get(descriptor protoreflect.
 func (x *fastReflection_QuerySimulateTradeResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given":
-		x.AmountGiven = value.Int()
+		x.AmountGiven = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given_in_usd":
-		x.AmountGivenInUsd = value.Int()
+		x.AmountGivenInUsd = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received":
-		x.AmountReceived = value.Int()
+		x.AmountReceived = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received_in_usd":
-		x.AmountReceivedInUsd = value.Int()
+		x.AmountReceivedInUsd = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.fee":
-		x.Fee = value.Int()
+		x.Fee = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.price":
 		x.Price = value.Interface().(string)
 	case "kopi.dex.QuerySimulateTradeResponse.price_given_in_usd":
@@ -22060,15 +22060,15 @@ func (x *fastReflection_QuerySimulateTradeResponse) Mutable(fd protoreflect.Fiel
 func (x *fastReflection_QuerySimulateTradeResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.amount_given_in_usd":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.amount_received_in_usd":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.fee":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.price":
 		return protoreflect.ValueOfString("")
 	case "kopi.dex.QuerySimulateTradeResponse.price_given_in_usd":
@@ -22144,20 +22144,25 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 		var n int
 		var l int
 		_ = l
-		if x.AmountGiven != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountGiven))
+		l = len(x.AmountGiven)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.AmountGivenInUsd != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountGivenInUsd))
+		l = len(x.AmountGivenInUsd)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.AmountReceived != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountReceived))
+		l = len(x.AmountReceived)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.AmountReceivedInUsd != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountReceivedInUsd))
+		l = len(x.AmountReceivedInUsd)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Fee != 0 {
-			n += 1 + runtime.Sov(uint64(x.Fee))
+		l = len(x.Fee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.Price)
 		if l > 0 {
@@ -22221,30 +22226,40 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 			i--
 			dAtA[i] = 0x32
 		}
-		if x.Fee != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Fee))
+		if len(x.Fee) > 0 {
+			i -= len(x.Fee)
+			copy(dAtA[i:], x.Fee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Fee)))
 			i--
-			dAtA[i] = 0x28
+			dAtA[i] = 0x2a
 		}
-		if x.AmountReceivedInUsd != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountReceivedInUsd))
+		if len(x.AmountReceivedInUsd) > 0 {
+			i -= len(x.AmountReceivedInUsd)
+			copy(dAtA[i:], x.AmountReceivedInUsd)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountReceivedInUsd)))
 			i--
-			dAtA[i] = 0x20
+			dAtA[i] = 0x22
 		}
-		if x.AmountReceived != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountReceived))
+		if len(x.AmountReceived) > 0 {
+			i -= len(x.AmountReceived)
+			copy(dAtA[i:], x.AmountReceived)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountReceived)))
 			i--
-			dAtA[i] = 0x18
+			dAtA[i] = 0x1a
 		}
-		if x.AmountGivenInUsd != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountGivenInUsd))
+		if len(x.AmountGivenInUsd) > 0 {
+			i -= len(x.AmountGivenInUsd)
+			copy(dAtA[i:], x.AmountGivenInUsd)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountGivenInUsd)))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x12
 		}
-		if x.AmountGiven != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountGiven))
+		if len(x.AmountGiven) > 0 {
+			i -= len(x.AmountGiven)
+			copy(dAtA[i:], x.AmountGiven)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountGiven)))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -22296,10 +22311,10 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountGiven", wireType)
 				}
-				x.AmountGiven = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -22309,16 +22324,29 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountGiven |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountGiven = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 2:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountGivenInUsd", wireType)
 				}
-				x.AmountGivenInUsd = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -22328,16 +22356,29 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountGivenInUsd |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountGivenInUsd = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 3:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountReceived", wireType)
 				}
-				x.AmountReceived = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -22347,16 +22388,29 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountReceived |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountReceived = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 4:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountReceivedInUsd", wireType)
 				}
-				x.AmountReceivedInUsd = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -22366,16 +22420,29 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountReceivedInUsd |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountReceivedInUsd = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 5:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
 				}
-				x.Fee = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -22385,11 +22452,24 @@ func (x *fastReflection_QuerySimulateTradeResponse) ProtoMethods() *protoiface.M
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Fee |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Fee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Price", wireType)
@@ -32062,11 +32142,11 @@ type QuerySimulateTradeResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AmountGiven         int64  `protobuf:"varint,1,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
-	AmountGivenInUsd    int64  `protobuf:"varint,2,opt,name=amount_given_in_usd,json=amountGivenInUsd,proto3" json:"amount_given_in_usd,omitempty"`
-	AmountReceived      int64  `protobuf:"varint,3,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
-	AmountReceivedInUsd int64  `protobuf:"varint,4,opt,name=amount_received_in_usd,json=amountReceivedInUsd,proto3" json:"amount_received_in_usd,omitempty"`
-	Fee                 int64  `protobuf:"varint,5,opt,name=fee,proto3" json:"fee,omitempty"`
+	AmountGiven         string `protobuf:"bytes,1,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
+	AmountGivenInUsd    string `protobuf:"bytes,2,opt,name=amount_given_in_usd,json=amountGivenInUsd,proto3" json:"amount_given_in_usd,omitempty"`
+	AmountReceived      string `protobuf:"bytes,3,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
+	AmountReceivedInUsd string `protobuf:"bytes,4,opt,name=amount_received_in_usd,json=amountReceivedInUsd,proto3" json:"amount_received_in_usd,omitempty"`
+	Fee                 string `protobuf:"bytes,5,opt,name=fee,proto3" json:"fee,omitempty"`
 	Price               string `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
 	PriceGivenInUsd     string `protobuf:"bytes,7,opt,name=price_given_in_usd,json=priceGivenInUsd,proto3" json:"price_given_in_usd,omitempty"`
 	PriceReceivedInUsd  string `protobuf:"bytes,8,opt,name=price_received_in_usd,json=priceReceivedInUsd,proto3" json:"price_received_in_usd,omitempty"`
@@ -32092,39 +32172,39 @@ func (*QuerySimulateTradeResponse) Descriptor() ([]byte, []int) {
 	return file_kopi_dex_query_proto_rawDescGZIP(), []int{46}
 }
 
-func (x *QuerySimulateTradeResponse) GetAmountGiven() int64 {
+func (x *QuerySimulateTradeResponse) GetAmountGiven() string {
 	if x != nil {
 		return x.AmountGiven
 	}
-	return 0
+	return ""
 }
 
-func (x *QuerySimulateTradeResponse) GetAmountGivenInUsd() int64 {
+func (x *QuerySimulateTradeResponse) GetAmountGivenInUsd() string {
 	if x != nil {
 		return x.AmountGivenInUsd
 	}
-	return 0
+	return ""
 }
 
-func (x *QuerySimulateTradeResponse) GetAmountReceived() int64 {
+func (x *QuerySimulateTradeResponse) GetAmountReceived() string {
 	if x != nil {
 		return x.AmountReceived
 	}
-	return 0
+	return ""
 }
 
-func (x *QuerySimulateTradeResponse) GetAmountReceivedInUsd() int64 {
+func (x *QuerySimulateTradeResponse) GetAmountReceivedInUsd() string {
 	if x != nil {
 		return x.AmountReceivedInUsd
 	}
-	return 0
+	return ""
 }
 
-func (x *QuerySimulateTradeResponse) GetFee() int64 {
+func (x *QuerySimulateTradeResponse) GetFee() string {
 	if x != nil {
 		return x.Fee
 	}
-	return 0
+	return ""
 }
 
 func (x *QuerySimulateTradeResponse) GetPrice() string {
@@ -33069,17 +33149,17 @@ var file_kopi_dex_query_proto_rawDesc = []byte{
 	0x22, 0xd4, 0x02, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61,
 	0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69, 0x76,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69, 0x76,
 	0x65, 0x6e, 0x12, 0x2d, 0x0a, 0x13, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76,
-	0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x10, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69, 0x76, 0x65, 0x6e, 0x49, 0x6e, 0x55, 0x73,
 	0x64, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x65,
-	0x69, 0x76, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75,
+	0x69, 0x76, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75,
 	0x6e, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x12, 0x33, 0x0a, 0x16, 0x61, 0x6d,
 	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x5f, 0x69, 0x6e,
-	0x5f, 0x75, 0x73, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x13, 0x61, 0x6d, 0x6f, 0x75,
+	0x5f, 0x75, 0x73, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x13, 0x61, 0x6d, 0x6f, 0x75,
 	0x6e, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x49, 0x6e, 0x55, 0x73, 0x64, 0x12,
-	0x10, 0x0a, 0x03, 0x66, 0x65, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x66, 0x65,
+	0x10, 0x0a, 0x03, 0x66, 0x65, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x66, 0x65,
 	0x65, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x2b, 0x0a, 0x12, 0x70, 0x72, 0x69, 0x63, 0x65,
 	0x5f, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x07, 0x20,
