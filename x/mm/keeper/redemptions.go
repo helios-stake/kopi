@@ -182,7 +182,11 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 	}
 
 	// First it is calculated how much of the total share the withdrawal request's given tokens represent.
-	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
+	cAssetSupply := k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount.ToLegacyDec()
+	if cAssetSupply.IsZero() {
+		return math.LegacyZeroDec()
+	}
+
 	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
 
 	// how much value of all cAssetValue does the redemption request represent
@@ -194,10 +198,12 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 
 func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
 	redemptionValue := k.CalculateRedemptionAmount(ctx, cAsset, requestedCAssetAmount)
+	if redemptionValue.IsZero() {
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
+	}
 
 	// how much of what is requested can be paid out
 	redeemAmount := math.LegacyMinDec(redemptionValue, available)
-
 	if redeemAmount.IsZero() {
 		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
