@@ -25,10 +25,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "CreateDenom",
-					Use:       "create-denom [denom] [icon_hash] [exponent]",
+					Use:       "create-denom [denom] [symbol] [icon_hash] [exponent]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
 						{
 							ProtoField: "name",
+						},
+						{
+							ProtoField: "symbol",
 						},
 						{
 							ProtoField: "icon_hash",
