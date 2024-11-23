@@ -6,6 +6,7 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/strategies/types"
+	"strconv"
 )
 
 func (k Keeper) CheckConditions(ctx context.Context, conditions []*types.Condition) error {
@@ -296,6 +297,15 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 	if err != nil {
 		return false, fmt.Errorf("could not execute condition comparison: %w", err)
 	}
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent(
+			"automation_condition_check",
+			sdk.Attribute{Key: "automation_index", Value: strconv.Itoa(automationIndex)},
+			sdk.Attribute{Key: "condition_index", Value: strconv.Itoa(conditionIndex)},
+			sdk.Attribute{Key: "value", Value: value.String()},
+		),
+	)
 
 	return matched, nil
 }
