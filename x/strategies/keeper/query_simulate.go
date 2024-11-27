@@ -26,6 +26,10 @@ func (k Keeper) ArbitrageSimulateDepositBase(ctx context.Context, req *types.Arb
 	cAssetAmount := k.MMKeeper.CalculateNewCAssetAmount(ctx, cAsset, amount)
 
 	calculateValue := k.calculateArbitrageTokenValue(ctx, aAsset)
+	calculateValue = append(calculateValue, func() (math.LegacyDec, error) {
+		return cAssetAmount.ToLegacyDec(), nil
+	})
+
 	newTokens, err := k.calculateNewStrategyAssetAmount(ctx, aAsset.DexDenom, cAssetAmount, calculateValue)
 	if err != nil {
 		return nil, fmt.Errorf("could not calculate new strategy asset amount: %w", err)
@@ -49,6 +53,10 @@ func (k Keeper) ArbitrageSimulateDepositCAsset(ctx context.Context, req *types.A
 	}
 
 	calculateValue := k.calculateArbitrageTokenValue(ctx, aAsset)
+	calculateValue = append(calculateValue, func() (math.LegacyDec, error) {
+		return amount.ToLegacyDec(), nil
+	})
+
 	newTokens, err := k.calculateNewStrategyAssetAmount(ctx, aAsset.DexDenom, amount, calculateValue)
 	if err != nil {
 		return nil, fmt.Errorf("could not calculate new strategy asset amount: %w", err)
