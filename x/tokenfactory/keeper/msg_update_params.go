@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 
@@ -11,25 +12,29 @@ import (
 )
 
 func (k msgServer) UpdateFeeAmount(ctx context.Context, req *types.MsgUpdateFeeAmount) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	feeAmount, ok := math.NewIntFromString(req.FeeAmount)
-	if !ok {
-		return nil, fmt.Errorf("invalid amount")
-	}
+		feeAmount, ok := math.NewIntFromString(req.FeeAmount)
+		if !ok {
+			return fmt.Errorf("invalid amount")
+		}
 
-	params := k.GetParams(ctx)
-	params.CreationFee = feeAmount
+		params := k.GetParams(ctx)
+		params.CreationFee = feeAmount
 
-	if err := params.Validate(); err != nil {
-		return nil, err
-	}
+		if err := params.Validate(); err != nil {
+			return err
+		}
 
-	if err := k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		if err := k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	return &types.Void{}, nil
+		return nil
+	})
+
+	return &types.Void{}, err
 }
