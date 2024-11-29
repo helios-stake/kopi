@@ -1856,6 +1856,50 @@ func TestTrade42(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestTrade43(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	pool := map[string]int64{
+		"inj":   829132866175164798,
+		"ukusd": 1740434604,
+		"ukopi": 49994130281493,
+	}
+
+	ratios := map[string]string{
+		"inj":   "11310893732.791635615102371449",
+		"skbtc": "0.235974469935270325",
+	}
+
+	balance := map[string]int64{
+		"inj": 37582987632368903,
+	}
+
+	for denom, amount := range balance {
+		keepertest.AddFunds(ctx, t, k.BankKeeper, denom, keepertest.Dave, amount)
+	}
+
+	keepertest.SetLiquidity(ctx, k.BankKeeper, k, t, pool)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		for denom, ratio := range ratios {
+			r, _ := math.LegacyNewDecFromStr(ratio)
+			k.DenomKeeper.SetRatio(innerCtx, denomtypes.Ratio{Denom: denom, Ratio: r})
+		}
+
+		return nil
+	}))
+
+	_, err := keepertest.Sell(ctx, msg, &types.MsgSell{
+		Creator:            keepertest.Dave,
+		DenomGiving:        "inj",
+		DenomReceiving:     "ukusd",
+		Amount:             "1000000000000000",
+		MaxPrice:           "48057996063.181141677468913534",
+		MinimumTradeAmount: "1000000000000000",
+	})
+	require.NoError(t, err)
+}
+
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())

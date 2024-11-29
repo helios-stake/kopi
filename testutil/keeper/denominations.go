@@ -109,6 +109,12 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 			MinOrderSize: math.NewInt(1000),
 			Exponent:     6,
 		},
+		&denomtypes.DexDenom{
+			Name:         "inj",
+			MinLiquidity: math.NewInt(1000),
+			MinOrderSize: math.NewInt(1000),
+			Exponent:     18,
+		},
 	)
 
 	params.StrategyDenoms = &denomtypes.StrategyDenoms{
@@ -176,6 +182,13 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
 			Denom: "uawusdc",
 			Ratio: math.LegacyNewDecWithPrec(25, 2),
+		})
+
+		injRatio, err := math.LegacyNewDecFromStr("11310893732.791635615102371449")
+		require.NoError(t, err)
+		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
+			Denom: "inj",
+			Ratio: injRatio,
 		})
 
 		return denomKeeper.SetParams(innerContext, params)
