@@ -113,7 +113,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	// When selling:
 	// With the given funds and the liquidity on the DEX, we can calculate how much a user is to receive when trading.
 	// In some cases though, caused by virtual liquidity, the user would receive more than there is liquidity present.
-	// In those caes, the given amount is lowered if the user is okay with an incomplete trade. If not, an error is
+	// In those cases, the given amount is lowered if the user is okay with an incomplete trade. If not, an error is
 	// returned.
 	// When buying:
 	// Given how much funds are in the user's wallet, the user might not get the full desired amount.
