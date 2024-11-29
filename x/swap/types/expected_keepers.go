@@ -32,6 +32,10 @@ type BankKeeper interface {
 	GetSupply(ctx context.Context, denom string) sdk.Coin
 }
 
+type BlockspeedKeeper interface {
+	GetBlocksPerSecond(context.Context) math.LegacyDec
+}
+
 type DexKeeper interface {
 	cache.Cache
 

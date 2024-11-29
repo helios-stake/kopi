@@ -82,6 +82,9 @@ func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceRatio math.Lega
 	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
 	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
 	mintAmount := constantProductRoot.Sub(liqBase)
+
+	mintAmount = mintAmount.Mul(k.BlockspeedKeeper.GetBlocksPerSecond(ctx))
+	
 	return mintAmount.TruncateInt()
 }
 

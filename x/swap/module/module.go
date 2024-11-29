@@ -211,10 +211,11 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	Logger       log.Logger
 
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-	DenomKeeper   types.DenomKeeper
-	DexKeeper     types.DexKeeper
+	AccountKeeper    types.AccountKeeper
+	BankKeeper       types.BankKeeper
+	BlockspeedKeeper types.BlockspeedKeeper
+	DenomKeeper      types.DenomKeeper
+	DexKeeper        types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -236,6 +237,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Logger,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.BlockspeedKeeper,
 		in.DenomKeeper,
 		in.DexKeeper,
 		authority.String(),

@@ -26,10 +26,11 @@ type (
 		storeService store.KVStoreService
 		logger       log.Logger
 
-		AccountKeeper types.AccountKeeper
-		BankKeeper    types.BankKeeper
-		DenomKeeper   types.DenomKeeper
-		DexKeeper     types.DexKeeper
+		AccountKeeper    types.AccountKeeper
+		BankKeeper       types.BankKeeper
+		BlockspeedKeeper types.BlockspeedKeeper
+		DenomKeeper      types.DenomKeeper
+		DexKeeper        types.DexKeeper
 
 		// Collections
 		params *cache.ItemCache[types.Params]
@@ -48,6 +49,7 @@ func NewKeeper(
 	logger log.Logger,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	blockspeedKeeper types.BlockspeedKeeper,
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	authority string,
@@ -61,14 +63,15 @@ func NewKeeper(
 	caches := &cache.Caches{}
 
 	return Keeper{
-		cdc:           cdc,
-		storeService:  storeService,
-		authority:     authority,
-		logger:        logger,
-		AccountKeeper: accountKeeper,
-		BankKeeper:    bankKeeper,
-		DenomKeeper:   denomKeeper,
-		DexKeeper:     dexKeeper,
+		cdc:              cdc,
+		storeService:     storeService,
+		authority:        authority,
+		logger:           logger,
+		AccountKeeper:    accountKeeper,
+		BankKeeper:       bankKeeper,
+		BlockspeedKeeper: blockspeedKeeper,
+		DenomKeeper:      denomKeeper,
+		DexKeeper:        dexKeeper,
 
 		caches: caches,
 
