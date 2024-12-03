@@ -2,6 +2,8 @@ module github.com/kopi-money/kopi
 
 go 1.23
 
+toolchain go1.23.3
+
 require (
 	cosmossdk.io/api v0.7.6
 	cosmossdk.io/client/v2 v2.0.0-beta.5
