@@ -143,8 +143,8 @@ message MsgSell {
 }
 
 message MsgTradeResponse {
-  int64 amount_given = 1;
-  int64 amount_received = 2;
+  string amount_given = 1;
+  string amount_received = 2;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

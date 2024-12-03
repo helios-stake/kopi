@@ -89,8 +89,8 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 	)
 
 	return &types.MsgTradeResponse{
-		AmountGiven:    tradeResult.AmountGiven.Int64(),
-		AmountReceived: tradeResult.AmountReceived.Int64(),
+		AmountGiven:    tradeResult.AmountGiven.String(),
+		AmountReceived: tradeResult.AmountReceived.String(),
 	}, nil
 }
 

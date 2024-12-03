@@ -7540,14 +7540,14 @@ func (x *fastReflection_MsgTradeResponse) Interface() protoreflect.ProtoMessage 
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_MsgTradeResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.AmountGiven != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountGiven)
+	if x.AmountGiven != "" {
+		value := protoreflect.ValueOfString(x.AmountGiven)
 		if !f(fd_MsgTradeResponse_amount_given, value) {
 			return
 		}
 	}
-	if x.AmountReceived != int64(0) {
-		value := protoreflect.ValueOfInt64(x.AmountReceived)
+	if x.AmountReceived != "" {
+		value := protoreflect.ValueOfString(x.AmountReceived)
 		if !f(fd_MsgTradeResponse_amount_received, value) {
 			return
 		}
@@ -7568,9 +7568,9 @@ func (x *fastReflection_MsgTradeResponse) Range(f func(protoreflect.FieldDescrip
 func (x *fastReflection_MsgTradeResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "kopi.dex.MsgTradeResponse.amount_given":
-		return x.AmountGiven != int64(0)
+		return x.AmountGiven != ""
 	case "kopi.dex.MsgTradeResponse.amount_received":
-		return x.AmountReceived != int64(0)
+		return x.AmountReceived != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.MsgTradeResponse"))
@@ -7588,9 +7588,9 @@ func (x *fastReflection_MsgTradeResponse) Has(fd protoreflect.FieldDescriptor) b
 func (x *fastReflection_MsgTradeResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "kopi.dex.MsgTradeResponse.amount_given":
-		x.AmountGiven = int64(0)
+		x.AmountGiven = ""
 	case "kopi.dex.MsgTradeResponse.amount_received":
-		x.AmountReceived = int64(0)
+		x.AmountReceived = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.MsgTradeResponse"))
@@ -7609,10 +7609,10 @@ func (x *fastReflection_MsgTradeResponse) Get(descriptor protoreflect.FieldDescr
 	switch descriptor.FullName() {
 	case "kopi.dex.MsgTradeResponse.amount_given":
 		value := x.AmountGiven
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.dex.MsgTradeResponse.amount_received":
 		value := x.AmountReceived
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.MsgTradeResponse"))
@@ -7634,9 +7634,9 @@ func (x *fastReflection_MsgTradeResponse) Get(descriptor protoreflect.FieldDescr
 func (x *fastReflection_MsgTradeResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	case "kopi.dex.MsgTradeResponse.amount_given":
-		x.AmountGiven = value.Int()
+		x.AmountGiven = value.Interface().(string)
 	case "kopi.dex.MsgTradeResponse.amount_received":
-		x.AmountReceived = value.Int()
+		x.AmountReceived = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.MsgTradeResponse"))
@@ -7675,9 +7675,9 @@ func (x *fastReflection_MsgTradeResponse) Mutable(fd protoreflect.FieldDescripto
 func (x *fastReflection_MsgTradeResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "kopi.dex.MsgTradeResponse.amount_given":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.dex.MsgTradeResponse.amount_received":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.MsgTradeResponse"))
@@ -7747,11 +7747,13 @@ func (x *fastReflection_MsgTradeResponse) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if x.AmountGiven != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountGiven))
+		l = len(x.AmountGiven)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.AmountReceived != 0 {
-			n += 1 + runtime.Sov(uint64(x.AmountReceived))
+		l = len(x.AmountReceived)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -7782,15 +7784,19 @@ func (x *fastReflection_MsgTradeResponse) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.AmountReceived != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountReceived))
+		if len(x.AmountReceived) > 0 {
+			i -= len(x.AmountReceived)
+			copy(dAtA[i:], x.AmountReceived)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountReceived)))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x12
 		}
-		if x.AmountGiven != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.AmountGiven))
+		if len(x.AmountGiven) > 0 {
+			i -= len(x.AmountGiven)
+			copy(dAtA[i:], x.AmountGiven)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountGiven)))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -7842,10 +7848,10 @@ func (x *fastReflection_MsgTradeResponse) ProtoMethods() *protoiface.Methods {
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountGiven", wireType)
 				}
-				x.AmountGiven = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -7855,16 +7861,29 @@ func (x *fastReflection_MsgTradeResponse) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountGiven |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountGiven = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 2:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountReceived", wireType)
 				}
-				x.AmountReceived = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -7874,11 +7893,24 @@ func (x *fastReflection_MsgTradeResponse) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.AmountReceived |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountReceived = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -11511,8 +11543,8 @@ type MsgTradeResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AmountGiven    int64 `protobuf:"varint,1,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
-	AmountReceived int64 `protobuf:"varint,2,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
+	AmountGiven    string `protobuf:"bytes,1,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
+	AmountReceived string `protobuf:"bytes,2,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
 }
 
 func (x *MsgTradeResponse) Reset() {
@@ -11535,18 +11567,18 @@ func (*MsgTradeResponse) Descriptor() ([]byte, []int) {
 	return file_kopi_dex_tx_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *MsgTradeResponse) GetAmountGiven() int64 {
+func (x *MsgTradeResponse) GetAmountGiven() string {
 	if x != nil {
 		return x.AmountGiven
 	}
-	return 0
+	return ""
 }
 
-func (x *MsgTradeResponse) GetAmountReceived() int64 {
+func (x *MsgTradeResponse) GetAmountReceived() string {
 	if x != nil {
 		return x.AmountReceived
 	}
-	return 0
+	return ""
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -11981,9 +12013,9 @@ var file_kopi_dex_tx_proto_rawDesc = []byte{
 	0x74, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22,
 	0x5e, 0x0a, 0x10, 0x4d, 0x73, 0x67, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69,
-	0x76, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
+	0x76, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
 	0x74, 0x47, 0x69, 0x76, 0x65, 0x6e, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x22,
 	0x5d, 0x0a, 0x1d, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x6c, 0x6c, 0x4c,
 	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x46, 0x6f, 0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
