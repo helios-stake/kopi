@@ -113,12 +113,12 @@ func NewItemCache[V any](sb *collections.SchemaBuilder, prefix []byte, name stri
 }
 
 func (ic *ItemCache[V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	ic.currentHeight = sdkCtx.BlockHeight()
+
 	if ic.item != nil {
 		return nil
 	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	ic.currentHeight = sdkCtx.BlockHeight()
 
 	item, has := ic.loadFromStorage(sdkCtx)
 	if has {
