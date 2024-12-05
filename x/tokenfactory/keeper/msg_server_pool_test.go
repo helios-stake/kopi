@@ -2,9 +2,10 @@ package keeper_test
 
 import (
 	"context"
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
-	"testing"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"

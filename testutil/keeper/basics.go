@@ -2,12 +2,13 @@ package keeper
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/cache"
-	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"math"
 	"strconv"
 	"sync"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
+	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"

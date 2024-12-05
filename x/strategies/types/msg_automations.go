@@ -1,11 +1,12 @@
 package types
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"encoding/json"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"regexp"
+
+	errorsmod "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var RegexPercentage = regexp.MustCompile(`^(100|[1-9][0-9]?|0[1-9])%$`)

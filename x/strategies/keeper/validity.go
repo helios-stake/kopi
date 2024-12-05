@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"
 
 	"github.com/kopi-money/kopi/x/strategies/types"

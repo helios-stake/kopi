@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"context"
 	"fmt"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"testing"
+
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
 	"github.com/kopi-money/kopi/x/dex/constant_product"
 

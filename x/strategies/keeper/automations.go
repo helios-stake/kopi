@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/kopi-money/kopi/constants"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
-	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"

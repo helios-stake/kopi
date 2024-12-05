@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/cache"
 	"testing"
+
+	"github.com/kopi-money/kopi/cache"
 
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 

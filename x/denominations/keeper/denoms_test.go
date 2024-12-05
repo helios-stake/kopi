@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/denominations/keeper"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestConversion1(t *testing.T) {

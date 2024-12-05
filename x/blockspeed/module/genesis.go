@@ -2,8 +2,9 @@ package blockspeed
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"
 
 	"github.com/kopi-money/kopi/x/blockspeed/keeper"

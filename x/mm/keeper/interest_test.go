@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	"github.com/kopi-money/kopi/cache"
 

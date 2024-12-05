@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+
 	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"

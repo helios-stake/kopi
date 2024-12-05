@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"

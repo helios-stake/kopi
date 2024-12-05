@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"fmt"
-	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"

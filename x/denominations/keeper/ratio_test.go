@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRatios1(t *testing.T) {

@@ -3,10 +3,11 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
-	"testing"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"

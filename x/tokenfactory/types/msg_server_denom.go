@@ -1,12 +1,13 @@
 package types
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"regexp"
 	"strings"
+
+	errorsmod "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
 var hashRegex = regexp.MustCompile(`^[A-F0-9]{64}$`)

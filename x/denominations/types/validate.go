@@ -1,11 +1,12 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
 	"regexp"
 	"strings"
 	"unicode"
+
+	"cosmossdk.io/math"
 )
 
 var (

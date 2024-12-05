@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"testing"
+
 	"cosmossdk.io/core/address"
 	"github.com/kopi-money/kopi/constants"
-	"testing"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"

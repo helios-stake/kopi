@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 )

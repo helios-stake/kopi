@@ -1,9 +1,10 @@
 package types_test
 
 import (
+	"testing"
+
 	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/denominations/types"
-	"testing"
 
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"

@@ -1,10 +1,7 @@
 package keeper
 
 import (
-	"context"
 	"testing"
-
-	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -20,11 +17,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/kopi-money/kopi/x/blockspeed/keeper"
-	"github.com/kopi-money/kopi/x/blockspeed/types"
+	"github.com/kopi-money/kopi/x/ls/keeper"
+	"github.com/kopi-money/kopi/x/ls/types"
 )
 
-func BlocktimeKeeper(t testing.TB) (keeper.Keeper, context.Context) {
+func LsKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -46,9 +43,7 @@ func BlocktimeKeeper(t testing.TB) (keeper.Keeper, context.Context) {
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	require.NoError(t, cache.Transact(ctx, func(innerContext context.Context) error {
-		return k.SetParams(innerContext, types.DefaultParams())
-	}))
+	k.SetParams(ctx, types.DefaultParams())
 
 	return k, ctx
 }

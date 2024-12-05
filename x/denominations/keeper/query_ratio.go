@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+
 	"github.com/kopi-money/kopi/x/denominations/types"
 
 	"google.golang.org/grpc/codes"

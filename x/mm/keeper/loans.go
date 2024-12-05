@@ -2,13 +2,14 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"sort"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
-	"fmt"
 	"github.com/kopi-money/kopi/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
-	"sort"
 )
 
 // GetGenesisLoans is used for genesis export

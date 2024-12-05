@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	"testing"
+
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/strategies/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 var importString = `

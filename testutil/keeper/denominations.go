@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 

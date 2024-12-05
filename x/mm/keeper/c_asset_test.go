@@ -2,9 +2,10 @@ package keeper_test
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/constants"
 	"strconv"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	"github.com/kopi-money/kopi/cache"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"

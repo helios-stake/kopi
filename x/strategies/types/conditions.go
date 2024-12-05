@@ -1,9 +1,10 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
+
+	"cosmossdk.io/math"
 )
 
 const (

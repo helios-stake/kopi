@@ -1,12 +1,13 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
-	"strconv"
 )
 
 type AutomationMessage interface {

@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"strings"
+
+	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
 func (k msgServer) UpdateIconHash(ctx context.Context, msg *types.MsgUpdateIconHash) (*types.Void, error) {

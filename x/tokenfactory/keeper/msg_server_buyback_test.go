@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/kopi-money/kopi/constants"
 	"testing"
+
+	"github.com/kopi-money/kopi/constants"
 
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/stretchr/testify/require"

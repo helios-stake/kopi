@@ -2,9 +2,10 @@ package arbitrage
 
 import (
 	"context"
-	"cosmossdk.io/core/store"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
