@@ -1,16 +1,18 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	testdata_pulsar "github.com/cosmos/cosmos-sdk/testutil/testdata/testpb"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/kopi-money/kopi/app/upgrades"
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/depinject"
@@ -57,6 +59,12 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+
+	// wasm
+
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	denominationsmodulekeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexmodulekeeper "github.com/kopi-money/kopi/x/dex/keeper"
@@ -124,12 +132,14 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	PacketForwardKeeper *packetforwardkeeper.Keeper
+	WasmKeeper          wasmkeeper.Keeper
 
 	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedIBCTransferKeeper   capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	DenominationsKeeper denominationsmodulekeeper.Keeper
 	DexKeeper           dexmodulekeeper.Keeper
@@ -191,6 +201,7 @@ func New(
 	traceStore io.Writer,
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
 	var (
@@ -283,6 +294,7 @@ func New(
 		&app.StrategiesKeeper,
 		&app.ReserveKeeper,
 		&app.BlockspeedKeeper,
+		&app.WasmKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)
@@ -293,7 +305,7 @@ func New(
 	app.registerCacheHandling()
 
 	// Register legacy modules
-	if err := app.registerIBCModules(appOpts); err != nil {
+	if err := app.registerIBCModules(appOpts, wasmOpts); err != nil {
 		return nil, err
 	}
 
@@ -320,6 +332,31 @@ func New(
 
 	app.sm.RegisterStoreDecoders()
 
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic("error while reading wasm config: " + err.Error())
+	}
+	anteHandler, err := NewAnteHandler(
+		HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SignModeHandler: app.txConfig.SignModeHandler(),
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			IBCKeeper:             app.IBCKeeper,
+			WasmConfig:            &wasmConfig,
+			WasmKeeper:            &app.WasmKeeper,
+			TXCounterStoreService: runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
+			CircuitKeeper:         &app.CircuitBreakerKeeper,
+		},
+	)
+	if err != nil {
+		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+	}
+	app.SetAnteHandler(anteHandler)
+
 	// A custom InitChainer can be set if extra pre-init-genesis logic is required.
 	// By default, when using app wiring enabled module, this is not required.
 	// For instance, the upgrade module will set automatically the module version map in its init genesis thanks to app wiring.
@@ -331,16 +368,27 @@ func New(
 	//  return app.App.InitChainer(ctx, req)
 	// })
 
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper))
+		if err != nil {
+			panic("failed to register snapshot extension: " + err.Error())
+		}
+	}
+
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
 	}
 
-	for _, upgrade := range upgrades.UpgradeHandlers() {
-		app.UpgradeKeeper.SetUpgradeHandler(
-			upgrade.UpgradeName,
-			upgrade.CreateUpgradeHandler(app.ModuleManager, app.Configurator()),
-		)
+	if loadLatest {
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+
+		// Initialize pinned codes in wasmvm as they are not persisted there
+		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+			panic(fmt.Sprintf("failed initialize pinned codes %s", err))
+		}
 	}
+
+	app.setupUpgradeHandlers(appOpts)
 
 	return app, nil
 }

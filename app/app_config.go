@@ -33,6 +33,7 @@ import (
 	_ "cosmossdk.io/x/feegrant/module" // import for side-effects
 	_ "cosmossdk.io/x/upgrade"         // import for side-effects
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -123,6 +124,7 @@ var (
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		wasmtypes.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
@@ -163,6 +165,7 @@ var (
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		wasmtypes.ModuleName,
 		// chain modules
 		reservemoduletypes.ModuleName,
 		denominationsmoduletypes.ModuleName,
@@ -189,6 +192,7 @@ var (
 		capabilitytypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		wasmtypes.ModuleName,
 		// chain modules
 		denominationsmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
@@ -217,6 +221,7 @@ var (
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
+		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 
 		// DEX
 		{Account: dexmoduletypes.ModuleName, Permissions: []string{authtypes.Minter}},
@@ -321,8 +326,10 @@ var (
 				Config: appconfig.WrapAny(&paramsmodulev1.Module{}),
 			},
 			{
-				Name:   "tx",
-				Config: appconfig.WrapAny(&txconfigv1.Config{}),
+				Name: "tx",
+				Config: appconfig.WrapAny(&txconfigv1.Config{
+					SkipAnteHandler: true, // skip ante handler because we want to add wasmd
+				}),
 			},
 			{
 				Name:   genutiltypes.ModuleName,
