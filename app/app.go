@@ -220,45 +220,6 @@ func New(
 				app.GetCapabilityScopedKeeper,
 				// Supply the logger
 				logger,
-
-				// ADVANCED CONFIGURATION
-				//
-				// AUTH
-				//
-				// For providing a custom function required in auth to generate custom account types
-				// add it below. By default the auth module uses simulation.RandomGenesisAccounts.
-				//
-				// authtypes.RandomGenesisAccountsFn(simulation.RandomGenesisAccounts),
-				//
-				// For providing a custom a base account type add it below.
-				// By default the auth module uses authtypes.ProtoBaseAccount().
-				//
-				// func() sdk.AccountI { return authtypes.ProtoBaseAccount() },
-				//
-				// For providing a different address codec, add it below.
-				// By default the auth module uses a Bech32 address codec,
-				// with the prefix defined in the auth module configuration.
-				//
-				// func() address.Codec { return <- custom address codec type -> }
-
-				//
-				// STAKING
-				//
-				// For provinding a different validator and consensus address codec, add it below.
-				// By default the staking module uses the bech32 prefix provided in the auth config,
-				// and appends "valoper" and "valcons" for validator and consensus addresses respectively.
-				// When providing a custom address codec in auth, custom address codecs must be provided here as well.
-				//
-				// func() runtime.ValidatorAddressCodec { return <- custom validator address codec type -> }
-				// func() runtime.ConsensusAddressCodec { return <- custom consensus address codec type -> }
-
-				//
-				// MINT
-				//
-
-				// For providing a custom inflation function for x/mint add here your
-				// custom function that implements the minttypes.InflationCalculationFn
-				// interface.
 			),
 		)
 	)
@@ -293,7 +254,6 @@ func New(
 		&app.StrategiesKeeper,
 		&app.ReserveKeeper,
 		&app.BlockspeedKeeper,
-		&app.WasmKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)
@@ -352,7 +312,7 @@ func New(
 		},
 	)
 	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+		return nil, fmt.Errorf("failed to create AnteHandler: %s", err)
 	}
 	app.SetAnteHandler(anteHandler)
 
@@ -368,13 +328,13 @@ func New(
 	// })
 
 	if manager := app.SnapshotManager(); manager != nil {
-		err := manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper))
+		err = manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper))
 		if err != nil {
-			panic("failed to register snapshot extension: " + err.Error())
+			return nil, fmt.Errorf("failed to register snapshot extension: %w", err)
 		}
 	}
 
-	if err := app.Load(loadLatest); err != nil {
+	if err = app.Load(loadLatest); err != nil {
 		return nil, err
 	}
 
@@ -382,8 +342,8 @@ func New(
 		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 
 		// Initialize pinned codes in wasmvm as they are not persisted there
-		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
-			panic(fmt.Sprintf("failed initialize pinned codes %s", err))
+		if err = app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+			return nil, fmt.Errorf("failed initialize pinned codes: %w", err)
 		}
 	}
 
