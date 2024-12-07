@@ -14,6 +14,11 @@ import (
 
 func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, k wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		vm[capabilitytypes.ModuleName] = capability.AppModule{}.ConsensusVersion()
+		migrations, err := mm.RunMigrations(ctx, configurator, vm)
+		if err != nil {
+			return nil, err
+		}
 		// Set CosmWasm params
 		wasmParams := wasmtypes.DefaultParams()
 		wasmParams.CodeUploadAccess = wasmtypes.AllowNobody
@@ -22,8 +27,6 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 			return vm, fmt.Errorf("unable to set CosmWasm params")
 		}
 
-		vm[capabilitytypes.ModuleName] = capability.AppModule{}.ConsensusVersion()
-
-		return mm.RunMigrations(ctx, configurator, vm)
+		return migrations, nil
 	}
 }
